@@ -1,11 +1,18 @@
 package sg.edu.np.mad.beproductive.ToDoListPage;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +21,27 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.util.ArrayList;
+
+import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.DatabaseHandler;
+import sg.edu.np.mad.beproductive.User;
 
 public class AddNewTask extends BottomSheetDialogFragment {
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
     private Button newTaskSaveButton;
     private DatabaseHandler db;
+    private BroadcastReceiver receiver;
+    private int user_id;
+    private User user = new User("testing","testing","testing");
+    private ToDoModel task;
+
     public static AddNewTask newInstance(){
         return new AddNewTask();
     }
@@ -46,6 +63,25 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         newTaskText = getView().findViewById(R.id.newTaskTextbox);
         newTaskSaveButton = getView().findViewById(R.id.newTaskSaveBtn);
+        user.setId(100);
+        user_id =  Global.getUser_Id();
+//        Log.i("MAOMAOO","user id test tst: " + String.valueOf(user_id1));
+
+//        receiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//
+//                if("ToDoList_To_AddNewTask".equals(intent.getAction()))
+//                {
+//                    user_id = intent.getIntExtra("ID",100);
+//                    Log.i("MAOMAOO","USER ID: " + String.valueOf(user_id));
+//                }
+//                LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+//            }
+//        };
+//
+//
+//        LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(receiver,new IntentFilter("ToDoList_To_AddNewTask"));
 
         db = new DatabaseHandler(getActivity());
         db.openDatabase();
@@ -85,17 +121,33 @@ public class AddNewTask extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 String text = newTaskText.getText().toString();
+
                 if (finalIsUpdate) {
                     db.updateTask(bundle.getInt("id"), text);
                 } else {
+                    ArrayList<User> user_array = new ArrayList<>();
+                    user_array = db.getAllUsers();
+                    for(User u :user_array)
+                    {
+                        if(u.getId() == user_id)
+                        {
+                            user = u;
+                            break;
+                        }
+                    }
+
                     ToDoModel task = new ToDoModel();
                     task.setTask(text);
                     task.setStatus(0);
-                    db.insertTask(task);
+                    db.insertTask(task,user.getId());
+
+
                 }
+//
                 dismiss();
             }
         });
+//        LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(receiver);
     }
     @Override
     public void onDismiss(DialogInterface dialog){
