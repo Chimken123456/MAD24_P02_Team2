@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String ID = "id";
     private static final String TASK = "task";
     private static final String STATUS = "status";
+    private static final String ID_USER = "user_id";
+    private static String USER_ID = "user_id";
+    private static final String USER_TABLE = "users";
     private static final String CREATE_TODO_TABLE = "CREATE TABLE " + TODO_TABLE + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + TASK + " TEXT, " + STATUS + " INTEGER)";
+            + TASK + " TEXT, " + STATUS + " INTEGER," + ID_USER + " INTEGER," + " FOREIGN KEY ("+USER_ID+") REFERENCES " + USER_TABLE + "("+USER_ID+")" + ")";
+
+    private static final String USERNAME = "username";
+    private static final String EMAIL = "email";
+    private static final String PASSWORD = "password";
+
+    private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT"+")";
     private SQLiteDatabase db;
 
     public DatabaseHandler(Context context){
@@ -28,13 +39,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
+        db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_TODO_TABLE);
         Log.d("DatabaseHandler", "Database created with table: " + CREATE_TODO_TABLE);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+//        if(newVersion > oldVersion)
+//        {
+//            db.execSQL("CREATE TABLE IF NOT EXISTS " + USER_TABLE);
+//        }
         db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
         onCreate(db);
     }
 
@@ -43,10 +61,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d("DatabaseHandler", "Database opened");
     }
 
-    public void insertTask(ToDoModel task){
+    public void insertTask(ToDoModel task, int userId){
         ContentValues cv = new ContentValues();
         cv.put(TASK, task.getTask());
         cv.put(STATUS, 0);
+        cv.put(ID_USER,userId);
         long result = db.insert(TODO_TABLE, null, cv);
         if (result == -1) {
             Log.e("DatabaseHandler", "Failed to insert task");
@@ -55,7 +74,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public List<ToDoModel> getAllTasks() {
+    public List<ToDoModel> getAllTasks(int id) {
         List<ToDoModel> taskList = new ArrayList<>();
         Cursor cur = null;
         db.beginTransaction();
@@ -66,14 +85,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     int idIndex = cur.getColumnIndex(ID);
                     int taskIndex = cur.getColumnIndex(TASK);
                     int statusIndex = cur.getColumnIndex(STATUS);
-
+                    int userIndex = cur.getColumnIndex(ID_USER);
                     if (idIndex != -1 && taskIndex != -1 && statusIndex != -1) {
                         do {
-                            ToDoModel task = new ToDoModel();
-                            task.setId(cur.getInt(idIndex));
-                            task.setTask(cur.getString(taskIndex));
-                            task.setStatus(cur.getInt(statusIndex));
-                            taskList.add(task);
+//                            Log.i("MAOMAOO","database "+String.valueOf(id) + "   " + String.valueOf(cur.getInt(userIndex)));
+                            if(id == cur.getInt(userIndex))
+                            {
+                                ToDoModel task = new ToDoModel();
+                                task.setId(cur.getInt(idIndex));
+                                task.setTask(cur.getString(taskIndex));
+                                task.setStatus(cur.getInt(statusIndex));
+                                task.setUser_id(cur.getInt(userIndex));
+                                taskList.add(task);
+                            }
+
                         } while (cur.moveToNext());
                     }
                 }
@@ -108,6 +133,52 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void deleteTask(int id){
         int result = db.delete(TODO_TABLE, ID + "=?", new String[]{String.valueOf(id)});
         Log.d("DatabaseHandler", "Deleted task with id " + id + " with result " + result);
+    }
+
+    public void addUsers(User user)
+    {
+        ContentValues values = new ContentValues();
+        values.put(USERNAME,user.getName());
+        values.put(EMAIL,user.getEmail());
+        values.put(PASSWORD,user.getPassword());
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(USER_TABLE,null,values);
+    }
+    public ArrayList<User> getAllUsers()
+    {
+        ArrayList<User> user_array = new ArrayList<>();
+        int id;
+        String username;
+        String email;
+        String password;
+
+        String query = "SELECT * FROM " + USER_TABLE;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor =db.rawQuery(query,null);
+        //If it exists
+        if(cursor.moveToFirst())
+        {
+            id = Integer.parseInt(cursor.getString(0));
+            username =cursor.getString(1);
+            email = cursor.getString(2);
+            password = cursor.getString(3);
+            User user =new User(username,password,email);
+            user.setId(id);
+            user_array.add(user);
+        }
+        while(cursor.moveToNext())
+        {
+            id = Integer.parseInt(cursor.getString(0));
+            username =cursor.getString(1);
+            email = cursor.getString(2);
+            password = cursor.getString(3);
+            User user =new User(username,password,email);
+            user.setId(id);
+            user_array.add(user);
+
+        }
+        cursor.close();
+        return user_array;
     }
 }
 
