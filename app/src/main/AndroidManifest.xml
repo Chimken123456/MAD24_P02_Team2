@@ -24,9 +24,7 @@
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
 <!--            </intent-filter>-->
         </activity>
-        <activity
-            android:name=".ToDoListPage.TodoList"
-            android:exported="false"/>
+
         <activity
             android:name=".Sign_Up"
             android:exported="false" />
@@ -39,6 +37,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ToDoListPage.TodoList"
+            android:exported="false"/>
 
         <meta-data
             android:name="preloaded_fonts"
