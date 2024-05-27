@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import sg.edu.np.mad.beproductive.R;
+import sg.edu.np.mad.beproductive.Timetable.TimetableActivity;
 import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
 
 public class HomeMenu extends AppCompatActivity {
@@ -31,6 +32,15 @@ public class HomeMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(HomeMenu.this, TodoList.class);
+                startActivity(intent);
+            }
+        });
+
+        Button timetableButton = findViewById(R.id.timetable_navbutton);
+        timetableButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeMenu.this, TimetableActivity.class);
                 startActivity(intent);
             }
         });
