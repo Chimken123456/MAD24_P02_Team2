@@ -1,7 +1,7 @@
 package sg.edu.np.mad.beproductive.ToDoListPage;
 
 public class ToDoModel {
-    private int id, status;
+    private int id, status,user_id;
     private String task;
 
     public int getId() {
@@ -26,5 +26,14 @@ public class ToDoModel {
 
     public void setTask(String task) {
         this.task = task;
+    }
+
+    public int getUserId()
+    {
+        return user_id;
+    }
+    public void setUser_id(int user_id)
+    {
+        this.user_id = user_id;
     }
 }
