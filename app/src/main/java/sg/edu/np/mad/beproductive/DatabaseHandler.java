@@ -10,6 +10,8 @@ import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import sg.edu.np.mad.beproductive.Timetable.Schedule;
+import sg.edu.np.mad.beproductive.Timetable.Timeslot;
 import sg.edu.np.mad.beproductive.ToDoListPage.ToDoModel;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -31,6 +33,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT"+")";
+
+    private static String ACTIVITY_ID = "activity_id";
+    private static String TIMESLOT = "timeslot";
+    private static String DESC = "description";
+    private static final String SCHEDULE_TABLE = "schedule";
+    private static final String CREATE_SCHEDULE_TABLE = "CREATE TABLE " + SCHEDULE_TABLE + "(" + ACTIVITY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + TIMESLOT + " TEXT, " + DESC + " TEXT " +")";
     private SQLiteDatabase db;
 
     public DatabaseHandler(Context context){
@@ -41,6 +49,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_TODO_TABLE);
+        db.execSQL(CREATE_SCHEDULE_TABLE);
         Log.d("DatabaseHandler", "Database created with table: " + CREATE_TODO_TABLE);
 
     }
@@ -53,6 +62,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        }
         db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + SCHEDULE_TABLE);
         onCreate(db);
     }
 
@@ -73,6 +83,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Log.d("DatabaseHandler", "Task inserted successfully with id: " + result);
         }
     }
+
 
     public List<ToDoModel> getAllTasks(int id) {
         List<ToDoModel> taskList = new ArrayList<>();
@@ -179,6 +190,70 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         cursor.close();
         return user_array;
+    }
+
+    public void insertActivity(Timeslot slot) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(TIMESLOT, slot.getTime());
+        values.put(DESC, slot.getDescription());
+        //values.put(USER_ID, currentUser.getId());
+        long result = db.insert(SCHEDULE_TABLE, null, values);
+        if (result == -1) {
+            Log.e("DatabaseHandler", "Failed to insert task");
+        } else {
+            Log.d("DatabaseHandler", "Task inserted successfully with id: " + result);
+        }
+
+        db.close();
+    }
+
+    public Schedule getUserActivities() {
+        //String id = String.valueOf(user.getId());
+        Schedule output = new Schedule();
+        String time;
+        String description;
+
+        Cursor cursor = null;
+        db.beginTransaction();
+        try {
+            //cursor = db.query(SCHEDULE_TABLE, null, "user_id=?", new String[]{id}, null, null, null);
+            cursor = db.query(SCHEDULE_TABLE, null, null, null, null, null, null);
+            if(cursor != null) {
+                if (cursor.moveToFirst()) {
+                    time = cursor.getString(1);
+                    description = cursor.getString(2);
+                    Timeslot timeslot = new Timeslot(time, description);
+                    output.addTimeslot(timeslot);
+                }
+                while (cursor.moveToNext()) {
+                    time = cursor.getString(1);
+                    description = cursor.getString(2);
+                    Timeslot timeslot = new Timeslot(time, description);
+                    output.addTimeslot(timeslot);
+                }
+            }
+        } catch(Exception e) {
+            Log.e("DatabaseHandler", "Error while retrieving user activities");
+        }
+        finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.endTransaction();
+        }
+        return output;
+    }
+
+    public Boolean checkTableNull() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        final String query = "SELECT COUNT(*) FROM " + SCHEDULE_TABLE + " ";
+        Cursor cursor = db.rawQuery(query, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        if (count > 0) { return false; }
+        else { return true; }
     }
 }
 

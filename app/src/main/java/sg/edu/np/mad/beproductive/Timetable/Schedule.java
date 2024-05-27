@@ -5,15 +5,11 @@ import java.util.ArrayList;
 public class Schedule {
 
     public ArrayList<Timeslot> timeslots = new ArrayList<Timeslot>();
+    public void addTimeslot(Timeslot item) { this.timeslots.add(item); }
     public ArrayList<Timeslot> getTimeslots() {
         return timeslots;
     }
-
-    public Boolean scheduleExist = false;
-
-    public void setScheduleExist(Boolean status) {this.scheduleExist = status;}
     public void onCreate() {
-        if (scheduleExist) { return; }
         String tempDesc = "No Activity";
         for (int i = 0; i < 24; i++) {
             Timeslot newTimeslot;
@@ -22,9 +18,8 @@ public class Schedule {
             }
             else { newTimeslot = new Timeslot(i + "00", tempDesc); }
 
-            timeslots.add(newTimeslot);
+            addTimeslot(newTimeslot);
         }
-        setScheduleExist(true);
     }
 
 
