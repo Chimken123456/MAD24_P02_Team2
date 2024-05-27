@@ -6,9 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -23,6 +26,7 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
     ArrayList<Timeslot> timeslotList;
     TimetableActivity context;
 
+    private String activity_text = "";
     public TimetableAdapter(ArrayList<Timeslot> input, TimetableActivity activity) {
         timeslotList = input;
         context = activity;
@@ -41,17 +45,36 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         //implement edit timetable functionality
-
+        final EditText input = new EditText(context);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
         builder.setTitle("Enter the activity for this timeslot");
         builder.setCancelable(true);
-        builder.setPositiveButton("Confirm", new
-                DialogInterface.OnClickListener(){
-                    public void onClick(DialogInterface dialog, int id){
 
+        builder.setPositiveButton("Confirm", new
+                DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                        activity_text = input.getText().toString();
+                        temp.setDescription(activity_text);
+                        holder.desc.setText(temp.getDescription());
                     }
                 });
-        builder.setNegativeButton("Close", null);
-        //holder.edit.setOnClickListener(); //fix later
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog editInterface = builder.create();
+
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editInterface.show();
+            }
+        });
     }
 
     @Override
