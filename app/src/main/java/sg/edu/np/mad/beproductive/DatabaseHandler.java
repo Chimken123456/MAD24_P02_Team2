@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.sql.Array;
+import java.sql.SQLInput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -211,6 +212,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Schedule getUserActivities() {
         //String id = String.valueOf(user.getId());
+        SQLiteDatabase db = this.getWritableDatabase();
         Schedule output = new Schedule();
         String time;
         String description;
@@ -233,6 +235,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     Timeslot timeslot = new Timeslot(time, description);
                     output.addTimeslot(timeslot);
                 }
+                db.setTransactionSuccessful();
             }
         } catch(Exception e) {
             Log.e("DatabaseHandler", "Error while retrieving user activities");
@@ -246,9 +249,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return output;
     }
 
+    //implement in adapter
+    public void updateActivity(String description, int id) {
+        ContentValues values = new ContentValues();
+        values.put(DESC, description);
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(SCHEDULE_TABLE, values, "activity_id=" + id, null);
+        db.close();
+    }
+
     public Boolean checkTableNull() {
         SQLiteDatabase db = this.getWritableDatabase();
-        final String query = "SELECT COUNT(*) FROM " + SCHEDULE_TABLE + " ";
+        final String query = "SELECT COUNT(*) FROM " + SCHEDULE_TABLE;
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         int count = cursor.getInt(0);

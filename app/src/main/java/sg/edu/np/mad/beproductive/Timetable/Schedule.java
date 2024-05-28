@@ -17,7 +17,7 @@ public class Schedule {
                 newTimeslot = new Timeslot("0"+ i + "00", tempDesc);
             }
             else { newTimeslot = new Timeslot(i + "00", tempDesc); }
-
+            newTimeslot.setTimeslot_id(i);
             addTimeslot(newTimeslot);
         }
     }

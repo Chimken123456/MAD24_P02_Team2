@@ -2,6 +2,9 @@ package sg.edu.np.mad.beproductive.Timetable;
 
 public class Timeslot {
 
+    public int timeslot_id;
+    public int getTimeslot_id() {return timeslot_id;}
+    public void setTimeslot_id(int id) {this.timeslot_id = id;}
     public String time;
     public String getTime() {return time;}
     public String description;
