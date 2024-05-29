@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="86dp"
         android:background="#99D1F6"
-        android:fontFamily="@font/amarante"
+        android:fontFamily="sans-serif"
         android:paddingLeft="60dp"
         android:paddingTop="22dp"
         android:text="To-do List"
