@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -38,7 +39,7 @@ public class HomeMenu extends AppCompatActivity {
         user0.setId(id);
 
 
-        Button toDoListButton = findViewById(R.id.todolist_navbutton);
+        CardView toDoListButton = findViewById(R.id.todolist_navbutton);
         toDoListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

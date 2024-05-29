@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F3FBFD"
     tools:context=".ToDoListPage.TodoList">
 
 
@@ -12,12 +13,13 @@
         android:id="@+id/todolist_header"
         android:layout_width="match_parent"
         android:layout_height="86dp"
-        android:background="#A8CDF3"
-        android:fontFamily="@font/alegreya_sans_sc_light_italic"
+        android:background="#99D1F6"
+        android:fontFamily="@font/amarante"
         android:paddingLeft="60dp"
-        android:paddingTop="20dp"
+        android:paddingTop="22dp"
         android:text="To-do List"
-        android:textSize="30sp" />
+        android:textSize="30sp"
+        android:textColor="@color/black"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskRecyclerView"
@@ -36,14 +38,14 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="35dp"
-        android:backgroundTint="#F3BCD4"
+        android:backgroundTint="#99D1F6"
         android:src="@drawable/add_logo" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/backbtn"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="22dp"
-        app:srcCompat="@drawable/img" />
+        android:layout_marginTop="25dp"
+        app:srcCompat="@drawable/backbtn" />
 </RelativeLayout>

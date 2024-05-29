@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import sg.edu.np.mad.beproductive.Global;
+import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.User;
@@ -71,6 +73,15 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
             public void onClick(View v) {
                 AddNewTask.newInstance().show(getSupportFragmentManager(),AddNewTask.TAG);
 
+            }
+        });
+        ImageView backBtn = findViewById(R.id.backbtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TodoList.this, HomeMenu.class);
+                startActivity(intent);
+                finish(); // Call this if you don't want to keep the current activity in the back stack
             }
         });
 //        Intent intent = new Intent("ToDoList_To_AddNewTask");
