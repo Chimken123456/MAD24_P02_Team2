@@ -28,9 +28,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
+    private static final String SIGNED_IN = "signed_in";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT"+")";
+            + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT, "+ SIGNED_IN+ " TEXT DEFAULT \"false\" "+ ")";
     private SQLiteDatabase db;
 
     public DatabaseHandler(Context context){
@@ -151,7 +152,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String username;
         String email;
         String password;
-
+        String signedin;
         String query = "SELECT * FROM " + USER_TABLE;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor =db.rawQuery(query,null);
@@ -162,8 +163,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             username =cursor.getString(1);
             email = cursor.getString(2);
             password = cursor.getString(3);
+            signedin = cursor.getString(4);
             User user =new User(username,password,email);
             user.setId(id);
+            if (signedin.equals("1"))
+            {
+                user.setSignedIn(true);
+            }
+            else
+            {
+                user.setSignedIn(false);
+            }
             user_array.add(user);
         }
         while(cursor.moveToNext())
@@ -180,5 +190,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return user_array;
     }
+    public void updateSignedIn_User(boolean signedIn,int userId)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SIGNED_IN,signedIn);
+        db.update(USER_TABLE,values,USER_ID + "= ?", new String[]{String.valueOf(userId)});
+    }
+
 }
 
