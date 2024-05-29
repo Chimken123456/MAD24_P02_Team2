@@ -7,19 +7,31 @@
     android:layout_height="match_parent"
     tools:context="Timetable.TimetableActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/timetableRecyclerView"
-        android:layout_width="403dp"
-        android:layout_height="673dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ImageView
+        android:id="@+id/timetable_back"
+        android:layout_width="60dp"
+        android:layout_height="63dp"
+        app:srcCompat="@drawable/img"
+        tools:layout_editor_absoluteX="2dp"
+        tools:layout_editor_absoluteY="2dp" />
+
+    <TextView
+        android:id="@+id/timetable_header"
+        android:layout_width="410dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:text="Timetable"
+        android:textAlignment="center"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/dateLayout"
-        android:layout_width="404dp"
-        android:layout_height="55dp"
+        android:layout_width="417dp"
+        android:layout_height="51dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
@@ -27,8 +39,10 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/timetableRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <TextView
             android:id="@+id/dateView"
@@ -37,5 +51,18 @@
             android:text="TextView"
             android:textAlignment="center"
             android:textSize="40sp" />
+
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/timetableRecyclerView"
+        android:layout_width="419dp"
+        android:layout_height="615dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_launcher_foreground" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Random;
 
+import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.R;
 
 public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> {
@@ -40,6 +41,7 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
     public void onBindViewHolder(TimetableViewHolder holder, int position) {
         Timeslot temp = timeslotList.get(position);
         String tempName = temp.getTime();
+        int timeslot_id = temp.getTimeslot_id();
         holder.timeslot.setText(tempName);
         holder.desc.setText(temp.getDescription());
 
@@ -53,11 +55,14 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
 
         builder.setPositiveButton("Confirm", new
                 DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        DatabaseHandler dbHandler = new DatabaseHandler(context);
                         activity_text = input.getText().toString();
+                        dbHandler.updateActivity(activity_text, timeslot_id);
                         temp.setDescription(activity_text);
                         holder.desc.setText(temp.getDescription());
+
                     }
                 });
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {

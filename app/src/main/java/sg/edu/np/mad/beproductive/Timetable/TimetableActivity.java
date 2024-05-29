@@ -20,12 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 import sg.edu.np.mad.beproductive.DatabaseHandler;
+import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.User;
 
@@ -55,7 +57,12 @@ public class TimetableActivity extends AppCompatActivity {
         TextView dateView = findViewById(R.id.dateView);
         dateView.setText(currentDate);
 
-
+        ImageView backButton = findViewById(R.id.timetable_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(TimetableActivity.this, HomeMenu.class));
+            }
+        });
 
         Schedule userSchedule = new Schedule();
         DatabaseHandler dbHandler = new DatabaseHandler(this);
@@ -69,13 +76,15 @@ public class TimetableActivity extends AppCompatActivity {
 
         }
         else {
-            //fix get activities, implement saving of description and resetting
+            //implement saving of description and resetting
             userSchedule = dbHandler.getUserActivities();
         }
 
+        ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
+
         RecyclerView recyclerView = findViewById(R.id.timetableRecyclerView);
         LinearLayoutManager linLayoutManager = new LinearLayoutManager(this);
-        TimetableAdapter tAdapter = new TimetableAdapter(userSchedule.getTimeslots(), this);
+        TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, this);
 
         recyclerView.setLayoutManager(linLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
