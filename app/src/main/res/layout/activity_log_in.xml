@@ -86,6 +86,7 @@
         android:layout_width="0dp"
         android:layout_height="58dp"
         android:layout_marginEnd="164dp"
+        android:fontFamily="sans-serif"
         android:text="Welcome Back"
         android:textAlignment="center"
         android:textSize="34sp"
@@ -128,6 +129,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="280dp"
         android:text="Log in to continue"
+        android:fontFamily="sans-serif"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Log_In_Text" />
 
