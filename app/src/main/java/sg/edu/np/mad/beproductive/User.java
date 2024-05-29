@@ -7,6 +7,7 @@ public class User {
     private String name;
     private String password;
     private String email;
+    private Boolean signedin;
 
     public int getId()
     {
@@ -43,6 +44,15 @@ public class User {
     public String getEmail()
     {
         return email;
+    }
+
+    public void setSignedIn(boolean s)
+    {
+        signedin = s;
+    }
+    public boolean getSignedIn()
+    {
+        return signedin;
     }
 
     public User(String n, String p, String e)
