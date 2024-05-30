@@ -18,8 +18,8 @@
         android:paddingLeft="60dp"
         android:paddingTop="22dp"
         android:text="To-do List"
-        android:textSize="30sp"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textSize="30sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskRecyclerView"
@@ -43,9 +43,10 @@
 
     <ImageView
         android:id="@+id/backbtn"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginBottom="0dp"
         app:srcCompat="@drawable/backbtn" />
 </RelativeLayout>

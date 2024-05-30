@@ -38,6 +38,8 @@ public class HomeMenu extends AppCompatActivity {
         User user0 = new User(username,password,email);
         user0.setId(id);
 
+        Global.setUser_Id(user0.getId());
+
 
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
         toDoListButton.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +53,7 @@ public class HomeMenu extends AppCompatActivity {
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());
                 extras.putBoolean("SignUp",true);
+
                 Intent intent = new Intent(HomeMenu.this, TodoList.class);
                 intent.putExtras(extras);
                 startActivity(intent);

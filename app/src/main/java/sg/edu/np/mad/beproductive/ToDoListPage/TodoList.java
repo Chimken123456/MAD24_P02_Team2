@@ -79,11 +79,27 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent recievingEnd = getIntent();
+                int id = recievingEnd.getIntExtra("ID", 0);
+                String username = recievingEnd.getStringExtra("Username");
+                String password = recievingEnd.getStringExtra("Password");
+                String email = recievingEnd.getStringExtra("Email");
+
+                User user0 = new User(username, password, email);
+                user0.setId(id);
+
+                Global.setUser_Id(user0.getId());
+
                 Intent intent = new Intent(TodoList.this, HomeMenu.class);
+                intent.putExtra("ID", user0.getId());
+                intent.putExtra("Username", user0.getName());
+                intent.putExtra("Password", user0.getPassword());
+                intent.putExtra("Email", user0.getEmail());
                 startActivity(intent);
                 finish(); // Call this if you don't want to keep the current activity in the back stack
             }
         });
+
 //        Intent intent = new Intent("ToDoList_To_AddNewTask");
 //        Bundle extras = new Bundle();
 //        extras.putInt("ID",user0.getId());
