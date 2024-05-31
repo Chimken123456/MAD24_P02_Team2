@@ -33,6 +33,7 @@ public class HomeMenu extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        DatabaseHandler dbHandler = new DatabaseHandler(this);
         Intent recievingEnd = getIntent();
         int id = recievingEnd.getIntExtra("ID",0);
         String username = recievingEnd.getStringExtra("Username");
@@ -41,7 +42,7 @@ public class HomeMenu extends AppCompatActivity {
         User user0 = new User(username,password,email);
         user0.setId(id);
 
-//        DatabaseHandler dbHandler = new DatabaseHandler(this);
+
 
         Global.setUser_Id(user0.getId());
 
