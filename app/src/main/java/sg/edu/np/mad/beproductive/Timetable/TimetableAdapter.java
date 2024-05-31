@@ -44,15 +44,14 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
         int timeslot_id = temp.getTimeslot_id();
         holder.timeslot.setText(tempName);
         holder.desc.setText(temp.getDescription());
-
+        //Alert dialog that prompts the user for input
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        //implement edit timetable functionality
         final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
         builder.setTitle("Enter the activity for this timeslot");
         builder.setCancelable(true);
-
+        //Update the text shown for the current timeslot and updates the corresponding entry in the databse
         builder.setPositiveButton("Confirm", new
                 DialogInterface.OnClickListener() {
                     @Override
@@ -65,15 +64,16 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
 
                     }
                 });
+        //Close the alert dialog on click
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }
         });
-
+        //Initialise an instance of the alert dialog
         AlertDialog editInterface = builder.create();
-
+        //Show the alert dialog on click
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
