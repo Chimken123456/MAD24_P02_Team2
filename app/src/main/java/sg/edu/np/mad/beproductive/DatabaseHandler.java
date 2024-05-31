@@ -34,7 +34,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SIGNED_IN = "signed_in";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT, "+ SIGNED_IN+ " TEXT DEFAULT \"false\""+ ")";
+            + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT, "+ SIGNED_IN+ " TEXT DEFAULT \"false\" "+ ")";
 
     private static String TIMESLOT_ID = "timeslot_id";
     private static String TIMESLOT = "timeslot";
