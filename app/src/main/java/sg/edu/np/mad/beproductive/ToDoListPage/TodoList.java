@@ -77,7 +77,19 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
             }
         });
 
+        //        Intent intent = new Intent("ToDoList_To_AddNewTask");
+//        Bundle extras = new Bundle();
+//        extras.putInt("ID",user0.getId());
+//        extras.putString("Username",user0.getName());
+//        extras.putString("Password",user0.getPassword());
+//        extras.putString("Email",user0.getEmail());
+//        extras.putBoolean("SignUp",true);
+//        intent.putExtras(extras);
+////        Log.i("MAOMAOO","todolist java "+ String.valueOf(user0.getId()));
+//
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
+
 
     @Override public void handleDialogClose(DialogInterface dialog){
         taskList = db.getAllTasks(Global.getUser_Id());
