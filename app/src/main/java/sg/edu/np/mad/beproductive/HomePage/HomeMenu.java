@@ -15,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.R;
+import sg.edu.np.mad.beproductive.Timetable.TimetableActivity;
 import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
 import sg.edu.np.mad.beproductive.User;
 
@@ -55,6 +56,24 @@ public class HomeMenu extends AppCompatActivity {
                 extras.putBoolean("SignUp",true);
 
                 Intent intent = new Intent(HomeMenu.this, TodoList.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
+
+        Button timetableButton = findViewById(R.id.timetable_navbutton);
+        timetableButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                Global.setUser_Id(user0.getId());
+
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, TimetableActivity.class);
                 intent.putExtras(extras);
                 startActivity(intent);
             }
