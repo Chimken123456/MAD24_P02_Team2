@@ -46,7 +46,7 @@ public class TimetableActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        //Receive user information and create instance of User
         Intent receive = getIntent();
         int id = receive.getIntExtra("ID",0);
         String username = receive.getStringExtra("Username");
@@ -54,24 +54,25 @@ public class TimetableActivity extends AppCompatActivity {
         String email = receive.getStringExtra("Email");
         User user = new User(username,password,email);
         user.setId(id);
-
+        //Create instance of DatabaseHandler for the current activity
         DatabaseHandler dbHandler = new DatabaseHandler(this);
         //Back button
         ImageView backButton = findViewById(R.id.timetable_back);
+        //Start HomeMenu activity when clicked
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(TimetableActivity.this, HomeMenu.class));
             }
         });
-        //Set current date to display
+        //Display the current date 
         ZoneId zone = ZoneId.of("Singapore");
         LocalDate today = LocalDate.now(zone);
         String currentDate = "Date: " + today.toString();
         TextView dateView = findViewById(R.id.dateView);
         dateView.setText(currentDate);
-
+        //Create instance of Schedule
         Schedule userSchedule = new Schedule();
-
+        //Check if there is currently a timetable in the database and initialises one if there isnt
         if (dbHandler.checkTableNull()) {
             userSchedule.onCreate();
             ArrayList<Timeslot> slots = userSchedule.getTimeslots();
@@ -80,13 +81,13 @@ public class TimetableActivity extends AppCompatActivity {
             }
 
         }
+        //Fetch saved activities from database if it exists
         else {
-            //implement saving of description and resetting
             userSchedule = dbHandler.getUserActivities();
         }
-
+        //Store the saved timeslots in an ArrayList
         ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
-
+        //Inflate recyclerview
         RecyclerView recyclerView = findViewById(R.id.timetableRecyclerView);
         LinearLayoutManager linLayoutManager = new LinearLayoutManager(this);
         TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, this);
@@ -99,7 +100,7 @@ public class TimetableActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Reset all timetable activities?");
         builder.setCancelable(true);
-
+        //Restarts the activity on click
         builder.setPositiveButton("Confirm", new
                 DialogInterface.OnClickListener() {
                     @Override
@@ -108,6 +109,7 @@ public class TimetableActivity extends AppCompatActivity {
                         restartActivity();
                     }
                 });
+        //Closes the alert dialog on click
         builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -116,16 +118,17 @@ public class TimetableActivity extends AppCompatActivity {
         });
 
         AlertDialog resetDialog = builder.create();
-
+        
         Button resetButton = findViewById(R.id.resetButton);
         resetButton.setText("Reset");
+        //Show alert dialog on click
         resetButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 resetDialog.show();
             }
         });
     }
-
+    //Method to restart the activity without transition
     private void restartActivity() {
         finish();
         overridePendingTransition(0,0);
