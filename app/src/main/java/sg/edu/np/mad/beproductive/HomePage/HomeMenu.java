@@ -41,7 +41,7 @@ public class HomeMenu extends AppCompatActivity {
         User user0 = new User(username,password,email);
         user0.setId(id);
 
-        DatabaseHandler dbHandler = new DatabaseHandler(this);
+//        DatabaseHandler dbHandler = new DatabaseHandler(this);
 
         Global.setUser_Id(user0.getId());
 
@@ -65,14 +65,14 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
 
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(),"Signing Out",Toast.LENGTH_SHORT).show();
-                Intent activity = new Intent(HomeMenu.this, Log_In.class);
-                dbHandler.updateSignedIn_User(false,id);
-                startActivity(activity);
-            }
-        });
+//        logOutButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(v.getContext(),"Signing Out",Toast.LENGTH_SHORT).show();
+//                Intent activity = new Intent(HomeMenu.this, Log_In.class);
+//                dbHandler.updateSignedIn_User(false,id);
+//                startActivity(activity);
+//            }
+//        });
     }
 }
