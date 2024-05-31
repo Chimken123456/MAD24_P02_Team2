@@ -9,6 +9,9 @@ import android.util.Log;
 import java.sql.Array;
 import java.sql.SQLInput;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
 import sg.edu.np.mad.beproductive.Timetable.Schedule;
@@ -155,6 +158,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(USERNAME,user.getName());
         values.put(EMAIL,user.getEmail());
         values.put(PASSWORD,user.getPassword());
+        values.put(SIGNED_IN,false);
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(USER_TABLE,null,values);
     }
@@ -177,9 +181,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             email = cursor.getString(2);
             password = cursor.getString(3);
             signedin = cursor.getString(4);
+
             User user =new User(username,password,email);
-            user.setId(id);
-            if (signedin.equals("1"))
+            if(signedin.equals("1"))
             {
                 user.setSignedIn(true);
             }
@@ -187,6 +191,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             {
                 user.setSignedIn(false);
             }
+            user.setId(id);
+
             user_array.add(user);
         }
         while(cursor.moveToNext())
@@ -195,8 +201,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             username =cursor.getString(1);
             email = cursor.getString(2);
             password = cursor.getString(3);
+            signedin = cursor.getString(4);
             User user =new User(username,password,email);
             user.setId(id);
+            if(signedin.equals("1"))
+            {
+                user.setSignedIn(true);
+            }
+            else
+            {
+                user.setSignedIn(false);
+            }
             user_array.add(user);
 
         }

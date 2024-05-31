@@ -54,14 +54,6 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
             }
         });
 
-//        Intent recievingEnd = getIntent();
-//        int id = recievingEnd.getIntExtra("ID",0);
-//        String username = recievingEnd.getStringExtra("Username");
-//        String password = recievingEnd.getStringExtra("Password");
-//        String email = recievingEnd.getStringExtra("Email");
-//        User user0 = new User(username,password,email);
-//        user0.setId(id);
-
         db = new DatabaseHandler(this);
         db.openDatabase();
 
@@ -127,32 +119,15 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
 ////        Log.i("MAOMAOO","todolist java "+ String.valueOf(user0.getId()));
 //
 //        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-
     }
 
+
     @Override public void handleDialogClose(DialogInterface dialog){
-        Log.i("MAOMAOO","testing");
         taskList = db.getAllTasks(Global.getUser_Id());
         Collections.reverse(taskList);
         tasksAdapter.setTasks(taskList);
         tasksAdapter.notifyDataSetChanged();
-//        Intent recievingEnd = getIntent();
-//        int id = recievingEnd.getIntExtra("ID",0);
-//        String username = recievingEnd.getStringExtra("Username");
-//        String password = recievingEnd.getStringExtra("Password");
-//        String email = recievingEnd.getStringExtra("Email");
-//        User user0 = new User(username,password,email);
-//        user0.setId(id);
-//
-//        Intent intent = new Intent("ToDoList_To_AddNewTask");
-//        Bundle extras = new Bundle();
-//        extras.putInt("ID",user0.getId());
-//        extras.putString("Username",user0.getName());
-//        extras.putString("Password",user0.getPassword());
-//        extras.putString("Email",user0.getEmail());
-//        extras.putBoolean("SignUp",true);
-//        intent.putExtras(extras);
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
 
     }
 }
