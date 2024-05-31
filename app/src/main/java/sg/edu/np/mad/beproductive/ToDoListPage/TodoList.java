@@ -1,7 +1,10 @@
 package sg.edu.np.mad.beproductive.ToDoListPage;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,10 +36,23 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
     private List<ToDoModel> taskList;
     private DatabaseHandler db;
 
+    ImageView todolist_instruction;
+    Dialog mDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_todo);
+        todolist_instruction = findViewById(R.id.todolist_instruction);
+        mDialog = new Dialog(this);
+        todolist_instruction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.setContentView(R.layout.qnmark_popup);
+                mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                mDialog.show();
+            }
+        });
 
 //        Intent recievingEnd = getIntent();
 //        int id = recievingEnd.getIntExtra("ID",0);

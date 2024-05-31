@@ -68,17 +68,24 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
             icon = ContextCompat.getDrawable(adapter.getContext(), R.drawable.edit_logo);
             background = new ColorDrawable(ContextCompat.getColor(adapter.getContext(), com.google.android.material.R.color.design_default_color_primary_dark));
         } else {
-            icon = ContextCompat.getDrawable(adapter.getContext(), R.drawable.edit_logo);
+            icon = ContextCompat.getDrawable(adapter.getContext(), R.drawable.delete_logo);
             background = new ColorDrawable(Color.RED);
         }
 
         int iconMargin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
         int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-        int iconBottom = iconTop + iconTop + icon.getIntrinsicHeight();
+        int iconBottom = + iconTop + icon.getIntrinsicHeight();
 
         if (dX>0){
             int iconLeft = itemView.getLeft() + iconMargin;
-            int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicHeight();
+            int iconRight = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
+            icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
+
+            background.setBounds(itemView.getLeft() + ((int)dX) - backgroundCornerOffSet, itemView.getTop(),
+                    itemView.getLeft(), itemView.getBottom());
+        } else if (dX < 0){
+            int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
+            int iconRight = itemView.getRight() - iconMargin;
             icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
 
             background.setBounds(itemView.getRight() + ((int)dX) - backgroundCornerOffSet, itemView.getTop(),
