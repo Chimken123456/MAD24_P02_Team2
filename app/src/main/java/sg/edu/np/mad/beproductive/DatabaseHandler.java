@@ -226,14 +226,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(SIGNED_IN,signedIn);
         db.update(USER_TABLE,values,USER_ID + "= ?", new String[]{String.valueOf(userId)});
     }
-
+    
     public void insertActivity(Timeslot slot) {
         SQLiteDatabase db = this.getWritableDatabase();
-
+        //Set values to be inserted in database entry
         ContentValues values = new ContentValues();
         values.put(TIMESLOT, slot.getTime());
         values.put(DESC, slot.getDescription());
-        //values.put(USER_ID, currentUser.getId());
+        //values.put(USER_ID, currentUser.getId()); 
+        //Perform query and output error to log if it arises
         long result = db.insert(SCHEDULE_TABLE, null, values);
         if (result == -1) {
             Log.e("DatabaseHandler", "Failed to insert task");
@@ -257,6 +258,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         try {
             //cursor = db.query(SCHEDULE_TABLE, null, "user_id=?", new String[]{id}, null, null, null);
             cursor = db.query(SCHEDULE_TABLE, null, null, null, null, null, null);
+            //Check if there are entries in the database then construct timeslots and add to output
             if(cursor != null) {
                 if (cursor.moveToFirst()) {
                     id = cursor.getInt(0);
@@ -289,9 +291,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public void updateActivity(String newDesc, int searchId) {
+        //Set values to be used in updating of database entry
         ContentValues values = new ContentValues();
         values.put(DESC, newDesc);
         SQLiteDatabase tempdb = this.getWritableDatabase();
+        //Search for corresponding timeslot and update with new description
         int result = tempdb.update(SCHEDULE_TABLE, values, "timeslot_id=?", new String[]{String.valueOf(searchId)});
         Log.d("DatabaseHandler", "Updated status for task id " + searchId + " with result " + result);
         tempdb.close();
@@ -302,6 +306,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int id;
         SQLiteDatabase tempdb = this.getWritableDatabase();
         Cursor cursor = tempdb.query(SCHEDULE_TABLE, null, null, null, null, null, null);
+        //Iterate through all entries in schedule table and set desecription to "No Activity"
         if(cursor != null) {
             if (cursor.moveToFirst()) {
                 id = cursor.getInt(0);
@@ -314,13 +319,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         tempdb.close();
     }
-
+    
     public Boolean checkTableNull() {
         SQLiteDatabase db = this.getWritableDatabase();
+        //Count number of values in schedule table
         final String query = "SELECT COUNT(*) FROM " + SCHEDULE_TABLE;
         Cursor cursor = db.rawQuery(query, null);
         cursor.moveToFirst();
         int count = cursor.getInt(0);
+        //If the number of values in the table is more than 0, the table exists. Otherwise it is false.
         if (count > 0) { return false; }
         else { return true; }
     }
