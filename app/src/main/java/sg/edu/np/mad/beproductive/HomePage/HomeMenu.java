@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +14,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.Global;
+import sg.edu.np.mad.beproductive.Log_In;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
 import sg.edu.np.mad.beproductive.User;
@@ -38,8 +41,11 @@ public class HomeMenu extends AppCompatActivity {
         User user0 = new User(username,password,email);
         user0.setId(id);
 
+        DatabaseHandler dbHandler = new DatabaseHandler(this);
 
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
+        CardView logOutButton = findViewById(R.id.logout_btn);
+
         toDoListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +60,16 @@ public class HomeMenu extends AppCompatActivity {
                 Intent intent = new Intent(HomeMenu.this, TodoList.class);
                 intent.putExtras(extras);
                 startActivity(intent);
+            }
+        });
+
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"Signing Out",Toast.LENGTH_SHORT).show();
+                Intent activity = new Intent(HomeMenu.this, Log_In.class);
+                dbHandler.updateSignedIn_User(false,id);
+                startActivity(activity);
             }
         });
     }

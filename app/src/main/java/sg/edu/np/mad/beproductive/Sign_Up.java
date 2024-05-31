@@ -83,14 +83,12 @@ public class Sign_Up extends AppCompatActivity {
                 user0.setEmail(email);
                 dbHandler.addUsers(user0);
                 Toast.makeText(getApplicationContext(),"Account created",Toast.LENGTH_SHORT).show();
-
                 Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
                 Bundle extras = new Bundle();
                 extras.putInt("ID",user0.getId());
                 extras.putString("Username",user0.getName());
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());
-                extras.putBoolean("SignUp",true);
                 activity.putExtras(extras);
                 startActivity(activity);
             }
