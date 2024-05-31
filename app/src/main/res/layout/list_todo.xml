@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F3FBFD"
     tools:context=".ToDoListPage.TodoList">
 
 
@@ -12,12 +13,14 @@
         android:id="@+id/todolist_header"
         android:layout_width="match_parent"
         android:layout_height="86dp"
-        android:background="#A8CDF3"
-        android:fontFamily="@font/alegreya_sans_sc_light_italic"
+        android:background="#99D1F6"
+        android:fontFamily="sans-serif"
         android:paddingLeft="60dp"
-        android:paddingTop="20dp"
+        android:paddingTop="23dp"
         android:text="To-do List"
-        android:textSize="30sp" />
+        android:textColor="@color/black"
+        android:textSize="29sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/taskRecyclerView"
@@ -36,14 +39,25 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="35dp"
-        android:backgroundTint="#F3BCD4"
+        android:backgroundTint="#99D1F6"
         android:src="@drawable/add_logo" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="22dp"
-        app:srcCompat="@drawable/img" />
+        android:id="@+id/backbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="34dp"
+        android:layout_marginBottom="0dp"
+        app:srcCompat="@drawable/backbtn" />
+
+    <ImageView
+        android:id="@+id/todolist_instruction"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:src="@drawable/questionmark"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="25dp" />
+
 </RelativeLayout>

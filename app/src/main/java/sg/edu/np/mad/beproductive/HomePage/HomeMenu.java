@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -38,8 +39,10 @@ public class HomeMenu extends AppCompatActivity {
         User user0 = new User(username,password,email);
         user0.setId(id);
 
+        Global.setUser_Id(user0.getId());
 
-        Button toDoListButton = findViewById(R.id.todolist_navbutton);
+
+        CardView toDoListButton = findViewById(R.id.todolist_navbutton);
         toDoListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +54,7 @@ public class HomeMenu extends AppCompatActivity {
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());
                 extras.putBoolean("SignUp",true);
+
                 Intent intent = new Intent(HomeMenu.this, TodoList.class);
                 intent.putExtras(extras);
                 startActivity(intent);
