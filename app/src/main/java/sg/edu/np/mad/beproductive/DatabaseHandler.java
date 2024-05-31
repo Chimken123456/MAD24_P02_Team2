@@ -34,13 +34,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SIGNED_IN = "signed_in";
 
     private static final String CREATE_USER_TABLE = "CREATE TABLE " + USER_TABLE + "(" + USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT, "+ SIGNED_IN+ " TEXT"+ ")";
+            + USERNAME + " TEXT, " + EMAIL + " TEXT, " + PASSWORD + " TEXT, "+ SIGNED_IN+ " TEXT DEFAULT \"false\""+ ")";
 
     private static String TIMESLOT_ID = "timeslot_id";
     private static String TIMESLOT = "timeslot";
     private static String DESC = "description";
     private static final String SCHEDULE_TABLE = "schedule";
     private static final String CREATE_SCHEDULE_TABLE = "CREATE TABLE " + SCHEDULE_TABLE + "(" + TIMESLOT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + TIMESLOT + " TEXT, " + DESC + " TEXT " +")";
+
     private SQLiteDatabase db;
 
     public DatabaseHandler(Context context){
