@@ -42,6 +42,7 @@ public class HomeMenu extends AppCompatActivity {
         user0.setId(id);
 
         DatabaseHandler dbHandler = new DatabaseHandler(this);
+
         Global.setUser_Id(user0.getId());
 
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
