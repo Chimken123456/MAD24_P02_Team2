@@ -13,7 +13,7 @@ public class TimetableViewHolder extends RecyclerView.ViewHolder{
     TextView timeslot;
     TextView desc;
     Button edit;
-
+    //Search for the correct views to reference
     public TimetableViewHolder(View timetableView) {
         super(timetableView);
         timeslot = timetableView.findViewById(R.id.timeslotView);
