@@ -75,8 +75,6 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
 
-
-
         CardView timetableButton = findViewById(R.id.timetable_navbutton);
         timetableButton.setOnClickListener(new View.OnClickListener() {
             @Override
