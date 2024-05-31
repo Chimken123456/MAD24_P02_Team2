@@ -58,7 +58,9 @@
         <activity
             android:name=".ToDoListPage.TodoList"
             android:exported="false" />
-
+        <activity
+            android:name=".Timetable.TimetableActivity"
+            android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

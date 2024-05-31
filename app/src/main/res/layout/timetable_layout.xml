@@ -11,7 +11,7 @@
         android:id="@+id/timetable_back"
         android:layout_width="60dp"
         android:layout_height="63dp"
-        app:srcCompat="@drawable/img"
+        app:srcCompat="@drawable/backbtn"
         tools:layout_editor_absoluteX="2dp"
         tools:layout_editor_absoluteY="2dp" />
 
