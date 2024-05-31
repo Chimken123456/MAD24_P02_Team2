@@ -1,8 +1,12 @@
 package sg.edu.np.mad.beproductive.Timetable;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,21 +55,22 @@ public class TimetableActivity extends AppCompatActivity {
         User user = new User(username,password,email);
         user.setId(id);
 
-        ZoneId zone = ZoneId.of("Singapore");
-        LocalDate today = LocalDate.now(zone);
-        String currentDate = "Date: " + today.toString();
-        TextView dateView = findViewById(R.id.dateView);
-        dateView.setText(currentDate);
-
+        DatabaseHandler dbHandler = new DatabaseHandler(this);
+        //Back button
         ImageView backButton = findViewById(R.id.timetable_back);
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(TimetableActivity.this, HomeMenu.class));
             }
         });
+        //Set current date to display
+        ZoneId zone = ZoneId.of("Singapore");
+        LocalDate today = LocalDate.now(zone);
+        String currentDate = "Date: " + today.toString();
+        TextView dateView = findViewById(R.id.dateView);
+        dateView.setText(currentDate);
 
         Schedule userSchedule = new Schedule();
-        DatabaseHandler dbHandler = new DatabaseHandler(this);
 
         if (dbHandler.checkTableNull()) {
             userSchedule.onCreate();
@@ -90,6 +95,40 @@ public class TimetableActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(tAdapter);
 
+        //Alert for reset
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Reset all timetable activities?");
+        builder.setCancelable(true);
 
+        builder.setPositiveButton("Confirm", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dbHandler.resetAllActivities();
+                        restartActivity();
+                    }
+                });
+        builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog resetDialog = builder.create();
+
+        Button resetButton = findViewById(R.id.resetButton);
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                resetDialog.show();
+            }
+        });
+    }
+
+    private void restartActivity() {
+        finish();
+        overridePendingTransition(0,0);
+        startActivity(getIntent());
+        overridePendingTransition(0,0);
     }
 }

@@ -253,13 +253,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return output;
     }
 
-    //fix writing to database
+
     public void updateActivity(String newDesc, int searchId) {
         ContentValues values = new ContentValues();
         values.put(DESC, newDesc);
         SQLiteDatabase tempdb = this.getWritableDatabase();
         int result = tempdb.update(SCHEDULE_TABLE, values, "timeslot_id=?", new String[]{String.valueOf(searchId)});
         Log.d("DatabaseHandler", "Updated status for task id " + searchId + " with result " + result);
+        tempdb.close();
+    }
+
+    public void resetAllActivities() {
+        String initialDesc = "No Activity";
+        int id;
+        SQLiteDatabase tempdb = this.getWritableDatabase();
+        Cursor cursor = tempdb.query(SCHEDULE_TABLE, null, null, null, null, null, null);
+        if(cursor != null) {
+            if (cursor.moveToFirst()) {
+                id = cursor.getInt(0);
+                updateActivity(initialDesc, id);
+            }
+            while(cursor.moveToNext()){
+                id = cursor.getInt(0);
+                updateActivity(initialDesc, id);
+            }
+        }
         tempdb.close();
     }
 
