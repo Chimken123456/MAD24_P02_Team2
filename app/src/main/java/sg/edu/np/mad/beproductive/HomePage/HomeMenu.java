@@ -49,6 +49,15 @@ public class HomeMenu extends AppCompatActivity {
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
         CardView logOutButton = findViewById(R.id.logout_btn);
 
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"Signing Out",Toast.LENGTH_SHORT).show();
+                Intent activity = new Intent(HomeMenu.this, Log_In.class);
+                dbHandler.updateSignedIn_User(false,id);
+                startActivity(activity);
+            }
+        });
         toDoListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,15 +75,7 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
 
-        logOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(),"Signing Out",Toast.LENGTH_SHORT).show();
-                Intent activity = new Intent(HomeMenu.this, Log_In.class);
-                dbHandler.updateSignedIn_User(false,id);
-                startActivity(activity);
-            }
-        });
+
 
         CardView timetableButton = findViewById(R.id.timetable_navbutton);
         timetableButton.setOnClickListener(new View.OnClickListener() {
