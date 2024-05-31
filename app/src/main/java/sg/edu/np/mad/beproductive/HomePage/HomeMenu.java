@@ -66,14 +66,14 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
 
-//        logOutButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(v.getContext(),"Signing Out",Toast.LENGTH_SHORT).show();
-//                Intent activity = new Intent(HomeMenu.this, Log_In.class);
-//                dbHandler.updateSignedIn_User(false,id);
-//                startActivity(activity);
-//            }
-//        });
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"Signing Out",Toast.LENGTH_SHORT).show();
+                Intent activity = new Intent(HomeMenu.this, Log_In.class);
+                dbHandler.updateSignedIn_User(false,id);
+                startActivity(activity);
+            }
+        });
     }
 }
