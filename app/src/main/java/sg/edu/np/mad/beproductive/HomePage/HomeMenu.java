@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import sg.edu.np.mad.beproductive.Analysis.AnalysisActivity;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
 
@@ -30,7 +31,7 @@ public class HomeMenu extends AppCompatActivity {
         toDoListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeMenu.this, TodoList.class);
+                Intent intent = new Intent(HomeMenu.this, AnalysisActivity.class);
                 startActivity(intent);
             }
         });
