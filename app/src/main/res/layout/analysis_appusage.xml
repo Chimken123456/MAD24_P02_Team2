@@ -5,7 +5,42 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Analysis.MainActivity">
+    android:background="#F3FBFD"
+    tools:context=".Analysis.AnalysisActivity">
 
 
+    <TextView
+        android:id="@+id/usage_header"
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:background="#99D1F6"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="60dp"
+        android:paddingTop="20dp"
+        android:text="App Usage Data"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/backbtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/backbtn" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/appRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="true"
+        android:paddingTop="10dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/usage_header" />
 </androidx.constraintlayout.widget.ConstraintLayout>

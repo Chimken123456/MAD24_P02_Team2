@@ -36,16 +36,21 @@ public class Sign_Up extends AppCompatActivity {
             return insets;
         });
 
+        //Getting relevant xml
         EditText email_input = findViewById(R.id.sign_up_email);
         EditText name_input =findViewById(R.id.sign_up_name);
         EditText password_input = findViewById(R.id.sign_up_password);
         Button submit_button = findViewById(R.id.sign_up_submit_button);
         TextView log_in = findViewById(R.id.log_in);
-        DatabaseHandler dbHandler = new DatabaseHandler(this);
+//        DatabaseHandler dbHandler = new DatabaseHandler(this);
+        //Setting user with dummy data
         User user0 = new User("test","test123","testingemail");
+
+
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Getting input from user
                 String name = name_input.getText().toString();
                 String password = password_input.getText().toString();
                 String email = email_input.getText().toString();
@@ -73,6 +78,7 @@ public class Sign_Up extends AppCompatActivity {
                     showError(email_input, "Missing @");
                     return;
                 }
+                //Creating user using database
                 DatabaseHandler dbHandler = new DatabaseHandler(v.getContext());
                 ArrayList<User> user_array = new ArrayList<>();
                 user_array = dbHandler.getAllUsers();
@@ -84,14 +90,15 @@ public class Sign_Up extends AppCompatActivity {
                 dbHandler.addUsers(user0);
                 Toast.makeText(getApplicationContext(),"Account created",Toast.LENGTH_SHORT).show();
 
+                //Making intent and the relevant data to send over to home menu page
                 Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
                 Bundle extras = new Bundle();
                 extras.putInt("ID",user0.getId());
                 extras.putString("Username",user0.getName());
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());
-                extras.putBoolean("SignUp",true);
                 activity.putExtras(extras);
+                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
                 startActivity(activity);
             }
         });
