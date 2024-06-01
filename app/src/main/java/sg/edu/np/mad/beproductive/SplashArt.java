@@ -53,7 +53,6 @@ public class SplashArt extends AppCompatActivity {
                 user0.setPassword(u.getPassword());
                 user0.setEmail(u.getEmail());
                 user0.setSignedIn(u.getSignedIn());
-                Log.i("MAOMAOO",  String.valueOf(user0.getId())+ "    "+ user0.getName()+ "  "+String.valueOf(user0.getSignedIn()));
 
                 signedIn = true;
                 break;
@@ -66,13 +65,14 @@ public class SplashArt extends AppCompatActivity {
             public void run() {
                 if(signedIn)
                 {
-                    Intent activity = new Intent(SplashArt.this, HomeMenu.class);
+                    Intent activity = new Intent(SplashArt.this, Log_In.class);
                     Bundle extras = new Bundle();
                     extras.putString("Username",user0.getName());
                     extras.putString("Password",user0.getPassword());
                     extras.putString("Email",user0.getEmail());
                     extras.putInt("ID",user0.getId());
                     extras.putBoolean("SignedIn",user0.getSignedIn());
+                    extras.putBoolean("Pass",true);
                     activity.putExtras(extras);
                     startActivity(activity);
 

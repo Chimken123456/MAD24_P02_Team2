@@ -15,6 +15,15 @@
         android:background="@drawable/bg_view" />
 
     <TextView
+        android:id="@+id/logged_in_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="30dp"
+        android:text="wasdwasd" />
+
+    <TextView
         android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="85dp"
@@ -44,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/top_view"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="-60dp"
+        android:layout_marginTop="-34dp"
         android:layout_marginRight="25dp"
         android:columnCount="2"
         android:rowCount="3">
@@ -81,8 +90,7 @@
                     android:fontFamily="sans-serif"
                     android:text="To-Do List"
                     android:textSize="18sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold"></TextView>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -119,8 +127,7 @@
                     android:fontFamily="sans-serif"
                     android:text="Timetable"
                     android:textSize="18sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold"></TextView>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -196,6 +203,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </GridLayout>
+
 </RelativeLayout>
 
 

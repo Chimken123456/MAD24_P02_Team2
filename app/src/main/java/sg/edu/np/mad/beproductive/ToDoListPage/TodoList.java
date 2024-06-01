@@ -95,16 +95,16 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
 
                 User user0 = new User(username, password, email);
                 user0.setId(id);
-
-                Global.setUser_Id(user0.getId());
-
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
                 Intent intent = new Intent(TodoList.this, HomeMenu.class);
-                intent.putExtra("ID", user0.getId());
-                intent.putExtra("Username", user0.getName());
-                intent.putExtra("Password", user0.getPassword());
-                intent.putExtra("Email", user0.getEmail());
+                intent.putExtras(extras);
                 startActivity(intent);
                 finish(); // Call this if you don't want to keep the current activity in the back stack
+
             }
         });
 
