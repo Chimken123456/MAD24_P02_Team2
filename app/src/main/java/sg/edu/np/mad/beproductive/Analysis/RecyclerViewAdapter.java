@@ -3,12 +3,9 @@ package sg.edu.np.mad.beproductive.Analysis;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 import sg.edu.np.mad.beproductive.R;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<AppViewHolder> {

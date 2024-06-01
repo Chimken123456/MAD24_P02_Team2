@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F3FBFD"
     tools:context=".Analysis.AnalysisActivity">
 
 
@@ -12,11 +13,13 @@
         android:id="@+id/usage_header"
         android:layout_width="match_parent"
         android:layout_height="86dp"
-        android:background="#A8CDF3"
-        android:fontFamily="@font/alegreya_sans_sc_light_italic"
+        android:background="#99D1F6"
+        android:fontFamily="sans-serif"
         android:paddingLeft="60dp"
         android:paddingTop="20dp"
         android:text="App Usage Data"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

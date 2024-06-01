@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -57,12 +54,28 @@ public class AnalysisActivity extends AppCompatActivity {
         ImageView backButton = findViewById(R.id.backbtn);
         //Start HomeMenu activity when clicked
         backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
+                Intent recievingEnd = getIntent();
+                int id = recievingEnd.getIntExtra("ID", 0);
+                String username = recievingEnd.getStringExtra("Username");
+                String password = recievingEnd.getStringExtra("Password");
+                String email = recievingEnd.getStringExtra("Email");
+
+                User user0 = new User(username, password, email);
+                user0.setId(id);
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
                 Intent intent = new Intent(AnalysisActivity.this, HomeMenu.class);
+                intent.putExtras(extras);
                 startActivity(intent);
+                finish(); // Call this if you don't want to keep the current activity in the back stack
+
             }
         });
-
 
         ArrayList<String> appInfoList = new ArrayList<>();
         long endTime = System.currentTimeMillis();
