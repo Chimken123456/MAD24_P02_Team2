@@ -53,6 +53,7 @@ Role:
 Allows user to create reminders and check all their reminders together at once. 
 The user will be able to write a title for the reminder as well as choose a category which the reminder falls under and set a date and time for when the notification would come in. 
 The user will then be able to see all their reminders that are set and the time they are set for.
+Users are able to edit a reminder, either changing the title or the date it is set for.
 Should the user want to delete a reminder, there is a delete all function at the top.
 Contributions:
 Created the layout for the reminder section of the app. 
