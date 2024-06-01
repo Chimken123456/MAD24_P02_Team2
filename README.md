@@ -48,7 +48,13 @@ Added displaying of username in home menu when logged in
 Designed both log in and sign up.
 
 Reminders (Aqeil)
+
 Showing of Progression through monthly report (Anson)
+Role:
+The usage page allows to view past app usage time in the past month and displays apps used by time in that month.
+It should display the service only in its name and does not show apps running in background and does not display the "com.android." and similar service prefixes.
+Contributions:
+Created layout for app usage stats page.
 
 Planned App Features (Stage 2):
 Gamification (Zeyu)
