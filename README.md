@@ -17,6 +17,7 @@ The app also can keep track of our behaviors and habits when doing task over the
 With these, the app aims to increase productivity of the users and help them in a meaningful way.
 
 App Features (Stage 1):
+
 To do list (Nicole)
 Role:
 The todo list allows user to create a todo list by allowing them to add any amount of tasks to the list using the "+" button on the bottom right.
