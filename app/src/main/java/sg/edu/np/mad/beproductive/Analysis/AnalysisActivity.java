@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -26,7 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
+import sg.edu.np.mad.beproductive.Timetable.TimetableActivity;
 
 
 public class AnalysisActivity extends AppCompatActivity {
@@ -47,7 +51,18 @@ public class AnalysisActivity extends AppCompatActivity {
             startActivity(getPermIntent);
         }
         /* Get perms */
+
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getSystemService(USAGE_STATS_SERVICE);
+        //Back button
+        ImageView backButton = findViewById(R.id.backbtn);
+        //Start HomeMenu activity when clicked
+        backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(AnalysisActivity.this, HomeMenu.class);
+                startActivity(intent);
+            }
+        });
+
 
         ArrayList<String> appInfoList = new ArrayList<>();
         long endTime = System.currentTimeMillis();
@@ -94,5 +109,6 @@ public class AnalysisActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
     }
 }
