@@ -28,6 +28,7 @@ import java.util.Map;
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.Timetable.TimetableActivity;
+import sg.edu.np.mad.beproductive.User;
 
 
 public class AnalysisActivity extends AppCompatActivity {
