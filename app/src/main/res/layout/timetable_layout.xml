@@ -28,9 +28,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="15dp"
-        android:layout_marginEnd="366dp"
-        app:layout_constraintBottom_toBottomOf="@+id/timetable_header"
-        app:layout_constraintEnd_toEndOf="@+id/timetable_header"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="@+id/timetable_header"
         app:layout_constraintTop_toTopOf="@+id/timetable_header"
         app:srcCompat="@drawable/backbtn" />
@@ -60,6 +58,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/resetButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/timetable_header"
         app:layout_constraintVertical_bias="0.484">
 
@@ -68,15 +67,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="TextView"
-            android:textStyle="bold"
             android:textAlignment="center"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 
     <TextView
         android:id="@+id/resetButton"
-        android:layout_width="420dp"
+        android:layout_width="match_parent"
         android:layout_height="43dp"
         android:background="#E6BFC8"
         android:gravity="center"
@@ -90,7 +89,7 @@
 
     <TextView
         android:id="@+id/divider"
-        android:layout_width="420dp"
+        android:layout_width="match_parent"
         android:layout_height="41dp"
         android:background="#99D1F6"
         app:layout_constraintBottom_toTopOf="@+id/timetableRecyclerView"
@@ -101,7 +100,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/timetableRecyclerView"
-        android:layout_width="412dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
