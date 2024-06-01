@@ -1,36 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomePage.HomeMenu">
+    tools:context=".HomePage.HomeMenu"
+    android:background="#F3FBFD">
 
-    <Button
-        android:id="@+id/todolist_navbutton"
+    <View
+        android:id="@+id/top_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="To Do List"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/home_header"
-        app:layout_constraintVertical_bias="0.324"
-        tools:layout_editor_absoluteX="0dp" />
+        android:layout_height="250dp"
+        android:background="@drawable/bg_view" />
 
     <TextView
-        android:id="@+id/home_header"
-        android:layout_width="match_parent"
-        android:layout_height="86dp"
-        android:background="#A8CDF3"
-        android:fontFamily="@font/alegreya_sans_sc_light_italic"
-        android:paddingLeft="30dp"
-        android:paddingTop="20dp"
-        android:text="home"
-        android:textAllCaps="true"
-        android:textSize="35sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        android:id="@+id/logged_in_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="145dp"
+        android:layout_marginEnd="30dp"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:text="wasdwasd" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_width="wrap_content"
+        android:layout_height="85dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="sans-serif"
+        android:text="Welcome to BeProductive!"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:textSize="32sp" />
+
+    <TextView
+        android:id="@+id/desc_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="115dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="sans-serif"
+        android:text="Your one-stop app to maximise your efficacy!"
+        android:textColor="#000000"
+        android:textSize="16sp" />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_view"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="-65dp"
+        android:layout_marginRight="25dp"
+        android:columnCount="2"
+        android:rowCount="3">
+
+        <!--- to do list -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/todolist_navbutton"
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_row="0"
+            android:layout_rowWeight="1"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_margin="15dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="74dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/todolisticon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif"
+                    android:text="To-Do List"
+                    android:textSize="18sp"
+                    android:textStyle="bold">
+                </TextView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <!--- timetable -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/timetable_navbutton"
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_row="0"
+            android:layout_rowWeight="1"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="15dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="88dp"
+                    android:layout_height="78dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/timetable" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif"
+                    android:text="Timetable"
+                    android:textSize="18sp"
+                    android:textStyle="bold"></TextView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!--- monthly reports -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/monthlyreport_navbtn"
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_row="1"
+            android:layout_rowWeight="1"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_margin="15dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="12dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="90dp"
+                    android:layout_height="81dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/monthlyreport" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif"
+                    android:text="Monthly Report"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!--- logout -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/logout_btn"
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_row="1"
+            android:layout_rowWeight="1"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_margin="15dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="90dp"
+                    android:layout_height="76dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/logout_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif"
+                    android:text="Logout"
+                    android:textSize="18sp"
+                    android:textStyle="bold">
+                </TextView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </GridLayout>
+
+</RelativeLayout>
+
+
+
