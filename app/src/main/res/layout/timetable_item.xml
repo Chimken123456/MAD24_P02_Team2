@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
     android:orientation="vertical">
 
     <LinearLayout
@@ -27,19 +26,23 @@
                     android:id="@+id/timeslotView"
                     android:layout_width="242dp"
                     android:layout_height="match_parent"
-                    android:background="#39A3F6"
-                    android:text=" Time"
-                    android:textColor="#FFFEFE"
-                    android:textSize="35sp" />
+                    android:background="#99D1F6"
+                    android:paddingStart="20dp"
+                    android:paddingTop="5dp"
+                    android:text="Time"
+                    android:textColor="#000000"
+                    android:textSize="28sp" />
 
-                <Button
+                <TextView
                     android:id="@+id/editButton"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#8770EF"
-                    android:backgroundTint="#8770EF"
+                    android:background="#CEBEF4"
+                    android:paddingStart="20dp"
+                    android:paddingTop="6dp"
                     android:text="Set Activity"
-                    android:textSize="20sp"
+                    android:textColor="#000000"
+                    android:textSize="25sp"
                     app:iconPadding="0dp" />
 
             </LinearLayout>
@@ -48,8 +51,10 @@
                 android:id="@+id/descView"
                 android:layout_width="match_parent"
                 android:layout_height="133dp"
-                android:background="#CFC1C1"
-                android:text="  Description"
+                android:background="#E6EEFB"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:text="Description"
                 android:textColor="#000000"
                 android:textSize="20sp" />
 
