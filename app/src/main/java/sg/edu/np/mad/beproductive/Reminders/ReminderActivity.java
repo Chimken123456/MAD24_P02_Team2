@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,6 +29,9 @@ public class ReminderActivity extends AppCompatActivity {
     private int selectedYear, selectedMonth, selectedDay;
     private int selectedHour;
     private int selectedMinute;
+    private TextView addDatetime;
+    private TextInputEditText etTitle;
+    private Spinner reminderTypeSpinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,20 +44,24 @@ public class ReminderActivity extends AppCompatActivity {
             return insets;
         });
 
+        addDatetime = findViewById(R.id.addDatetime);
+        etTitle = findViewById(R.id.etTitle);
+        reminderTypeSpinner = findViewById(R.id.reminderType);
+
         findViewById(R.id.selectButton).setOnClickListener(v -> openDatePickerDialog());
         findViewById(R.id.submitButton).setOnClickListener(v -> {
-            // Ensure the user has selected a date and time
             if (selectedYear == 0 || selectedHour == 0) {
                 Toast.makeText(this, "Please select a date and time", Toast.LENGTH_SHORT).show();
+            } else if (etTitle.getText().toString().trim().isEmpty()) {
+                Toast.makeText(this, "Please enter a title", Toast.LENGTH_SHORT).show();
             } else {
-                storeDateTime(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
+                String selectedType = reminderTypeSpinner.getSelectedItem().toString();
+                storeDateTime(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute, selectedType);
+                finish();
             }
         });
 
-        findViewById(R.id.cancelButton).setOnClickListener(v -> {
-            // Close the current activity and go back to the previous one
-            finish();
-        });
+        findViewById(R.id.cancelButton).setOnClickListener(v -> finish());
     }
 
     private void openDatePickerDialog() {
@@ -80,35 +89,29 @@ public class ReminderActivity extends AppCompatActivity {
             selectedHour = hourOfDay;
             selectedMinute = minute1;
 
-            storeDateTime(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
+            String selectedDateTime = selectedYear + "/" + (selectedMonth + 1) + "/" + selectedDay + " " + selectedHour + ":" + selectedMinute;
+            addDatetime.setText(selectedDateTime);
         }, hour, minute, true);
         timePickerDialog.show();
     }
 
-    private void storeDateTime(int year, int month, int day, int hour, int minute){
-        String title = ((TextInputEditText) findViewById(R.id.etTitle)).getText().toString();
+    private void storeDateTime(int year, int month, int day, int hour, int minute, String type) {
+        String title = etTitle.getText().toString();
         String selectedDateTime = year + "/" + (month + 1) + "/" + day + " " + hour + ":" + minute;
 
-        // Create a notification with the title and datetime
         createNotification(title, selectedDateTime);
 
-        // Prepare the result intent and finish the activity
         Intent resultIntent = new Intent();
         resultIntent.putExtra("reminder_title", title);
         resultIntent.putExtra("reminder_datetime", selectedDateTime);
+        resultIntent.putExtra("reminder_type", type);
         setResult(RESULT_OK, resultIntent);
-        finish();
     }
 
     @SuppressLint("MissingPermission")
     private void createNotification(String title, String datetime) {
-        // Convert the datetime string to a more readable format if necessary
-        // You can use SimpleDateFormat for this purpose
-
-        // Create the notification content
         String content = "Reminder set for: " + datetime;
 
-        // Build the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "beproductive")
                 .setSmallIcon(R.drawable.ic_launcher_background)
                 .setContentTitle(title)
@@ -117,7 +120,6 @@ public class ReminderActivity extends AppCompatActivity {
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-        // Notify the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         notificationManager.notify(123, builder.build());
     }

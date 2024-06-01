@@ -31,7 +31,7 @@ import java.util.List;
 
 import sg.edu.np.mad.beproductive.R;
 
-public class MainActivity extends AppCompatActivity {
+public class ReminderMain extends AppCompatActivity {
 
     private static final int REQUEST_NOTIFICATION_PERMISSION = 1;
     private static final int REQUEST_ADD_REMINDER = 2;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.reminder_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATION_PERMISSION);
+                if (ContextCompat.checkSelfPermission(ReminderMain.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ReminderMain.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATION_PERMISSION);
                 } else {
                     proceedToReminderActivity();
                 }
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATION_PERMISSION);
         } else {
-            Intent intent = new Intent(MainActivity.this, ReminderActivity.class);
+            Intent intent = new Intent(ReminderMain.this, ReminderActivity.class);
             startActivityForResult(intent, REQUEST_ADD_REMINDER);
         }
     }
@@ -116,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
             if (data != null) {
                 String title = data.getStringExtra("reminder_title");
                 String datetime = data.getStringExtra("reminder_datetime");
-                Reminder reminder = new Reminder(title, datetime);
+                String type = data.getStringExtra("reminder_type");
+                Reminder reminder = new Reminder(title, datetime, type);
                 reminderList.add(reminder);
                 reminderAdapter.notifyDataSetChanged();
                 findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);

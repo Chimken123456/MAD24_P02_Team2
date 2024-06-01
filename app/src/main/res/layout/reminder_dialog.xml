@@ -8,7 +8,7 @@
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="15dp"
     android:layout_margin="10dp"
-    tools:context=".ReminderActivity">
+    tools:context=".Reminders.ReminderActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                />
+                android:entries="@array/reminder_types" />
 
         </RelativeLayout>
 
@@ -93,9 +93,9 @@
                 android:paddingEnd="25dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:background="@drawable/purple_bg"
+                android:background="#99D1F6"
                 android:textStyle="bold"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 />
         </LinearLayout>
 
@@ -104,6 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Add Reminder"
+            android:backgroundTint="#144C7F"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
@@ -115,6 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Cancel"
+            android:textColor="#144C7F"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"

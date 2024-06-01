@@ -32,6 +32,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         Reminder reminder = reminderList.get(position);
         holder.titleTextView.setText(reminder.getTitle());
         holder.datetimeTextView.setText(reminder.getDatetime());
+        holder.typeTextView.setText(reminder.getType());
     }
 
     @Override
@@ -42,11 +43,13 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
     public static class ReminderViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView datetimeTextView;
+        TextView typeTextView;
 
         public ReminderViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTextView = itemView.findViewById(R.id.reminderTitle);
             datetimeTextView = itemView.findViewById(R.id.reminderDatetime);
+            typeTextView = itemView.findViewById(R.id.reminderType);
         }
     }
 }
