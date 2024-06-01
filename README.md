@@ -29,6 +29,12 @@ Contributions:
 Designed the home menu page, todo list page and the timetable page.
 
 Timetable (Clive)
+Role:
+The timetable allows user to edit the activity to do in each timeslot by pressing the "edit" button.
+The user can choose not to update an activity for a timeslot by pressing the "cancel" button on the edit dialog.
+The user can reset all the activities in the timetable by pressing the "reset" button then pressing the "confirm" button on the confirmation dialog.
+Contributions:
+Created layout for timetable page and timetable items.
 
 User account (Zeyu)
 Role:
