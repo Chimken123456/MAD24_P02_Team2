@@ -33,9 +33,6 @@ public class SplashArt extends AppCompatActivity {
 
 
 
-
-
-
         DatabaseHandler dbHandler = new DatabaseHandler(this);
         ArrayList<User> user_array = new ArrayList<>();
         user_array = dbHandler.getAllUsers();

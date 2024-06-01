@@ -3,7 +3,7 @@
 Team Members and their Student ID:
 Lim ze yu S10257103
 Clive Giam
-Nicole Paige Manik
+Nicole Paige Manik S10260727
 Anson Ang Wei Xiang
 Aqeil Danish Chew
 
@@ -18,6 +18,15 @@ With these, the app aims to increase productivity of the users and help them in 
 
 App Features (Stage 1):
 To do list (Nicole)
+Role:
+The todo list allows user to create a todo list by allowing them to add any amount of tasks to the list using the "+" button on the bottom right.
+The user should swipe left to delete a task and press confirm to delete their task when they wish to remove it from the list.
+The user should swipe right to edit a task should they named it wrongly and pressed save without typing their task correctly.
+The "?" button teaches users how to properly use this todo list.
+The tasks can be checked after they have completed the tasks to represent completion.
+Contributions:
+Designed the home menu page, todo list page and the timetable page.
+
 Timetable (Clive)
 
 User account (Zeyu)
@@ -43,5 +52,12 @@ Time Tracking and Pomodoro (Aqeil)
 
 
 Credits:
-Log in and Sign up Images : https://www.autonomous.ai/ourblog/the-12-time-management-mistakes-that-people-commonly-make?epik=dj0yJnU9VzhIaUN0WnNGa3JrdjhkRWtiQWpmSUxscUNNZ2ZfcDkmcD0wJm49cTR5eHVmWVZBQjk0YWt2dmNKTHlHUSZ0PUFBQUFBR1pWX0hz
-
+Log in and Sign up Images : 
+https://www.autonomous.ai/ourblog/the-12-time-management-mistakes-that-people-commonly-make?epik=dj0yJnU9VzhIaUN0WnNGa3JrdjhkRWtiQWpmSUxscUNNZ2ZfcDkmcD0wJm49cTR5eHVmWVZBQjk0YWt2dmNKTHlHUSZ0PUFBQUFBR1pWX0hz
+Home Page Images: 
+https://www.pngwing.com/en/free-png-zkdem ,
+https://www.flaticon.com/free-icon/logout_7596566 ,
+https://iconscout.com/free-icon/to-do-list-3524114 ,
+https://iconscout.com/icon/monthly-report-3058167
+BeProductive logo:
+https://www.brandcrowd.com/maker/logos/page1?Text=beproductive&TextChanged=&IsFromRootPage=&SearchText=productivity&KeywordChanged=true&LogoStyle=0&FontStyles=&Colors=&FilterByTags=
