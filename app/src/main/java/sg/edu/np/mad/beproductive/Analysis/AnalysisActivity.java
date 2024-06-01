@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.ImageView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -21,12 +20,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
-import sg.edu.np.mad.beproductive.User;
+import sg.edu.np.mad.beproductive.Timetable.TimetableActivity;
 
 
 public class AnalysisActivity extends AppCompatActivity {
@@ -75,8 +76,6 @@ public class AnalysisActivity extends AppCompatActivity {
 
             }
         });
-
-
 
         ArrayList<String> appInfoList = new ArrayList<>();
         long endTime = System.currentTimeMillis();
