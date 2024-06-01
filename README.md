@@ -4,7 +4,7 @@ Team Members and their Student ID:
 Lim ze yu S10257103
 Clive Giam S10257799
 Nicole Paige Manik S10260727
-Anson Ang Wei Xiang
+Anson Ang Wei Xiang S10258331
 Aqeil Danish Chew
 
 App Name: Be Productive
@@ -13,7 +13,8 @@ App Category: Productivity
 Brief Introduction:
 Be Productive is a app that monitors your productivity through various features that could be developed into a habit.
 Be Productive allows the user to create a to do list or a checklist, it also can be used as a time table to keep yourself on track.
-The app also can keep track of our behaviors and habits when doing task over the long run thus generating a analytic graph to show how productive the user is. 
+The app also can keep track of our behaviors and habits when doing task over the long run which the user can then see for himself his habits and time spent on apps.
+The app also has reminders to remind the users to keep themselves on track.
 With these, the app aims to increase productivity of the users and help them in a meaningful way.
 
 App Features (Stage 1):
