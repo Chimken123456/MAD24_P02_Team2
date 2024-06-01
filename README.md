@@ -2,7 +2,7 @@
 
 Team Members and their Student ID:
 Lim ze yu S10257103
-Clive Giam
+Clive Giam S10257799
 Nicole Paige Manik S10260727
 Anson Ang Wei Xiang
 Aqeil Danish Chew
