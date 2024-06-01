@@ -63,26 +63,9 @@ public class AddNewTask extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         newTaskText = getView().findViewById(R.id.newTaskTextbox);
         newTaskSaveButton = getView().findViewById(R.id.newTaskSaveBtn);
+        newTaskSaveButton.setEnabled(false); // set button to false so user cannot save task when input is empty
         user.setId(100);
         user_id =  Global.getUser_Id();
-//        Log.i("MAOMAOO","user id test tst: " + String.valueOf(user_id1));
-
-//        receiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//
-//                if("ToDoList_To_AddNewTask".equals(intent.getAction()))
-//                {
-//                    user_id = intent.getIntExtra("ID",100);
-//                    Log.i("MAOMAOO","USER ID: " + String.valueOf(user_id));
-//                }
-//                LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
-//            }
-//        };
-//
-//
-//        LocalBroadcastManager.getInstance(this.getContext()).registerReceiver(receiver,new IntentFilter("ToDoList_To_AddNewTask"));
-
         db = new DatabaseHandler(getActivity());
         db.openDatabase();
 
@@ -103,11 +86,11 @@ public class AddNewTask extends BottomSheetDialogFragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().equals("")){
-                    newTaskSaveButton.setEnabled(true);
+                    newTaskSaveButton.setEnabled(false); //if no input of task, unable to save
                     newTaskSaveButton.setTextColor(Color.GRAY);
                 }
                 else{
-                    newTaskSaveButton.setEnabled(true);
+                    newTaskSaveButton.setEnabled(true); // input of task detected, able to save
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), com.google.android.material.R.color.design_default_color_primary_dark));
                 }
             }
@@ -135,19 +118,14 @@ public class AddNewTask extends BottomSheetDialogFragment {
                             break;
                         }
                     }
-
                     ToDoModel task = new ToDoModel();
                     task.setTask(text);
                     task.setStatus(0);
                     db.insertTask(task,user.getId());
-
-
                 }
-//
                 dismiss();
             }
         });
-//        LocalBroadcastManager.getInstance(this.getContext()).unregisterReceiver(receiver);
     }
     @Override
     public void onDismiss(DialogInterface dialog){

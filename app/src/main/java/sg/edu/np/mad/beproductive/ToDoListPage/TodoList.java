@@ -43,6 +43,8 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_todo);
+
+        // "?" button for pop up dialog (instructions)
         todolist_instruction = findViewById(R.id.todolist_instruction);
         mDialog = new Dialog(this);
         todolist_instruction.setOnClickListener(new View.OnClickListener() {
@@ -58,9 +60,8 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
         db.openDatabase();
 
         taskList = new ArrayList<>();
-
         taskRecyclerView = findViewById(R.id.taskRecyclerView);
-        taskRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        taskRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // set recyclerView to linearLayout
         tasksAdapter = new ToDoAdapter(db, this);
         taskRecyclerView.setAdapter(tasksAdapter);
 
@@ -107,20 +108,7 @@ public class TodoList extends AppCompatActivity  implements  DialogCloseListener
                 finish(); // Call this if you don't want to keep the current activity in the back stack
             }
         });
-
-//        Intent intent = new Intent("ToDoList_To_AddNewTask");
-//        Bundle extras = new Bundle();
-//        extras.putInt("ID",user0.getId());
-//        extras.putString("Username",user0.getName());
-//        extras.putString("Password",user0.getPassword());
-//        extras.putString("Email",user0.getEmail());
-//        extras.putBoolean("SignUp",true);
-//        intent.putExtras(extras);
-////        Log.i("MAOMAOO","todolist java "+ String.valueOf(user0.getId()));
-//
-//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
-
 
     @Override public void handleDialogClose(DialogInterface dialog){
         taskList = db.getAllTasks(Global.getUser_Id());

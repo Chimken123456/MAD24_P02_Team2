@@ -1,7 +1,7 @@
 package sg.edu.np.mad.beproductive.ToDoListPage;
 
 public class ToDoModel {
-    private int id, status,user_id;
+    private int id, status, user_id; //user_id to link account to todolist
     private String task;
 
     public int getId() {
@@ -14,7 +14,7 @@ public class ToDoModel {
 
     public int getStatus() {
         return status;
-    }
+    } // status 1 = done, status 0 = undone
 
     public void setStatus(int status) {
         this.status = status;
