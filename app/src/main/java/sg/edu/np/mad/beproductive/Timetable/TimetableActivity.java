@@ -119,7 +119,7 @@ public class TimetableActivity extends AppCompatActivity {
 
         AlertDialog resetDialog = builder.create();
         
-        Button resetButton = findViewById(R.id.resetButton);
+        TextView resetButton = findViewById(R.id.resetButton);
         resetButton.setText("Reset");
         //Show alert dialog on click
         resetButton.setOnClickListener(new View.OnClickListener() {
