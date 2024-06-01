@@ -31,6 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String CREATE_TODO_TABLE = "CREATE TABLE " + TODO_TABLE + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + TASK + " TEXT, " + STATUS + " INTEGER," + ID_USER + " INTEGER," + " FOREIGN KEY ("+USER_ID+") REFERENCES " + USER_TABLE + "("+USER_ID+")" + ")";
 
+    //Creating User table
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
@@ -152,7 +153,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d("DatabaseHandler", "Deleted task with id " + id + " with result " + result);
     }
 
-    public void addUsers(User user)
+    public void addUsers(User user) //Adding user
     {
         ContentValues values = new ContentValues();
         values.put(USERNAME,user.getName());
@@ -162,7 +163,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(USER_TABLE,null,values);
     }
-    public ArrayList<User> getAllUsers()
+    public ArrayList<User> getAllUsers() //Getting all users and returns a array of users
     {
         ArrayList<User> user_array = new ArrayList<>();
         int id;
@@ -219,7 +220,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return user_array;
     }
 
-    public void updateSignedIn_User(boolean signedIn,int userId)
+    public void updateSignedIn_User(boolean signedIn,int userId) //Updating the user's stay signed in status
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

@@ -91,6 +91,7 @@
                     android:layout_gravity="center_horizontal"
                     android:fontFamily="sans-serif"
                     android:text="To-Do List"
+                    android:textSize="18sp"
                     android:textStyle="bold">
                 </TextView>
             </LinearLayout>
@@ -129,8 +130,7 @@
                     android:fontFamily="sans-serif"
                     android:text="Timetable"
                     android:textSize="18sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold"></TextView>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

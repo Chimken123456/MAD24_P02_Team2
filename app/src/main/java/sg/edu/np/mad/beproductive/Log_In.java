@@ -38,6 +38,8 @@ public class Log_In extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        //Getting all relevant xmls from log in xml
         EditText name_input = findViewById(R.id.log_in_name);
         EditText password_input = findViewById(R.id.password);
         EditText email_input = findViewById(R.id.email_address);
@@ -46,9 +48,35 @@ public class Log_In extends AppCompatActivity {
         Intent activity = new Intent(Log_In.this, HomeMenu.class);
         RadioButton stay_signed_in = findViewById(R.id.stay_signed_in_radioButton);
 
+        //Creating user with dummy data
         User user0 = new User("test","test123","testingemail");
+
         DatabaseHandler dbHandler = new DatabaseHandler(this);
 
+        //Getting Pass info and checking if user has "pass" and if so , this means user has selected the keep signed in option
+        Intent recievingEnd = getIntent();
+        Boolean pass = recievingEnd.getBooleanExtra("Pass",false);
+        if(pass)
+        {
+            int id = recievingEnd.getIntExtra("ID",0);
+            String username = recievingEnd.getStringExtra("Username");
+            String password = recievingEnd.getStringExtra("Password");
+            String email = recievingEnd.getStringExtra("Email");
+            user0.setName(username);
+            user0.setPassword(password);
+            user0.setEmail(email);
+            user0.setId(id);
+            Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+            Bundle extras = new Bundle();
+
+            extras.putString("Username",user0.getName());
+            extras.putString("Password",user0.getPassword());
+            extras.putString("Email",user0.getEmail());
+            extras.putInt("ID",user0.getId());
+            activity.putExtras(extras);
+
+            startActivity(activity);
+        }
         stay_signed_in.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -63,11 +91,10 @@ public class Log_In extends AppCompatActivity {
             public void onClick(View v) {
                 Boolean isCheckedFinal = Checked;
                 Boolean correct= false;
+                //Getting input from user
                 String name = name_input.getText().toString();
                 String password = password_input.getText().toString();
                 String email = email_input.getText().toString();
-//                System.out.println(name);
-//                System.out.println(password);
 
                 //Validating
                 if(name.isEmpty())
@@ -106,7 +133,7 @@ public class Log_In extends AppCompatActivity {
 
                 ArrayList<User> user_array = new ArrayList<>();
                 user_array = dbHandler.getAllUsers();
-
+                //Checking through database and see if user exists
                 for (User u : user_array)
                 {
                     if(user0.getName().equals(u.getName()))
@@ -116,12 +143,12 @@ public class Log_In extends AppCompatActivity {
                             if(user0.getPassword().equals(u.getPassword()))
                             {
                                 user0.setId(u.getId());
-                                if(isCheckedFinal)
+                                if(isCheckedFinal)  // If user has opt for keep signed in
                                 {
                                     dbHandler.updateSignedIn_User(true,user0.getId());
                                 }
                                 Toast.makeText(v.getContext(),"Welcome " + user0.getName(),Toast.LENGTH_SHORT).show();
-
+                                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
                                 extras.putInt("ID",user0.getId());
                                 activity.putExtras(extras);
                                 startActivity(activity);

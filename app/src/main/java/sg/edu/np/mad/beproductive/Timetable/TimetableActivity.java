@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
+import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
 import sg.edu.np.mad.beproductive.User;
 
 public class TimetableActivity extends AppCompatActivity {
@@ -61,7 +62,15 @@ public class TimetableActivity extends AppCompatActivity {
         //Start HomeMenu activity when clicked
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(TimetableActivity.this, HomeMenu.class));
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user.getId());
+                extras.putString("Username",user.getName());
+                extras.putString("Password",user.getPassword());
+                extras.putString("Email",user.getEmail());
+                Intent intent = new Intent(TimetableActivity.this, HomeMenu.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+//                startActivity(new Intent(TimetableActivity.this, HomeMenu.class));
             }
         });
         //Display the current date 
