@@ -49,6 +49,14 @@ Added displaying of username in home menu when logged in
 Designed both log in and sign up.
 
 Reminders (Aqeil)
+Role:
+Allows user to create reminders and check all their reminders together at once. 
+The user will be able to write a title for the reminder as well as choose a category which the reminder falls under and set a date and time for when the notification would come in. 
+The user will then be able to see all their reminders that are set and the time they are set for.
+Should the user want to delete a reminder, there is a delete all function at the top.
+Contributions:
+Created the layout for the reminder section of the app. 
+Created the notifications for the reminders as well.
 
 Showing of Progression through monthly report (Anson)
 Role:
