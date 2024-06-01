@@ -21,10 +21,15 @@ To do list (Nicole)
 Timetable (Clive)
 
 User account (Zeyu)
+Role:
 Allow user to sign up and make a account which the user can then use the same credentials that he or she used to sign up to log in.
 The user account can save the to do list such that all users have their own to do list
 The user can also go for the Stay Signed In option which will allow the user to skip the log in process.
 The user can log out and switch to another account if desired. When the user logged out, they will not longer be able to have the Stay Signed In feature and have to reselect the Stay Signed In option when logging in again
+Contributions:
+Binded To do list to user in database by adding a user id column in the to do list table in the database.
+Added displaying of username in home menu when logged in
+Designed both log in and sign up.
 
 Reminders (Aqeil)
 Showing of Progression through monthly report (Anson)
@@ -38,4 +43,5 @@ Time Tracking and Pomodoro (Aqeil)
 
 
 Credits:
+Log in and Sign up Images : https://www.autonomous.ai/ourblog/the-12-time-management-mistakes-that-people-commonly-make?epik=dj0yJnU9VzhIaUN0WnNGa3JrdjhkRWtiQWpmSUxscUNNZ2ZfcDkmcD0wJm49cTR5eHVmWVZBQjk0YWt2dmNKTHlHUSZ0PUFBQUFBR1pWX0hz
 

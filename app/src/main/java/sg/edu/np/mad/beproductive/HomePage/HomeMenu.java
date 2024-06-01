@@ -47,6 +47,8 @@ public class HomeMenu extends AppCompatActivity {
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
         CardView logOutButton = findViewById(R.id.logout_btn);
         TextView loggedInUsername = findViewById(R.id.logged_in_username);
+
+        //Displaying of username
         loggedInUsername.setText(String.format("Logged In as %s", username));
 
         logOutButton.setOnClickListener(new View.OnClickListener() {
