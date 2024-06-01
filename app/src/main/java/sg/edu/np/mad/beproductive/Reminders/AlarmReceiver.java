@@ -1,6 +1,7 @@
 package sg.edu.np.mad.beproductive.Reminders;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import sg.edu.np.mad.beproductive.R;
 
 public class AlarmReceiver extends BroadcastReceiver {
+    @SuppressLint("MissingPermission")
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {

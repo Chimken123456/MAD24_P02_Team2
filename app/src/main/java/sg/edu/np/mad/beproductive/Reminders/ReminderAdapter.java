@@ -15,9 +15,16 @@ import sg.edu.np.mad.beproductive.R;
 public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.ReminderViewHolder> {
 
     private List<Reminder> reminderList;
+    private OnItemClickListener onItemClickListener;
 
-    public ReminderAdapter(List<Reminder> reminderList) {
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+        void onItemLongClick(int position);
+    }
+
+    public ReminderAdapter(List<Reminder> reminderList, OnItemClickListener onItemClickListener) {
         this.reminderList = reminderList;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -40,7 +47,7 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
         return reminderList.size();
     }
 
-    public static class ReminderViewHolder extends RecyclerView.ViewHolder {
+    public class ReminderViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView datetimeTextView;
         TextView typeTextView;
@@ -50,7 +57,33 @@ public class ReminderAdapter extends RecyclerView.Adapter<ReminderAdapter.Remind
             titleTextView = itemView.findViewById(R.id.reminderTitle);
             datetimeTextView = itemView.findViewById(R.id.reminderDatetime);
             typeTextView = itemView.findViewById(R.id.reminderType);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onItemClickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            onItemClickListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (onItemClickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            onItemClickListener.onItemLongClick(position);
+                        }
+                    }
+                    return true;
+                }
+            });
         }
     }
 }
+
 
