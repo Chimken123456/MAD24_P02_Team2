@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -36,6 +37,7 @@
         android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
+        android:layout_marginStart="35dp"
         android:fontFamily="sans-serif"
         android:paddingTop="25dp"
         android:text="Welcome to \nBeProductive!"
@@ -44,7 +46,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/desc_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.167"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,33 +60,37 @@
         android:text="Your one-stop app to maximise your efficacy!"
         android:textColor="#000000"
         android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/welcome_text" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="-90dp"
+        android:layout_marginRight="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logged_in_username"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_view"
+        app:layout_constraintVertical_bias="0.037">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/todolist_navbutton"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="140dp"
             android:layout_margin="15dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
-            app:layout_constraintEnd_toStartOf="@id/timetable_navbutton"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/timetable_navbutton"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -102,24 +108,23 @@
                     android:fontFamily="sans-serif"
                     android:text="To-Do List"
                     android:textSize="18sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/timetable_navbutton"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="140dp"
             android:layout_margin="15dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/todolist_navbutton"
+            app:layout_constraintLeft_toRightOf="@id/todolist_navbutton"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -137,24 +142,23 @@
                     android:fontFamily="sans-serif"
                     android:text="Timetable"
                     android:textSize="18sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/monthlyreport_navbtn"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="140dp"
             android:layout_margin="15dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
-            app:layout_constraintEnd_toStartOf="@id/logout_btn"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/reminders_navbtn"
             app:layout_constraintTop_toBottomOf="@id/todolist_navbutton">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -177,18 +181,53 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/logout_btn"
-            android:layout_width="0dp"
+            android:id="@+id/reminders_navbtn"
+            android:layout_width="150dp"
             android:layout_height="140dp"
             android:layout_margin="15dp"
             app:cardCornerRadius="15dp"
-            app:cardElevation="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/monthlyreport_navbtn"
+            app:cardElevation="12dp"
+            app:layout_constraintLeft_toRightOf="@id/monthlyreport_navbtn"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/timetable_navbutton">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="90dp"
+                    android:layout_height="81dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/reminder_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:fontFamily="sans-serif"
+                    android:text="Reminders"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/logout_btn"
+            android:layout_width="150dp"
+            android:layout_height="140dp"
+            android:layout_margin="15dp"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/reminders_navbtn"
+            app:layout_constraintTop_toBottomOf="@id/monthlyreport_navbtn">
+
+            <LinearLayout
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical">
@@ -206,11 +245,9 @@
                     android:fontFamily="sans-serif"
                     android:text="Logout"
                     android:textSize="18sp"
-                    android:textStyle="bold">
-                </TextView>
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
