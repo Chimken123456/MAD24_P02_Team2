@@ -31,6 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String CREATE_TODO_TABLE = "CREATE TABLE " + TODO_TABLE + "(" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + TASK + " TEXT, " + STATUS + " INTEGER," + ID_USER + " INTEGER," + " FOREIGN KEY ("+USER_ID+") REFERENCES " + USER_TABLE + "("+USER_ID+")" + ")";
 
+    //Creating User table
     private static final String USERNAME = "username";
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
@@ -56,7 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_TODO_TABLE);
         db.execSQL(CREATE_SCHEDULE_TABLE);
-        Log.d("DatabaseHandler", "Database created with table: " + CREATE_TODO_TABLE);
+        // Log.d("DatabaseHandler", "Database created with table: " + CREATE_TODO_TABLE);
 
     }
 
@@ -66,6 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        {
 //            db.execSQL("CREATE TABLE IF NOT EXISTS " + USER_TABLE);
 //        }
+        // drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SCHEDULE_TABLE);
@@ -73,15 +75,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public void openDatabase(){
-        db = this.getWritableDatabase();
+        db = this.getWritableDatabase(); //able to edit database
         Log.d("DatabaseHandler", "Database opened");
     }
 
     public void insertTask(ToDoModel task, int userId){
         ContentValues cv = new ContentValues();
         cv.put(TASK, task.getTask());
-        cv.put(STATUS, 0);
-        cv.put(ID_USER,userId);
+        cv.put(STATUS, 0);    // Set the initial status of the task to 0 (incomplete)
+        cv.put(ID_USER, userId); // Associate the task with the specific user by setting the userId
         long result = db.insert(TODO_TABLE, null, cv);
         if (result == -1) {
             Log.e("DatabaseHandler", "Failed to insert task");
@@ -96,7 +98,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Cursor cur = null;
         db.beginTransaction();
         try {
-            cur = db.query(TODO_TABLE, null, null, null, null, null, null, null);
+            cur = db.query(TODO_TABLE, null, null, null, null, null, null, null); //retrieve all rows
             if (cur != null) {
                 if (cur.moveToFirst()) {
                     int idIndex = cur.getColumnIndex(ID);
@@ -105,8 +107,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     int userIndex = cur.getColumnIndex(ID_USER);
                     if (idIndex != -1 && taskIndex != -1 && statusIndex != -1) {
                         do {
-//                            Log.i("MAOMAOO","database "+String.valueOf(id) + "   " + String.valueOf(cur.getInt(userIndex)));
-                            if(id == cur.getInt(userIndex))
+                            if(id == cur.getInt(userIndex)) //Check if the task belongs to the given user ID
                             {
                                 ToDoModel task = new ToDoModel();
                                 task.setId(cur.getInt(idIndex));
@@ -152,7 +153,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d("DatabaseHandler", "Deleted task with id " + id + " with result " + result);
     }
 
-    public void addUsers(User user)
+    public void addUsers(User user) //Adding user
     {
         ContentValues values = new ContentValues();
         values.put(USERNAME,user.getName());
@@ -162,7 +163,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(USER_TABLE,null,values);
     }
-    public ArrayList<User> getAllUsers()
+    public ArrayList<User> getAllUsers() //Getting all users and returns a array of users
     {
         ArrayList<User> user_array = new ArrayList<>();
         int id;
@@ -219,7 +220,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return user_array;
     }
 
-    public void updateSignedIn_User(boolean signedIn,int userId)
+    public void updateSignedIn_User(boolean signedIn,int userId) //Updating the user's stay signed in status
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();

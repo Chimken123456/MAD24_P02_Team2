@@ -44,10 +44,10 @@
 
     <ImageView
         android:id="@+id/backbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        android:layout_marginTop="34dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="28dp"
         android:layout_marginBottom="0dp"
         app:srcCompat="@drawable/backbtn" />
 

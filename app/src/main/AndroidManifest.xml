@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Analysis.MainActivity"
+            android:name=".Analysis.AnalysisActivity"
             android:exported="false" />
         <activity
             android:name=".HomePage.HomeMenu"
