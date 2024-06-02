@@ -15,7 +15,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import sg.edu.np.mad.beproductive.Analysis.AnalysisActivity;
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.Log_In;
@@ -101,18 +100,12 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
 
-        CardView monthlyButton = findViewById(R.id.monthlyreport_navbtn);
-        monthlyButton.setOnClickListener(new View.OnClickListener() {
+       CardView remindersButton = findViewById(R.id.reminders_navbtn);
+        remindersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle extras = new Bundle();
-                extras.putInt("ID",user0.getId());
-                extras.putString("Username",user0.getName());
-                extras.putString("Password",user0.getPassword());
-                extras.putString("Email",user0.getEmail());
-                extras.putBoolean("SignUp",true);
-                Intent intent = new Intent(HomeMenu.this, AnalysisActivity.class);
-                intent.putExtras(extras);
+                // Create an intent to navigate to the ReminderMain activity
+                Intent intent = new Intent(HomeMenu.this, ReminderMain.class);
                 startActivity(intent);
             }
         });

@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,12 +25,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.User;
@@ -91,7 +87,6 @@ public class ReminderMain extends AppCompatActivity {
                 deleteAllReminders();
             }
         });
-
         ImageView backBtn = findViewById(R.id.backbtn);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +107,7 @@ public class ReminderMain extends AppCompatActivity {
                 Intent intent = new Intent(ReminderMain.this, HomeMenu.class);
                 intent.putExtras(extras);
                 startActivity(intent);
-                finish(); // Call this if you don't want to keep the current activity in the back stack
+                finish();
 
             }
         });

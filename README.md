@@ -4,8 +4,8 @@ Team Members and their Student ID:
 Lim ze yu S10257103
 Clive Giam S10257799
 Nicole Paige Manik S10260727
-Anson Ang Wei Xiang
-Aqeil Danish Chew
+Anson Ang Wei Xiang S10258331
+Aqeil Danish Chew S10257689
 
 App Name: Be Productive
 App Category: Productivity
@@ -13,7 +13,8 @@ App Category: Productivity
 Brief Introduction:
 Be Productive is a app that monitors your productivity through various features that could be developed into a habit.
 Be Productive allows the user to create a to do list or a checklist, it also can be used as a time table to keep yourself on track.
-The app also can keep track of our behaviors and habits when doing task over the long run thus generating a analytic graph to show how productive the user is. 
+The app also can keep track of our behaviors and habits when doing task over the long run which the user can then see for himself his habits and time spent on apps.
+The app also has reminders to remind the users to keep themselves on track.
 With these, the app aims to increase productivity of the users and help them in a meaningful way.
 
 App Features (Stage 1):
@@ -48,6 +49,15 @@ Added displaying of username in home menu when logged in
 Designed both log in and sign up.
 
 Reminders (Aqeil)
+Role:
+Allows user to create reminders and check all their reminders together at once. 
+The user will be able to write a title for the reminder as well as choose a category which the reminder falls under and set a date and time for when the notification would come in. 
+The user will then be able to see all their reminders that are set and the time they are set for.
+Users are able to edit a reminder, either changing the title or the date it is set for.
+Should the user want to delete a reminder, there is a delete all function at the top.
+Contributions:
+Created the layout for the reminder section of the app. 
+Created the notifications for the reminders as well.
 
 Showing of Progression through monthly report (Anson)
 Role:
