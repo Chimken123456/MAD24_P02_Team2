@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BeProductive</string>
+
+    <!-- Array for reminder types -->
+    <string-array name="reminder_types">
+        <item>School</item>
+        <item>Work</item>
+        <item>Task</item>
+        <item>Others</item>
+    </string-array>
 </resources>
