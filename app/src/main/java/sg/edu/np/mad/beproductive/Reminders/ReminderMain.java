@@ -10,8 +10,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,13 +25,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
+import sg.edu.np.mad.beproductive.User;
 
 public class ReminderMain extends AppCompatActivity {
 
@@ -88,9 +87,30 @@ public class ReminderMain extends AppCompatActivity {
                 deleteAllReminders();
             }
         });
+        ImageView backBtn = findViewById(R.id.backbtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent recievingEnd = getIntent();
+                int id = recievingEnd.getIntExtra("ID", 0);
+                String username = recievingEnd.getStringExtra("Username");
+                String password = recievingEnd.getStringExtra("Password");
+                String email = recievingEnd.getStringExtra("Email");
 
-        findViewById(R.id.backbtn).setOnClickListener(v -> finish());
+                User user0 = new User(username, password, email);
+                user0.setId(id);
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                Intent intent = new Intent(ReminderMain.this, HomeMenu.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+                finish();
 
+            }
+        });
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 //            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATION_PERMISSION);
 //        }

@@ -19,6 +19,7 @@ import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.Log_In;
 import sg.edu.np.mad.beproductive.R;
+import sg.edu.np.mad.beproductive.Reminders.ReminderActivity;
 import sg.edu.np.mad.beproductive.Reminders.ReminderMain;
 import sg.edu.np.mad.beproductive.Timetable.TimetableActivity;
 import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
@@ -105,6 +106,22 @@ public class HomeMenu extends AppCompatActivity {
             public void onClick(View v) {
                 // Create an intent to navigate to the ReminderMain activity
                 Intent intent = new Intent(HomeMenu.this, ReminderMain.class);
+                startActivity(intent);
+            }
+        });
+
+        CardView remindersButton = findViewById(R.id.reminders_navbtn);
+        remindersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, ReminderMain.class);
+                intent.putExtras(extras);
                 startActivity(intent);
             }
         });
