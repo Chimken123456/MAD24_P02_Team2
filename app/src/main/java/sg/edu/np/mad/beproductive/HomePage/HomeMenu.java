@@ -125,5 +125,23 @@ public class HomeMenu extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+
+        CardView remindersButton = findViewById(R.id.reminders_navbtn);
+        remindersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, ReminderMain.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
     }
 }
