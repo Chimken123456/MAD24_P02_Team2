@@ -47,6 +47,7 @@ Contributions:
 Binded To do list to user in database by adding a user id column in the to do list table in the database.
 Added displaying of username in home menu when logged in
 Designed both log in and sign up.
+Added splash art java
 
 Reminders (Aqeil)
 Role:
