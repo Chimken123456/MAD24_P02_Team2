@@ -12,10 +12,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -23,6 +30,7 @@ import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 
 public class Log_In extends AppCompatActivity {
     private Boolean Checked = false;
+
 
     private void showError(EditText et, String s)
     {
@@ -47,6 +55,42 @@ public class Log_In extends AppCompatActivity {
         TextView sign_up = findViewById(R.id.sign_up);
         Intent activity = new Intent(Log_In.this, HomeMenu.class);
         RadioButton stay_signed_in = findViewById(R.id.stay_signed_in_radioButton);
+
+
+        //Implement Firebase
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        DatabaseReference myRef = database.getReference("User");
+
+
+        //Testing
+//        Getting data from real time database
+//        myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DataSnapshot> task) {
+//
+//                if(task.isSuccessful())
+//                {
+//                    DataSnapshot dataSnapshot = task.getResult();
+//                    for (DataSnapshot snapshot : dataSnapshot.getChildren())
+//                    {
+//
+////                        Log.i("MAOMAOO", String.valueOf(snapshot.child("id").getValue()) + "\t" + snapshot.child("name").getValue() + "\t" + snapshot.child("email").getValue());
+//                    }
+//
+//
+//
+//                }
+//            }
+//        });
+
+//        DataSnapshot dataSnapshot = task.getResult();
+//        String name = String.valueOf(dataSnapshot.child("name").getValue());
+//        String password = String.valueOf(dataSnapshot.child("password").getValue());
+//        Log.i("MAOMAOO",name+ "\t" +password);
+        //Writing data from real time database
+//        userRef.setValue("cooking");
+
+        //End of testing
 
         //Creating user with dummy data
         User user0 = new User("test","test123","testingemail");
@@ -90,7 +134,8 @@ public class Log_In extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Boolean isCheckedFinal = Checked;
-                Boolean correct= false;
+                final Boolean[] correct = {false};
+
                 //Getting input from user
                 String name = name_input.getText().toString();
                 String password = password_input.getText().toString();
@@ -130,42 +175,106 @@ public class Log_In extends AppCompatActivity {
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());
 
+                myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
 
-                ArrayList<User> user_array = new ArrayList<>();
-                user_array = dbHandler.getAllUsers();
-                //Checking through database and see if user exists
-                for (User u : user_array)
-                {
-                    if(user0.getName().equals(u.getName()))
-                    {
-                        if(user0.getEmail().equals(u.getEmail()))
+                        if(task.isSuccessful())
                         {
-                            if(user0.getPassword().equals(u.getPassword()))
+                            DataSnapshot dataSnapshot = task.getResult();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren())
                             {
-                                user0.setId(u.getId());
-                                if(isCheckedFinal)  // If user has opt for keep signed in
+                                String email = snapshot.child("email").getValue().toString();
+                                String name = snapshot.child("name").getValue().toString();
+                                String password = snapshot.child("password").getValue().toString();
+
+                                if(user0.getName().equals(name))
                                 {
-                                    dbHandler.updateSignedIn_User(true,user0.getId());
+                                    if(user0.getEmail().equals(email))
+                                    {
+                                        if(user0.getPassword().equals(password))
+                                        {
+                                            int id = Integer.valueOf(String.valueOf(snapshot.child("id").getValue()));
+                                            user0.setId(id);
+                                            Toast.makeText(v.getContext(),"Welcome " + user0.getName(),Toast.LENGTH_SHORT).show();
+                                            Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+                                            extras.putInt("ID",user0.getId());
+                                            activity.putExtras(extras);
+
+                                            if(isCheckedFinal)  // If user has opt for keep signed in
+                                            {
+                                                ArrayList<User> user_array = new ArrayList<>();
+                                                user_array = dbHandler.getAllUsers();
+                                                boolean has_acc = false;
+                                                for(User u : user_array)
+                                                {
+                                                    if(u.getId() == user0.getId())
+                                                    {
+                                                        dbHandler.updateSignedIn_User(true,user0.getId());
+                                                        has_acc = true;
+                                                    }
+                                                }
+                                                if(!has_acc)
+                                                {
+                                                    dbHandler.addUsers(user0);
+                                                    dbHandler.updateSignedIn_User(true,user0.getId());
+                                                }
+                                            }
+
+
+
+                                            startActivity(activity);
+                                            correct[0] = true;
+                                            break;
+
+                                        }
+                                    }
                                 }
-                                Toast.makeText(v.getContext(),"Welcome " + user0.getName(),Toast.LENGTH_SHORT).show();
-                                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
-                                extras.putInt("ID",user0.getId());
-                                activity.putExtras(extras);
-                                startActivity(activity);
-                                correct = true;
-                                break;
+
                             }
+
+
+
+                        }
+                        if(!correct[0])
+                        {
+                            Toast.makeText(v.getContext(),"Wrong Details",Toast.LENGTH_SHORT).show();
                         }
                     }
-                }
-                if(!correct)
-                {
-                    Toast.makeText(v.getContext(),"Wrong Details",Toast.LENGTH_SHORT).show();
-                }
+
+                });
+
 
             }
 
 
+            //ArrayList<User> user_array = new ArrayList<>();
+//                user_array = dbHandler.getAllUsers();
+//                //Checking through database and see if user exists
+//                for (User u : user_array)
+//                {
+//                    if(user0.getName().equals(u.getName()))
+//                    {
+//                        if(user0.getEmail().equals(u.getEmail()))
+//                        {
+//                            if(user0.getPassword().equals(u.getPassword()))
+//                            {
+//                                user0.setId(u.getId());
+//                                if(isCheckedFinal)  // If user has opt for keep signed in
+//                                {
+//                                    dbHandler.updateSignedIn_User(true,user0.getId());
+//                                }
+//                                Toast.makeText(v.getContext(),"Welcome " + user0.getName(),Toast.LENGTH_SHORT).show();
+//                                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+//                                extras.putInt("ID",user0.getId());
+//                                activity.putExtras(extras);
+//                                startActivity(activity);
+//                                correct = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                }
 
         });
 
