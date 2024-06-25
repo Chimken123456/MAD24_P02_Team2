@@ -2,6 +2,7 @@ package sg.edu.np.mad.beproductive;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -10,12 +11,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 
@@ -80,14 +89,40 @@ public class Sign_Up extends AppCompatActivity {
                 }
                 //Creating user using database
                 DatabaseHandler dbHandler = new DatabaseHandler(v.getContext());
-                ArrayList<User> user_array = new ArrayList<>();
-                user_array = dbHandler.getAllUsers();
-                int id = user_array.size() + 1;
-                user0.setId(id);
+//                ArrayList<User> user_array = new ArrayList<>();
+//                user_array = dbHandler.getAllUsers();
+//                int id = user_array.size() + 1;
                 user0.setName(name);
                 user0.setPassword(password);
                 user0.setEmail(email);
-                dbHandler.addUsers(user0);
+
+                //Firebase
+                FirebaseDatabase database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
+                DatabaseReference myRef = database.getReference("User");
+
+                myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if(task.isSuccessful())
+                        {
+                            int count = Integer.valueOf(String.valueOf(task.getResult().getChildrenCount()));
+                            DatabaseReference userRef = myRef.child("user" + String.valueOf(count + 1));
+                            user0.setId(count);
+                            HashMap hashMap = new HashMap();
+
+                            hashMap.put("id",count);
+                            hashMap.put("email",user0.getEmail());
+                            hashMap.put("name",user0.getName());
+                            hashMap.put("password",user0.getPassword());
+
+                            userRef.setValue(hashMap);
+                        }
+
+                    }
+                });
+
+
+                //dbHandler.addUsers(user0);
                 Toast.makeText(getApplicationContext(),"Account created",Toast.LENGTH_SHORT).show();
 
                 //Making intent and the relevant data to send over to home menu page
