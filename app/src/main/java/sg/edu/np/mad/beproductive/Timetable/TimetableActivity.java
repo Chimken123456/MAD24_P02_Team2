@@ -76,7 +76,7 @@ public class TimetableActivity extends AppCompatActivity {
         //Display the current date 
         ZoneId zone = ZoneId.of("Singapore");
         LocalDate today = LocalDate.now(zone);
-        String currentDate = "Date: " + today.toString();
+        String currentDate = today.toString();
         TextView dateView = findViewById(R.id.dateView);
         dateView.setText(currentDate);
         //Create instance of Schedule
@@ -86,20 +86,20 @@ public class TimetableActivity extends AppCompatActivity {
             userSchedule.onCreate();
             ArrayList<Timeslot> slots = userSchedule.getTimeslots();
             for (int i = 0; i < slots.size(); i++) {
-                dbHandler.insertActivity(slots.get(i));
+                dbHandler.insertActivity(slots.get(i), id);
             }
 
         }
         //Fetch saved activities from database if it exists
         else {
-            userSchedule = dbHandler.getUserActivities();
+            userSchedule = dbHandler.getUserActivities(id);
         }
         //Store the saved timeslots in an ArrayList
         ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
         //Inflate recyclerview
         RecyclerView recyclerView = findViewById(R.id.timetableRecyclerView);
         LinearLayoutManager linLayoutManager = new LinearLayoutManager(this);
-        TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, this);
+        TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, this, id);
 
         recyclerView.setLayoutManager(linLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
