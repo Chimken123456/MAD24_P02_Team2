@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "591116561754",
+    "firebase_url": "https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "madassignment-36a4c",
+    "storage_bucket": "madassignment-36a4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591116561754:android:f7e23f8728e0f556b81763",
+        "android_client_info": {
+          "package_name": "sg.edu.np.mad.beproductive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8qCMpCM4raB9dO_hfFe6T0WFy_F_4R9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

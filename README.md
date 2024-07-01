@@ -5,7 +5,7 @@ Lim ze yu S10257103
 Clive Giam S10257799
 Nicole Paige Manik S10260727
 Anson Ang Wei Xiang S10258331
-Aqeil Danish Chew
+Aqeil Danish Chew S10257689
 
 App Name: Be Productive
 App Category: Productivity
@@ -47,12 +47,14 @@ Contributions:
 Binded To do list to user in database by adding a user id column in the to do list table in the database.
 Added displaying of username in home menu when logged in
 Designed both log in and sign up.
+Added splash art java
 
 Reminders (Aqeil)
 Role:
 Allows user to create reminders and check all their reminders together at once. 
 The user will be able to write a title for the reminder as well as choose a category which the reminder falls under and set a date and time for when the notification would come in. 
 The user will then be able to see all their reminders that are set and the time they are set for.
+Users are able to edit a reminder, either changing the title or the date it is set for.
 Should the user want to delete a reminder, there is a delete all function at the top.
 Contributions:
 Created the layout for the reminder section of the app. 
