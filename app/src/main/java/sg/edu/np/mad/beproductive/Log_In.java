@@ -30,6 +30,7 @@ import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 
 public class Log_In extends AppCompatActivity {
     private Boolean Checked = false;
+    private Boolean test = false;
 
 
     private void showError(EditText et, String s)
@@ -120,6 +121,36 @@ public class Log_In extends AppCompatActivity {
             activity.putExtras(extras);
 
             startActivity(activity);
+        }
+
+        //When the user closes the app and have the signed in option selected already
+        ArrayList<User> user_array = new ArrayList<>();
+        user_array = dbHandler.getAllUsers();
+        for(User u : user_array)
+        {
+//            Log.i("MAOMAOO",  String.valueOf(u.getId())+ "    "+ u.getName());
+
+            if(u.getSignedIn())
+            {
+                user0.setId(u.getId());
+                user0.setName(u.getName());
+                user0.setPassword(u.getPassword());
+                user0.setEmail(u.getEmail());
+                user0.setSignedIn(u.getSignedIn());
+
+                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+                Bundle extras = new Bundle();
+
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putInt("ID",user0.getId());
+                activity.putExtras(extras);
+
+                startActivity(activity);
+
+                break;
+            }
         }
         stay_signed_in.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -212,10 +243,12 @@ public class Log_In extends AppCompatActivity {
                                                     {
                                                         dbHandler.updateSignedIn_User(true,user0.getId());
                                                         has_acc = true;
+                                                        test = true;
                                                     }
                                                 }
                                                 if(!has_acc)
                                                 {
+                                                    test = true;
                                                     dbHandler.addUsers(user0);
                                                     dbHandler.updateSignedIn_User(true,user0.getId());
                                                 }
