@@ -92,46 +92,46 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public List<ToDoModel> getAllTasks(int id) {
-        List<ToDoModel> taskList = new ArrayList<>();
-        Cursor cur = null;
-        db.beginTransaction();
-        try {
-            cur = db.query(TODO_TABLE, null, null, null, null, null, null, null); //retrieve all rows
-            if (cur != null) {
-                if (cur.moveToFirst()) {
-                    int idIndex = cur.getColumnIndex(ID);
-                    int taskIndex = cur.getColumnIndex(TASK);
-                    int statusIndex = cur.getColumnIndex(STATUS);
-                    int userIndex = cur.getColumnIndex(ID_USER);
-                    if (idIndex != -1 && taskIndex != -1 && statusIndex != -1) {
-                        do {
-                            if(id == cur.getInt(userIndex)) //Check if the task belongs to the given user ID
-                            {
-                                ToDoModel task = new ToDoModel();
-                                task.setId(cur.getInt(idIndex));
-                                task.setTask(cur.getString(taskIndex));
-                                task.setStatus(cur.getInt(statusIndex));
-                                task.setUser_id(cur.getInt(userIndex));
-                                taskList.add(task);
-                            }
-
-                        } while (cur.moveToNext());
-                    }
-                }
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            Log.e("DatabaseHandler", "Error while retrieving tasks", e);
-        } finally {
-            if (cur != null) {
-                cur.close();
-            }
-            db.endTransaction();
-        }
-        Log.d("DatabaseHandler", "Retrieved " + taskList.size() + " tasks");
-        return taskList;
-    }
+//    public List<ToDoModel> getAllTasks(int id) {
+//        List<ToDoModel> taskList = new ArrayList<>();
+//        Cursor cur = null;
+//        db.beginTransaction();
+//        try {
+//            cur = db.query(TODO_TABLE, null, null, null, null, null, null, null); //retrieve all rows
+//            if (cur != null) {
+//                if (cur.moveToFirst()) {
+//                    int idIndex = cur.getColumnIndex(ID);
+//                    int taskIndex = cur.getColumnIndex(TASK);
+//                    int statusIndex = cur.getColumnIndex(STATUS);
+//                    int userIndex = cur.getColumnIndex(ID_USER);
+//                    if (idIndex != -1 && taskIndex != -1 && statusIndex != -1) {
+//                        do {
+//                            if(id == cur.getInt(userIndex)) //Check if the task belongs to the given user ID
+//                            {
+//                                ToDoModel task = new ToDoModel();
+//                                task.setId(cur.getInt(idIndex));
+//                                task.setTask(cur.getString(taskIndex));
+//                                task.setStatus(cur.getInt(statusIndex));
+//                                task.setUser_id(cur.getInt(userIndex));
+//                                taskList.add(task);
+//                            }
+//
+//                        } while (cur.moveToNext());
+//                    }
+//                }
+//            }
+//            db.setTransactionSuccessful();
+//        } catch (Exception e) {
+//            Log.e("DatabaseHandler", "Error while retrieving tasks", e);
+//        } finally {
+//            if (cur != null) {
+//                cur.close();
+//            }
+//            db.endTransaction();
+//        }
+//        Log.d("DatabaseHandler", "Retrieved " + taskList.size() + " tasks");
+//        return taskList;
+//    }
 
     public void updateStatus(int id, int status) {
         ContentValues cv = new ContentValues();
@@ -219,6 +219,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return user_array;
     }
+
+    // Add method in DatabaseHandler.java
+
 
     public void updateSignedIn_User(boolean signedIn,int userId) //Updating the user's stay signed in status
     {

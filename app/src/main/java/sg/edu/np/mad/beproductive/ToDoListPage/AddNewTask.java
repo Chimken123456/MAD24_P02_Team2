@@ -1,18 +1,11 @@
 package sg.edu.np.mad.beproductive.ToDoListPage;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,84 +14,81 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-
-import java.util.ArrayList;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.R;
-import sg.edu.np.mad.beproductive.DatabaseHandler;
-import sg.edu.np.mad.beproductive.User;
 
 public class AddNewTask extends BottomSheetDialogFragment {
     public static final String TAG = "ActionBottomDialog";
     private EditText newTaskText;
     private Button newTaskSaveButton;
-    private DatabaseHandler db;
-    private BroadcastReceiver receiver;
-    private int user_id;
-    private User user = new User("testing","testing","testing");
-    private ToDoModel task;
+    private DatabaseReference userRef;
 
-    public static AddNewTask newInstance(){
+    private String taskId = null;
+    private String taskText = null;
+
+    public static AddNewTask newInstance() {
         return new AddNewTask();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(STYLE_NORMAL, R.style.DialogStyle);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
-        View view = inflater.inflate(R.layout.new_task, container,false);
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams. SOFT_INPUT_ADJUST_RESIZE);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.new_task, container, false);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         return view;
     }
+
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         newTaskText = getView().findViewById(R.id.newTaskTextbox);
         newTaskSaveButton = getView().findViewById(R.id.newTaskSaveBtn);
         newTaskSaveButton.setEnabled(false); // set button to false so user cannot save task when input is empty
-        user.setId(100);
-        user_id =  Global.getUser_Id();
-        db = new DatabaseHandler(getActivity());
-        db.openDatabase();
+
+        // Initialize Firebase reference
+        String userPath = Global.getUsernum();  // Retrieve user path from global variable
+        userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("todo");
 
         boolean isUpdate = false;
         final Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             isUpdate = true;
             String task = bundle.getString("task");
+            taskId = bundle.getString("id"); // Retrieve task ID from bundle
             newTaskText.setText(task);
-            if(task.length()>0)
+            if (task.length() > 0)
                 newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), com.google.android.material.R.color.design_default_color_primary_dark));
         }
+
         newTaskText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().equals("")){
-                    newTaskSaveButton.setEnabled(false); //if no input of task, unable to save
+                if (s.toString().equals("")) {
+                    newTaskSaveButton.setEnabled(false); // If no input of task, unable to save
                     newTaskSaveButton.setTextColor(Color.GRAY);
-                }
-                else{
-                    newTaskSaveButton.setEnabled(true); // input of task detected, able to save
+                } else {
+                    newTaskSaveButton.setEnabled(true); // Input of task detected, able to save
                     newTaskSaveButton.setTextColor(ContextCompat.getColor(getContext(), com.google.android.material.R.color.design_default_color_primary_dark));
                 }
             }
-            @Override
-            public void afterTextChanged(Editable s) {
 
-            }
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
+
         boolean finalIsUpdate = isUpdate;
         newTaskSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,33 +96,24 @@ public class AddNewTask extends BottomSheetDialogFragment {
                 String text = newTaskText.getText().toString();
 
                 if (finalIsUpdate) {
-                    db.updateTask(bundle.getInt("id"), text);
+                    // Update existing task
+                    userRef.child(taskId).child("task").setValue(text);
                 } else {
-                    ArrayList<User> user_array = new ArrayList<>();
-                    user_array = db.getAllUsers();
-                    for(User u :user_array)
-                    {
-                        if(u.getId() == user_id)
-                        {
-                            user = u;
-                            break;
-                        }
-                    }
-                    ToDoModel task = new ToDoModel();
-                    task.setTask(text);
-                    task.setStatus(0);
-                    db.insertTask(task,user.getId());
+                    // Create new task
+                    String newTaskId = userRef.push().getKey(); // Generate unique identifier
+                    ToDoModel newTask = new ToDoModel(newTaskId, text, 0);
+                    userRef.child(newTaskId).setValue(newTask);
                 }
                 dismiss();
             }
         });
     }
+
     @Override
-    public void onDismiss(DialogInterface dialog){
+    public void onDismiss(DialogInterface dialog) {
         Activity activity = getActivity();
         if (activity instanceof DialogCloseListener) {
-            ((DialogCloseListener)activity).handleDialogClose(dialog);
+            ((DialogCloseListener) activity).handleDialogClose(dialog);
         }
-
     }
 }
