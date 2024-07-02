@@ -178,7 +178,7 @@ public class HomeMenu extends AppCompatActivity {
         User user0 = new User(username,password,email);
         user0.setId(id);
 
-        Global.setUser_Id(user0.getId());
+        Global.setUser_Id(Integer.toString(user0.getId()));
 
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
         CardView logOutButton = findViewById(R.id.logout_btn);
@@ -198,7 +198,7 @@ public class HomeMenu extends AppCompatActivity {
             public void onClick(View v) {
                 Bundle extras = new Bundle();
                 extras.putInt("ID",user0.getId());
-                Global.setUser_Id(user0.getId());
+                Global.setUser_Id(Integer.toString(user0.getId()));
 
                 extras.putString("Username",user0.getName());
                 extras.putString("Password",user0.getPassword());
@@ -217,8 +217,7 @@ public class HomeMenu extends AppCompatActivity {
             public void onClick(View v) {
                 Bundle extras = new Bundle();
                 extras.putInt("ID",user0.getId());
-                Global.setUser_Id(user0.getId());
-
+                Global.setUser_Id(Integer.toString(user0.getId()));
                 extras.putString("Username",user0.getName());
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());
