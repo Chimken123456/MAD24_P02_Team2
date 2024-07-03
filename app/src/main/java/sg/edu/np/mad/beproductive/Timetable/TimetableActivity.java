@@ -22,6 +22,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
@@ -57,6 +60,11 @@ public class TimetableActivity extends AppCompatActivity {
         user.setId(id);
         //Create instance of DatabaseHandler for the current activity
         DatabaseHandler dbHandler = new DatabaseHandler(this);
+
+        //Firebase
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        DatabaseReference myRef = database.getReference("User");
+
         //Back button
         ImageView backButton = findViewById(R.id.timetable_back);
         //Start HomeMenu activity when clicked
@@ -92,7 +100,15 @@ public class TimetableActivity extends AppCompatActivity {
         }
         //Fetch saved activities from database if it exists
         else {
+            if (dbHandler.checkUserExist(id) == false) {
+                userSchedule.onCreate();
+                ArrayList<Timeslot> slots = userSchedule.getTimeslots();
+                for (int i = 0; i < slots.size(); i++) {
+                    dbHandler.insertActivity(slots.get(i), id);
+                }
+            }
             userSchedule = dbHandler.getUserActivities(id);
+
         }
         //Store the saved timeslots in an ArrayList
         ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
