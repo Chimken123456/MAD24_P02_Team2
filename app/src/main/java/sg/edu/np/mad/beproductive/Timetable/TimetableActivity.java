@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -22,8 +24,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
@@ -32,6 +38,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
@@ -62,8 +69,9 @@ public class TimetableActivity extends AppCompatActivity {
         DatabaseHandler dbHandler = new DatabaseHandler(this);
 
         //Firebase
+        String path = "User/user" + String.valueOf(id) + "/schedule";
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
-        DatabaseReference myRef = database.getReference("User");
+        DatabaseReference dbRef = database.getReference(path);
 
         //Back button
         ImageView backButton = findViewById(R.id.timetable_back);
@@ -89,27 +97,48 @@ public class TimetableActivity extends AppCompatActivity {
         dateView.setText(currentDate);
         //Create instance of Schedule
         Schedule userSchedule = new Schedule();
-        //Check if there is currently a timetable in the database and initialises one if there isnt
-        if (dbHandler.checkTableNull()) {
-            userSchedule.onCreate();
-            ArrayList<Timeslot> slots = userSchedule.getTimeslots();
-            for (int i = 0; i < slots.size(); i++) {
-                dbHandler.insertActivity(slots.get(i), id);
-            }
 
-        }
-        //Fetch saved activities from database if it exists
-        else {
-            if (dbHandler.checkUserExist(id) == false) {
-                userSchedule.onCreate();
-                ArrayList<Timeslot> slots = userSchedule.getTimeslots();
-                for (int i = 0; i < slots.size(); i++) {
-                    dbHandler.insertActivity(slots.get(i), id);
+        //Firebase implementation
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+                    for (DataSnapshot item : snapshot.getChildren()) {
+                        String time = item.child("time").getValue().toString();
+                        String desc = item.child("desc").getValue().toString();
+                        Timeslot tempTimeslot = new Timeslot(time, desc);
+                        userSchedule.addTimeslot(tempTimeslot);
+                    }
+                }
+                else {
+                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
                 }
             }
-            userSchedule = dbHandler.getUserActivities(id);
+        });
 
-        }
+        //Check if there is currently a timetable in the database and initialises one if there isnt
+//        if (dbHandler.checkTableNull()) {
+//            userSchedule.onCreate();
+//            ArrayList<Timeslot> slots = userSchedule.getTimeslots();
+//            for (int i = 0; i < slots.size(); i++) {
+//                dbHandler.insertActivity(slots.get(i), id);
+//            }
+//
+//        }
+//        Fetch saved activities from database if it exists
+//        else {
+//            if (dbHandler.checkUserExist(id) == false) {
+//                userSchedule.onCreate();
+//                ArrayList<Timeslot> slots = userSchedule.getTimeslots();
+//                for (int i = 0; i < slots.size(); i++) {
+//                    dbHandler.insertActivity(slots.get(i), id);
+//                }
+//            }
+//            userSchedule = dbHandler.getUserActivities(id);
+//        }
+
+
         //Store the saved timeslots in an ArrayList
         ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
         //Inflate recyclerview
@@ -130,8 +159,28 @@ public class TimetableActivity extends AppCompatActivity {
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        dbHandler.resetAllActivities();
-                        restartActivity();
+                        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                if(task.isSuccessful())
+                                {
+                                    //Create schedule in firebase
+                                    ArrayList<Timeslot> tempTimeslots = userSchedule.getTimeslots();
+
+                                    for (int i = 0; i<tempTimeslots.size(); i++) {
+                                        DatabaseReference timeslot = dbRef.child(String.valueOf(i));
+
+                                        HashMap tempMap = new HashMap();
+
+                                        tempMap.put("time", (tempTimeslots.get(i).getTime()));
+                                        tempMap.put("desc", (tempTimeslots.get(i)).getDescription());
+
+                                        timeslot.setValue(tempMap);
+                                    }
+                                }
+
+                            }
+                        });
                     }
                 });
         //Closes the alert dialog on click
