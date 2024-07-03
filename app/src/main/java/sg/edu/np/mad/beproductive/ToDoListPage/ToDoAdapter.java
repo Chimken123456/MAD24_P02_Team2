@@ -32,7 +32,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         this.todoList = new ArrayList<>(); //initialize
 
         // Initialize Firebase reference
-        String userPath = Global.getUsernum();  // Retrieve user path from global variable
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);  // Retrieve user path from global variable
         userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("todo");
     }
 

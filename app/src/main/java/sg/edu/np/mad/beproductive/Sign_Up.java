@@ -108,7 +108,6 @@ public class Sign_Up extends AppCompatActivity {
                             int count = Integer.valueOf(String.valueOf(task.getResult().getChildrenCount()));
                             DatabaseReference userRef = myRef.child("user" + String.valueOf(count + 1));
                             user0.setId(count);
-                            Global.setUsernum(userRef.getKey());
                             HashMap hashMap = new HashMap();
 
                             hashMap.put("id",count);
@@ -136,7 +135,7 @@ public class Sign_Up extends AppCompatActivity {
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());
                 activity.putExtras(extras);
-                Global.setUser_Id(Integer.toString(user0.getId())); //Setting the global variable user id such that all activities can access
+                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
                 startActivity(activity);
             }
         });

@@ -64,7 +64,8 @@ public class TodoList extends AppCompatActivity implements DialogCloseListener {
 
         fab = findViewById(R.id.addtaskFAB);
 
-        String userPath = Global.getUsernum(); // Retrieve user path from global variable
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1); // Retrieve user path from global variable
         if (userPath != null) {
             userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("todo");
             loadTasks();

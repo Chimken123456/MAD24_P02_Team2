@@ -1,6 +1,5 @@
 package sg.edu.np.mad.beproductive;
 
-import static sg.edu.np.mad.beproductive.Global.getUsernum;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -113,8 +112,7 @@ public class Log_In extends AppCompatActivity {
             user0.setPassword(password);
             user0.setEmail(email);
             user0.setId(id);
-            Global.setUser_Id(Integer.toString(user0.getId())); // Setting the global variable user id such that all activities can access
-            Global.setUser_Id(Integer.toString(user0.getId())); //Setting the global variable user id such that all activities can access
+            Global.setUser_Id(user0.getId());//Setting the global variable user id such that all activities can access
             Bundle extras = new Bundle();
 
             extras.putString("Username",user0.getName());
@@ -141,7 +139,7 @@ public class Log_In extends AppCompatActivity {
                 user0.setEmail(u.getEmail());
                 user0.setSignedIn(u.getSignedIn());
 
-                Global.setUser_Id(Integer.toString(user0.getId())); //Setting the global variable user id such that all activities can access
+                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
                 Bundle extras = new Bundle();
 
                 extras.putString("Username",user0.getName());
@@ -231,9 +229,7 @@ public class Log_In extends AppCompatActivity {
                                             int id = Integer.valueOf(String.valueOf(snapshot.child("id").getValue()));
                                             user0.setId(id);
                                             Toast.makeText(v.getContext(),"Welcome " + user0.getName(),Toast.LENGTH_SHORT).show();
-                                            Global.setUser_Id(Integer.toString(user0.getId())); //Setting the global variable user id such that all activities can access
-                                            Global.setUsernum(snapshot.getKey()); // Set the userNum in Global class
-                                            Log.i("LoginActivity", "userNum set to: " + getUsernum());
+                                            Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
                                             extras.putInt("ID",user0.getId());
                                             extras.putString("userNum", snapshot.getKey()); // Pass userNum
                                             activity.putExtras(extras);
@@ -253,11 +249,10 @@ public class Log_In extends AppCompatActivity {
                                                         test = true;
                                                     }
                                                 }
-                                                if(!has_acc)
-                                                {
+                                                if(!has_acc) {
                                                     test = true;
                                                     dbHandler.addUsers(user0);
-                                                    dbHandler.updateSignedIn_User(true,user0.getId());
+                                                    dbHandler.updateSignedIn_User(true, user0.getId());
                                                 }
                                             }
 

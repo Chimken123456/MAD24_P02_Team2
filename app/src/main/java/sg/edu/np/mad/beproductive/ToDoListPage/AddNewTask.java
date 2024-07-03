@@ -56,7 +56,8 @@ public class AddNewTask extends BottomSheetDialogFragment {
         newTaskSaveButton.setEnabled(false); // set button to false so user cannot save task when input is empty
 
         // Initialize Firebase reference
-        String userPath = Global.getUsernum();  // Retrieve user path from global variable
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1); // Retrieve user path from global variable
         userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("todo");
 
         boolean isUpdate = false;
