@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.R;
 
 public class ReminderMain extends AppCompatActivity {
@@ -41,8 +42,9 @@ public class ReminderMain extends AppCompatActivity {
 
     private List<Reminder> reminderList = new ArrayList<>();
     private ReminderAdapter reminderAdapter;
+    private DatabaseHandler db;
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    //@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +55,9 @@ public class ReminderMain extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        db = new DatabaseHandler(this);
+        reminderList = db.getAllReminders();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         reminderAdapter = new ReminderAdapter(reminderList, new ReminderAdapter.OnItemClickListener() {
@@ -91,9 +96,13 @@ public class ReminderMain extends AppCompatActivity {
 
         findViewById(R.id.backbtn).setOnClickListener(v -> finish());
 
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATION_PERMISSION);
-//        }
+        if (reminderList.isEmpty()) {
+            findViewById(R.id.recyclerView).setVisibility(View.GONE);
+            findViewById(R.id.empty).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
+            findViewById(R.id.empty).setVisibility(View.GONE);
+        }
     }
 
     private void showEditDeleteDialog(int position) {
@@ -106,6 +115,7 @@ public class ReminderMain extends AppCompatActivity {
                             Reminder reminder = reminderList.get(position);
                             Intent intent = new Intent(ReminderMain.this, EditReminderActivity.class);
                             intent.putExtra("reminder_position", position);
+                            intent.putExtra("reminder_id", reminder.getId());
                             intent.putExtra("reminder_title", reminder.getTitle());
                             intent.putExtra("reminder_datetime", reminder.getDatetime());
                             intent.putExtra("reminder_type", reminder.getType());
@@ -133,64 +143,51 @@ public class ReminderMain extends AppCompatActivity {
     }
 
     private void deleteReminder(int position) {
+        db.deleteReminder(reminderList.get(position));
         reminderList.remove(position);
         reminderAdapter.notifyItemRemoved(position);
-        if (reminderList.isEmpty()) {
-            findViewById(R.id.recyclerView).setVisibility(View.GONE);
-            findViewById(R.id.empty).setVisibility(View.VISIBLE);
-        }
     }
 
     private void deleteAllReminders() {
+        for (Reminder reminder : reminderList) {
+            db.deleteReminder(reminder);
+        }
         reminderList.clear();
         reminderAdapter.notifyDataSetChanged();
         findViewById(R.id.recyclerView).setVisibility(View.GONE);
         findViewById(R.id.empty).setVisibility(View.VISIBLE);
     }
 
-    private void proceedToReminderActivity() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_NOTIFICATION_PERMISSION);
-        } else {
-            Intent intent = new Intent(ReminderMain.this, ReminderActivity.class);
-            startActivityForResult(intent, REQUEST_ADD_REMINDER);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_NOTIFICATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                proceedToReminderActivity();
-            } else {
-                Toast.makeText(this, "Notification permission is required for reminders.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_ADD_REMINDER) {
+                String title = data.getStringExtra("reminder_title");
+                String datetime = data.getStringExtra("reminder_datetime");
+                String type = data.getStringExtra("reminder_type");
 
-        if (data != null) {
-            int position = data.getIntExtra("reminder_position", -1);
-            String title = data.getStringExtra("reminder_title");
-            String datetime = data.getStringExtra("reminder_datetime");
-            String type = data.getStringExtra("reminder_type");
+                Reminder newReminder = new Reminder(title, datetime, type);
+                db.addReminder(newReminder);
+                reminderList.add(newReminder);
+                reminderAdapter.notifyItemInserted(reminderList.size() - 1);
 
-            if (requestCode == REQUEST_ADD_REMINDER && resultCode == RESULT_OK) {
-                Reminder reminder = new Reminder(title, datetime, type);
-                reminderList.add(reminder);
-                reminderAdapter.notifyDataSetChanged();
                 findViewById(R.id.recyclerView).setVisibility(View.VISIBLE);
                 findViewById(R.id.empty).setVisibility(View.GONE);
-            } else if (requestCode == REQUEST_EDIT_REMINDER && resultCode == RESULT_OK) {
-                if (position != -1) {
+            } else if (requestCode == REQUEST_EDIT_REMINDER) {
+                int position = data.getIntExtra("reminder_position", -1);
+                int id = data.getIntExtra("reminder_id", -1);
+                String title = data.getStringExtra("reminder_title");
+                String datetime = data.getStringExtra("reminder_datetime");
+                String type = data.getStringExtra("reminder_type");
+
+                if (position != -1 && id != -1) {
                     Reminder reminder = reminderList.get(position);
                     reminder.setTitle(title);
                     reminder.setDatetime(datetime);
                     reminder.setType(type);
+
+                    db.updateReminder(reminder);
                     reminderAdapter.notifyItemChanged(position);
                 }
             }
@@ -198,16 +195,9 @@ public class ReminderMain extends AppCompatActivity {
     }
 
 
-    private void createNotificationChannel(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            CharSequence name = "beproductiveReminderChannel";
-            String description = "Channel for beproductive";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("beproductive",name,importance);
-            channel.setDescription(description);
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+    private void proceedToReminderActivity() {
+        Intent intent = new Intent(this, ReminderActivity.class);
+        startActivityForResult(intent, REQUEST_ADD_REMINDER);
     }
 }

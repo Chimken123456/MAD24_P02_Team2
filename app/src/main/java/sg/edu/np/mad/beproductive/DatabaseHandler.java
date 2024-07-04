@@ -17,6 +17,8 @@ import java.util.List;
 import sg.edu.np.mad.beproductive.Timetable.Schedule;
 import sg.edu.np.mad.beproductive.Timetable.Timeslot;
 import sg.edu.np.mad.beproductive.ToDoListPage.ToDoModel;
+import sg.edu.np.mad.beproductive.Reminders.Reminder
+        ;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int VERSION = 1;
@@ -46,6 +48,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SCHEDULE_TABLE = "schedule";
     private static final String CREATE_SCHEDULE_TABLE = "CREATE TABLE " + SCHEDULE_TABLE + "(" + TIMESLOT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + TIMESLOT + " TEXT, " + DESC + " TEXT " +")";
 
+    // Reminders data
+    private static final String TABLE_REMINDERS = "reminders";
+    private static final String KEY_ID = "reminder_id";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_DATETIME = "datetime";
+    private static final String KEY_TYPE = "type";
+
+    private static final String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "("
+            + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TITLE + " TEXT,"
+            + KEY_DATETIME + " TEXT," + KEY_TYPE + " TEXT" + ")";
+
     private SQLiteDatabase db;
 
     public DatabaseHandler(Context context){
@@ -57,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_TODO_TABLE);
         db.execSQL(CREATE_SCHEDULE_TABLE);
+        db.execSQL(CREATE_REMINDERS_TABLE);
         // Log.d("DatabaseHandler", "Database created with table: " + CREATE_TODO_TABLE);
 
     }
@@ -71,6 +85,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SCHEDULE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERS);
         onCreate(db);
     }
 
@@ -331,6 +346,74 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //If the number of values in the table is more than 0, the table exists. Otherwise it is false.
         if (count > 0) { return false; }
         else { return true; }
+    }
+
+
+    // Reminder data section
+    public void addReminder(Reminder reminder) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TITLE, reminder.getTitle());
+        values.put(KEY_DATETIME, reminder.getDatetime());
+        values.put(KEY_TYPE, reminder.getType());
+
+        db.insert(TABLE_REMINDERS, null, values);
+        db.close();
+    }
+
+    Reminder getReminder(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_REMINDERS, new String[] { KEY_ID,
+                        KEY_TITLE, KEY_DATETIME, KEY_TYPE }, KEY_ID + "=?",
+                new String[] { String.valueOf(id) }, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Reminder reminder = new Reminder(Integer.parseInt(cursor.getString(0)),
+                cursor.getString(1), cursor.getString(2), cursor.getString(3));
+        return reminder;
+    }
+
+    public List<Reminder> getAllReminders() {
+        List<Reminder> reminderList = new ArrayList<Reminder>();
+        String selectQuery = "SELECT  * FROM " + TABLE_REMINDERS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Reminder reminder = new Reminder();
+                reminder.setId(Integer.parseInt(cursor.getString(0)));
+                reminder.setTitle(cursor.getString(1));
+                reminder.setDatetime(cursor.getString(2));
+                reminder.setType(cursor.getString(3));
+                reminderList.add(reminder);
+            } while (cursor.moveToNext());
+        }
+
+        return reminderList;
+    }
+
+    public int updateReminder(Reminder reminder) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_TITLE, reminder.getTitle());
+        values.put(KEY_DATETIME, reminder.getDatetime());
+        values.put(KEY_TYPE, reminder.getType());
+
+        return db.update(TABLE_REMINDERS, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(reminder.getId()) });
+    }
+
+    public void deleteReminder(Reminder reminder) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_REMINDERS, KEY_ID + " = ?",
+                new String[] { String.valueOf(reminder.getId()) });
+        db.close();
     }
 }
 
