@@ -10,4 +10,5 @@ public class Global {
     public static void setUser_Id(int user_Id) {
         Global.user_Id = user_Id;
     }
+
 }

@@ -1,23 +1,26 @@
 package sg.edu.np.mad.beproductive.ToDoListPage;
 
 public class ToDoModel {
-    private int id, status, user_id; //user_id to link account to todolist
+    private String id;
     private String task;
+    private int status;
 
-    public int getId() {
+    public ToDoModel() {
+        // Default constructor required for calls to DataSnapshot.getValue(ToDoModel.class)
+    }
+
+    public ToDoModel(String id, String task, int status) {
+        this.id = id;
+        this.task = task;
+        this.status = status;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public int getStatus() {
-        return status;
-    } // status 1 = done, status 0 = undone
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public String getTask() {
@@ -28,12 +31,11 @@ public class ToDoModel {
         this.task = task;
     }
 
-    public int getUserId()
-    {
-        return user_id;
+    public int getStatus() {
+        return status;
     }
-    public void setUser_id(int user_id)
-    {
-        this.user_id = user_id;
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
