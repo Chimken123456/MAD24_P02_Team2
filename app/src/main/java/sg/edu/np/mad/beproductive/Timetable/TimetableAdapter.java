@@ -44,7 +44,7 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
         timeslotList = input;
         context = activity;
         userId = userid;
-        path = "User/user" + String.valueOf(userid) + "/schedule";
+        path = "User/user" + String.valueOf(userid+1) + "/schedule";
         database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
         dbRef = database.getReference(path);
     }
@@ -77,25 +77,7 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
 //                        DatabaseHandler dbHandler = new DatabaseHandler(context);
                         activity_text = input.getText().toString();
 //                        dbHandler.updateActivity(activity_text, userId, tempName);
-                        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if(task.isSuccessful())
-                                {
-
-                                    DatabaseReference timeslot = dbRef.child(String.valueOf(id));
-
-                                    HashMap tempMap = new HashMap();
-
-                                    tempMap.put("time", tempName);
-                                    tempMap.put("desc", activity_text);
-
-                                    timeslot.setValue(tempMap);
-
-                                }
-
-                            }
-                        });
+                        dbRef.child(String.valueOf(position)).child("desc").setValue(activity_text);
                         temp.setDescription(activity_text);
                         holder.desc.setText(temp.getDescription());
 

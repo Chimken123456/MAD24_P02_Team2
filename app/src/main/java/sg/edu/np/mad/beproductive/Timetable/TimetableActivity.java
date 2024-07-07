@@ -69,7 +69,7 @@ public class TimetableActivity extends AppCompatActivity {
         DatabaseHandler dbHandler = new DatabaseHandler(this);
 
         //Firebase
-        String path = "User/user" + String.valueOf(id) + "/schedule";
+        String path = "User/user" + String.valueOf(id+1) + "/schedule";
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
         DatabaseReference dbRef = database.getReference(path);
 
@@ -79,10 +79,10 @@ public class TimetableActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle extras = new Bundle();
-                extras.putInt("ID",user.getId());
-                extras.putString("Username",user.getName());
-                extras.putString("Password",user.getPassword());
-                extras.putString("Email",user.getEmail());
+                extras.putInt("ID",id);
+                extras.putString("Username",username);
+                extras.putString("Password",password);
+                extras.putString("Email",email);
                 Intent intent = new Intent(TimetableActivity.this, HomeMenu.class);
                 intent.putExtras(extras);
                 startActivity(intent);
@@ -105,17 +105,30 @@ public class TimetableActivity extends AppCompatActivity {
                 if(task.isSuccessful()) {
                     DataSnapshot snapshot = task.getResult();
                     for (DataSnapshot item : snapshot.getChildren()) {
-                        String time = item.child("time").getValue().toString();
-                        String desc = item.child("desc").getValue().toString();
+                        String time = String.valueOf(item.child("time").getValue());
+                        String desc = String.valueOf(item.child("desc").getValue());
                         Timeslot tempTimeslot = new Timeslot(time, desc);
                         userSchedule.addTimeslot(tempTimeslot);
                     }
+                    Log.d("firebase", "Fetch table success");
+                    //Store the saved timeslots in an ArrayList
+                    ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
+                    //Inflate recyclerview
+                    RecyclerView recyclerView = findViewById(R.id.timetableRecyclerView);
+                    LinearLayoutManager linLayoutManager = new LinearLayoutManager(TimetableActivity.this);
+                    TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, TimetableActivity.this, id);
+
+                    recyclerView.setLayoutManager(linLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(tAdapter);
                 }
                 else {
                     Log.d("firebase", String.valueOf(task.getResult().getValue()));
                 }
             }
         });
+
+
 
         //Check if there is currently a timetable in the database and initialises one if there isnt
 //        if (dbHandler.checkTableNull()) {
@@ -139,16 +152,7 @@ public class TimetableActivity extends AppCompatActivity {
 //        }
 
 
-        //Store the saved timeslots in an ArrayList
-        ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
-        //Inflate recyclerview
-        RecyclerView recyclerView = findViewById(R.id.timetableRecyclerView);
-        LinearLayoutManager linLayoutManager = new LinearLayoutManager(this);
-        TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, this, id);
 
-        recyclerView.setLayoutManager(linLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(tAdapter);
 
         //Alert for reset
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -159,28 +163,10 @@ public class TimetableActivity extends AppCompatActivity {
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                if(task.isSuccessful())
-                                {
-                                    //Create schedule in firebase
-                                    ArrayList<Timeslot> tempTimeslots = userSchedule.getTimeslots();
-
-                                    for (int i = 0; i<tempTimeslots.size(); i++) {
-                                        DatabaseReference timeslot = dbRef.child(String.valueOf(i));
-
-                                        HashMap tempMap = new HashMap();
-
-                                        tempMap.put("time", (tempTimeslots.get(i).getTime()));
-                                        tempMap.put("desc", (tempTimeslots.get(i)).getDescription());
-
-                                        timeslot.setValue(tempMap);
-                                    }
-                                }
-
-                            }
-                        });
+                        for (int i = 0; i<24; i++){
+                            dbRef.child(String.valueOf(i)).child("desc").setValue("");
+                        }
+                        restartActivity();
                     }
                 });
         //Closes the alert dialog on click
@@ -205,8 +191,8 @@ public class TimetableActivity extends AppCompatActivity {
     //Method to restart the activity without transition
     private void restartActivity() {
         finish();
-        overridePendingTransition(0,0);
+        overridePendingTransition(0, 0);
         startActivity(getIntent());
-        overridePendingTransition(0,0);
+        overridePendingTransition(0, 0);
     }
 }

@@ -25,4 +25,8 @@ public class Schedule {
         }
     }
 
+    public void Clear() {
+        this.timeslots.clear();
+    }
+
 }
