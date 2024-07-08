@@ -13,11 +13,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import sg.edu.np.mad.beproductive.DatabaseHandler;
@@ -26,11 +34,19 @@ import sg.edu.np.mad.beproductive.R;
 public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> {
     ArrayList<Timeslot> timeslotList;
     TimetableActivity context;
+    int userId;
+    String path;
+    FirebaseDatabase database;
+    DatabaseReference dbRef;
 
     private String activity_text = "";
-    public TimetableAdapter(ArrayList<Timeslot> input, TimetableActivity activity) {
+    public TimetableAdapter(ArrayList<Timeslot> input, TimetableActivity activity, int userid) {
         timeslotList = input;
         context = activity;
+        userId = userid;
+        path = "User/user" + String.valueOf(userid+1) + "/schedule";
+        database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        dbRef = database.getReference(path);
     }
 
     public TimetableViewHolder onCreateViewHolder(ViewGroup parent, int ViewType){
@@ -41,24 +57,27 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
     public void onBindViewHolder(TimetableViewHolder holder, int position) {
         Timeslot temp = timeslotList.get(position);
         String tempName = temp.getTime();
-        int timeslot_id = temp.getTimeslot_id();
         holder.timeslot.setText(tempName);
         holder.desc.setText(temp.getDescription());
+
         //Alert dialog that prompts the user for input
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(temp.getDescription());
         builder.setView(input);
         builder.setTitle("Enter the activity for this timeslot");
         builder.setCancelable(true);
+
         //Update the text shown for the current timeslot and updates the corresponding entry in the databse
         builder.setPositiveButton("Confirm", new
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        DatabaseHandler dbHandler = new DatabaseHandler(context);
+//                        DatabaseHandler dbHandler = new DatabaseHandler(context);
                         activity_text = input.getText().toString();
-                        dbHandler.updateActivity(activity_text, timeslot_id);
+//                        dbHandler.updateActivity(activity_text, userId, tempName);
+                        dbRef.child(String.valueOf(position)).child("desc").setValue(activity_text);
                         temp.setDescription(activity_text);
                         holder.desc.setText(temp.getDescription());
 

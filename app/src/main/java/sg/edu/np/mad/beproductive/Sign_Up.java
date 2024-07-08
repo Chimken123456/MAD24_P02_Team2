@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
+import sg.edu.np.mad.beproductive.Timetable.Schedule;
+import sg.edu.np.mad.beproductive.Timetable.Timeslot;
 
 public class Sign_Up extends AppCompatActivity {
 
@@ -107,6 +109,7 @@ public class Sign_Up extends AppCompatActivity {
                         {
                             int count = Integer.valueOf(String.valueOf(task.getResult().getChildrenCount()));
                             DatabaseReference userRef = myRef.child("user" + String.valueOf(count + 1));
+                            DatabaseReference scheduleRef = userRef.child("schedule");
                             user0.setId(count);
                             HashMap hashMap = new HashMap();
 
@@ -117,7 +120,25 @@ public class Sign_Up extends AppCompatActivity {
 
                             userRef.setValue(hashMap);
 
+                          
+                            //Create schedule in firebase
+                            Schedule tempSchedule = new Schedule();
+                            tempSchedule.onCreate();
+                            ArrayList<Timeslot> tempTimeslots = tempSchedule.getTimeslots();
+
+                            for (int i = 0; i<tempTimeslots.size(); i++) {
+                                DatabaseReference timeslot = scheduleRef.child(String.valueOf(i));
+
+                                HashMap tempMap = new HashMap();
+
+                                tempMap.put("time", (tempTimeslots.get(i).getTime()));
+                                tempMap.put("desc", (tempTimeslots.get(i)).getDescription());
+
+                                timeslot.setValue(tempMap);
+                            }
+
                             DatabaseReference todoRef = userRef.child("todo"); // create to do path upon submission
+
                         }
 
                     }

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -22,6 +24,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
@@ -29,6 +38,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
@@ -57,16 +67,22 @@ public class TimetableActivity extends AppCompatActivity {
         user.setId(id);
         //Create instance of DatabaseHandler for the current activity
         DatabaseHandler dbHandler = new DatabaseHandler(this);
+
+        //Firebase
+        String path = "User/user" + String.valueOf(id+1) + "/schedule";
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
+        DatabaseReference dbRef = database.getReference(path);
+
         //Back button
         ImageView backButton = findViewById(R.id.timetable_back);
         //Start HomeMenu activity when clicked
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Bundle extras = new Bundle();
-                extras.putInt("ID",user.getId());
-                extras.putString("Username",user.getName());
-                extras.putString("Password",user.getPassword());
-                extras.putString("Email",user.getEmail());
+                extras.putInt("ID",id);
+                extras.putString("Username",username);
+                extras.putString("Password",password);
+                extras.putString("Email",email);
                 Intent intent = new Intent(TimetableActivity.this, HomeMenu.class);
                 intent.putExtras(extras);
                 startActivity(intent);
@@ -76,34 +92,67 @@ public class TimetableActivity extends AppCompatActivity {
         //Display the current date 
         ZoneId zone = ZoneId.of("Singapore");
         LocalDate today = LocalDate.now(zone);
-        String currentDate = "Date: " + today.toString();
+        String currentDate = today.toString();
         TextView dateView = findViewById(R.id.dateView);
         dateView.setText(currentDate);
         //Create instance of Schedule
         Schedule userSchedule = new Schedule();
-        //Check if there is currently a timetable in the database and initialises one if there isnt
-        if (dbHandler.checkTableNull()) {
-            userSchedule.onCreate();
-            ArrayList<Timeslot> slots = userSchedule.getTimeslots();
-            for (int i = 0; i < slots.size(); i++) {
-                dbHandler.insertActivity(slots.get(i));
+
+        //Firebase implementation
+        dbRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+                    for (DataSnapshot item : snapshot.getChildren()) {
+                        String time = String.valueOf(item.child("time").getValue());
+                        String desc = String.valueOf(item.child("desc").getValue());
+                        Timeslot tempTimeslot = new Timeslot(time, desc);
+                        userSchedule.addTimeslot(tempTimeslot);
+                    }
+                    Log.d("firebase", "Fetch table success");
+                    //Store the saved timeslots in an ArrayList
+                    ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
+                    //Inflate recyclerview
+                    RecyclerView recyclerView = findViewById(R.id.timetableRecyclerView);
+                    LinearLayoutManager linLayoutManager = new LinearLayoutManager(TimetableActivity.this);
+                    TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, TimetableActivity.this, id);
+
+                    recyclerView.setLayoutManager(linLayoutManager);
+                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    recyclerView.setAdapter(tAdapter);
+                }
+                else {
+                    Log.d("firebase", String.valueOf(task.getResult().getValue()));
+                }
             }
+        });
 
-        }
-        //Fetch saved activities from database if it exists
-        else {
-            userSchedule = dbHandler.getUserActivities();
-        }
-        //Store the saved timeslots in an ArrayList
-        ArrayList<Timeslot> timeslotList = userSchedule.getTimeslots();
-        //Inflate recyclerview
-        RecyclerView recyclerView = findViewById(R.id.timetableRecyclerView);
-        LinearLayoutManager linLayoutManager = new LinearLayoutManager(this);
-        TimetableAdapter tAdapter = new TimetableAdapter(timeslotList, this);
 
-        recyclerView.setLayoutManager(linLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(tAdapter);
+
+        //Check if there is currently a timetable in the database and initialises one if there isnt
+//        if (dbHandler.checkTableNull()) {
+//            userSchedule.onCreate();
+//            ArrayList<Timeslot> slots = userSchedule.getTimeslots();
+//            for (int i = 0; i < slots.size(); i++) {
+//                dbHandler.insertActivity(slots.get(i), id);
+//            }
+//
+//        }
+//        Fetch saved activities from database if it exists
+//        else {
+//            if (dbHandler.checkUserExist(id) == false) {
+//                userSchedule.onCreate();
+//                ArrayList<Timeslot> slots = userSchedule.getTimeslots();
+//                for (int i = 0; i < slots.size(); i++) {
+//                    dbHandler.insertActivity(slots.get(i), id);
+//                }
+//            }
+//            userSchedule = dbHandler.getUserActivities(id);
+//        }
+
+
+
 
         //Alert for reset
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -114,7 +163,9 @@ public class TimetableActivity extends AppCompatActivity {
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        dbHandler.resetAllActivities();
+                        for (int i = 0; i<24; i++){
+                            dbRef.child(String.valueOf(i)).child("desc").setValue("");
+                        }
                         restartActivity();
                     }
                 });
@@ -140,8 +191,8 @@ public class TimetableActivity extends AppCompatActivity {
     //Method to restart the activity without transition
     private void restartActivity() {
         finish();
-        overridePendingTransition(0,0);
+        overridePendingTransition(0, 0);
         startActivity(getIntent());
-        overridePendingTransition(0,0);
+        overridePendingTransition(0, 0);
     }
 }
