@@ -218,7 +218,6 @@ public class HomeMenu extends AppCompatActivity {
                 Bundle extras = new Bundle();
                 extras.putInt("ID",user0.getId());
                 Global.setUser_Id(user0.getId());
-
                 extras.putString("Username",user0.getName());
                 extras.putString("Password",user0.getPassword());
                 extras.putString("Email",user0.getEmail());

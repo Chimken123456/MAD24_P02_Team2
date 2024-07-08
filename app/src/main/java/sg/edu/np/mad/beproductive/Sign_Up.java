@@ -120,6 +120,7 @@ public class Sign_Up extends AppCompatActivity {
 
                             userRef.setValue(hashMap);
 
+                          
                             //Create schedule in firebase
                             Schedule tempSchedule = new Schedule();
                             tempSchedule.onCreate();
@@ -135,6 +136,9 @@ public class Sign_Up extends AppCompatActivity {
 
                                 timeslot.setValue(tempMap);
                             }
+
+                            DatabaseReference todoRef = userRef.child("todo"); // create to do path upon submission
+
                         }
 
                     }
