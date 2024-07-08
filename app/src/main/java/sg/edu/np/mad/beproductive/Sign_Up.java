@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
+import sg.edu.np.mad.beproductive.Timetable.Schedule;
+import sg.edu.np.mad.beproductive.Timetable.Timeslot;
 
 public class Sign_Up extends AppCompatActivity {
 
@@ -107,7 +109,9 @@ public class Sign_Up extends AppCompatActivity {
                         {
                             int count = Integer.valueOf(String.valueOf(task.getResult().getChildrenCount()));
                             DatabaseReference userRef = myRef.child("user" + String.valueOf(count + 1));
+                            DatabaseReference scheduleRef = userRef.child("schedule");
                             user0.setId(count);
+                            Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
                             HashMap hashMap = new HashMap();
 
                             hashMap.put("id",count);
@@ -117,7 +121,35 @@ public class Sign_Up extends AppCompatActivity {
 
                             userRef.setValue(hashMap);
 
+                          
+                            //Create schedule in firebase
+                            Schedule tempSchedule = new Schedule();
+                            tempSchedule.onCreate();
+                            ArrayList<Timeslot> tempTimeslots = tempSchedule.getTimeslots();
+
+                            for (int i = 0; i<tempTimeslots.size(); i++) {
+                                DatabaseReference timeslot = scheduleRef.child(String.valueOf(i));
+
+                                HashMap tempMap = new HashMap();
+
+                                tempMap.put("time", (tempTimeslots.get(i).getTime()));
+                                tempMap.put("desc", (tempTimeslots.get(i)).getDescription());
+
+                                timeslot.setValue(tempMap);
+                            }
+
                             DatabaseReference todoRef = userRef.child("todo"); // create to do path upon submission
+                            //Making intent and the relevant data to send over to home menu page
+                            Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
+                            Bundle extras = new Bundle();
+                            extras.putInt("ID",user0.getId());
+                            extras.putString("Username",user0.getName());
+                            extras.putString("Password",user0.getPassword());
+                            extras.putString("Email",user0.getEmail());
+                            activity.putExtras(extras);
+                            Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+                            Log.i("MAOMAOO",  "Global" + String.valueOf(user0.getId()));
+                            startActivity(activity);
                         }
 
                     }
@@ -127,16 +159,17 @@ public class Sign_Up extends AppCompatActivity {
                 //dbHandler.addUsers(user0);
                 Toast.makeText(getApplicationContext(),"Account created",Toast.LENGTH_SHORT).show();
 
-                //Making intent and the relevant data to send over to home menu page
-                Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
-                Bundle extras = new Bundle();
-                extras.putInt("ID",user0.getId());
-                extras.putString("Username",user0.getName());
-                extras.putString("Password",user0.getPassword());
-                extras.putString("Email",user0.getEmail());
-                activity.putExtras(extras);
-                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
-                startActivity(activity);
+//                //Making intent and the relevant data to send over to home menu page
+//                Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
+//                Bundle extras = new Bundle();
+//                extras.putInt("ID",user0.getId());
+//                extras.putString("Username",user0.getName());
+//                extras.putString("Password",user0.getPassword());
+//                extras.putString("Email",user0.getEmail());
+//                activity.putExtras(extras);
+////                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+//                Log.i("MAOMAOO",  "Global" + String.valueOf(user0.getId()));
+//                startActivity(activity);
             }
         });
 
