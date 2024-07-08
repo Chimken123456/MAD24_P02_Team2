@@ -111,6 +111,7 @@ public class Sign_Up extends AppCompatActivity {
                             DatabaseReference userRef = myRef.child("user" + String.valueOf(count + 1));
                             DatabaseReference scheduleRef = userRef.child("schedule");
                             user0.setId(count);
+                            Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
                             HashMap hashMap = new HashMap();
 
                             hashMap.put("id",count);
@@ -138,7 +139,17 @@ public class Sign_Up extends AppCompatActivity {
                             }
 
                             DatabaseReference todoRef = userRef.child("todo"); // create to do path upon submission
-
+                            //Making intent and the relevant data to send over to home menu page
+                            Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
+                            Bundle extras = new Bundle();
+                            extras.putInt("ID",user0.getId());
+                            extras.putString("Username",user0.getName());
+                            extras.putString("Password",user0.getPassword());
+                            extras.putString("Email",user0.getEmail());
+                            activity.putExtras(extras);
+                            Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+                            Log.i("MAOMAOO",  "Global" + String.valueOf(user0.getId()));
+                            startActivity(activity);
                         }
 
                     }
@@ -148,16 +159,17 @@ public class Sign_Up extends AppCompatActivity {
                 //dbHandler.addUsers(user0);
                 Toast.makeText(getApplicationContext(),"Account created",Toast.LENGTH_SHORT).show();
 
-                //Making intent and the relevant data to send over to home menu page
-                Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
-                Bundle extras = new Bundle();
-                extras.putInt("ID",user0.getId());
-                extras.putString("Username",user0.getName());
-                extras.putString("Password",user0.getPassword());
-                extras.putString("Email",user0.getEmail());
-                activity.putExtras(extras);
-                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
-                startActivity(activity);
+//                //Making intent and the relevant data to send over to home menu page
+//                Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
+//                Bundle extras = new Bundle();
+//                extras.putInt("ID",user0.getId());
+//                extras.putString("Username",user0.getName());
+//                extras.putString("Password",user0.getPassword());
+//                extras.putString("Email",user0.getEmail());
+//                activity.putExtras(extras);
+////                Global.setUser_Id(user0.getId()); //Setting the global variable user id such that all activities can access
+//                Log.i("MAOMAOO",  "Global" + String.valueOf(user0.getId()));
+//                startActivity(activity);
             }
         });
 
