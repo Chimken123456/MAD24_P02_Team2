@@ -43,12 +43,18 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         return new ViewHolder(itemView);
     }
 
-    public void onBindViewHolder(ViewHolder holder, int position){
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
         ToDoModel item = todoList.get(position);
         holder.task.setText(item.getTask());
+
+        // Remove the listener before setting the checked state
+        holder.task.setOnCheckedChangeListener(null);
+
         holder.task.setChecked(toBoolean(item.getStatus()));
+
+        // Set the listener after setting the checked state
         holder.task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            // Update the task status in Firebase
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 item.setStatus(isChecked ? 1 : 0);
@@ -56,6 +62,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
             }
         });
     }
+
 
     public int getItemCount(){
         return todoList.size();
