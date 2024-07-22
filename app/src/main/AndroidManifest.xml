@@ -34,6 +34,10 @@
         <activity
             android:name=".HomePage.HomeMenu"
             android:exported="false" />
+
+        <activity
+            android:name=".ExpensesTracker.ExpensesTrackerActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
