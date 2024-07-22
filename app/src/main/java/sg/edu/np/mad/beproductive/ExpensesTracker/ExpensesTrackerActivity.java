@@ -3,19 +3,27 @@ package sg.edu.np.mad.beproductive.ExpensesTracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -23,6 +31,11 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +45,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 
+import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.HomePage.HomeMenu;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
@@ -43,20 +57,31 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
     private ExpensesAdapter adapter;
     private List<ExpensesModel> expensesList;
 
-    private PieChart pieChart;
+    private ViewPager2 viewPager;
+    private ExpensesPagerAdapter expPagerAdapter;
+    private LinearLayout dotsLayout;
+    private List<ImageView> dots;
 
-    private ProgressBar budgetProgressBar;
-    private TextView budgetTextView, spentTextView;
+    private DatabaseReference userRef;
 
-    private float budget = 1000f; // Set your budget here
-    private float totalSpent = 0f;
-
+    private boolean isBalanceSetupComplete = false;
+    private boolean isBudgetSetupComplete = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses_tracker);
 
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+
+        // Initialize the database reference
+        userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("expenses");
+
+        loadExpensesFromFirebase();
+        // Check if the setup is complete
+        checkBalanceSetupComplete();
+        checkBudgetSetup();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -65,6 +90,23 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
 
         adapter = new ExpensesAdapter(expensesList);
         recyclerView.setAdapter(adapter);
+
+        viewPager = findViewById(R.id.viewPager);
+        dotsLayout = findViewById(R.id.dotsLayout);
+
+        // Initialize dots
+        initializeDots(2); // Update this number according to the number of pages in ViewPager2
+
+        // Add page change listener to update dots
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                updateDots(position);
+            }
+        });
+
+        checkBalanceSetupComplete();
         FloatingActionButton addTranscFab = findViewById(R.id.addTransactionFAB);
         addTranscFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +114,13 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
                 showAddExpenseDialog();
             }
         });
+        // Load the SetBudgetFragment initially
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.budgetFragmentContainer, new SetBudgetFragment())
+                    .commit();
+        }
+
 
         ImageView backBtn = findViewById(R.id.expensesBackbtn);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -97,57 +146,112 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         });
 
-        pieChart = findViewById(R.id.pieChart);
-        setupPieChart();
-        updatePieChart();
 
-        budgetTextView = findViewById(R.id.budgetTextView);
-        spentTextView = findViewById(R.id.spentTextView);
-        budgetProgressBar = findViewById(R.id.budgetProgressBar);
+//        budgetTextView = findViewById(R.id.budgetTextView);
+//        spentTextView = findViewById(R.id.spentTextView);
+//        budgetProgressBar = findViewById(R.id.budgetProgressBar);
 
-        budgetTextView.setText("Budget: $" + budget);
-        budgetProgressBar.setMax((int) budget);
-        updateBudgetProgress();
+//        budgetTextView.setText("Budget: $" + budget);
+//        budgetProgressBar.setMax((int) budget);
+//        updateBudgetProgress();
+    }
+    private void checkBalanceSetupComplete() {
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+        userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
+
+        userRef.child("balance").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isSetupComplete = snapshot.exists();
+                setupViewPager(isSetupComplete);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ExpensesTrackerActivity.this, "Error checking setup status.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void updateBudgetProgress() {
-        budgetProgressBar.setProgress((int) totalSpent);
-        spentTextView.setText("Spent: $" + totalSpent);
+    private void setupViewPager(boolean isBalanceSetupComplete) {
+        viewPager = findViewById(R.id.viewPager);
+
+        // Initialize the pager adapter with the setup status and expenses list
+        ExpensesPagerAdapter expensesPagerAdapter = new ExpensesPagerAdapter(this, isBalanceSetupComplete, expensesList);
+        viewPager.setAdapter(expensesPagerAdapter);
+
+        // Initialize dots for view pager if necessary
+        initializeDots(isBalanceSetupComplete ? 2 : 1);
+
+        // Add page change listener to update dots
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                updateDots(position);
+            }
+        });
     }
 
-    private void setupPieChart() {
-        pieChart.setUsePercentValues(true);
-        pieChart.getDescription().setEnabled(false);
-        pieChart.setExtraOffsets(5, 10, 5, 5);
-        pieChart.setDragDecelerationFrictionCoef(0.95f);
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setHoleColor(android.R.color.transparent);
-        pieChart.setTransparentCircleRadius(61f);
+    private void checkBudgetSetup() {
+        userRef.child("budget").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                isBudgetSetupComplete = snapshot.exists();
+                updateBudgetFragment();
+            }
 
-        Legend legend = pieChart.getLegend();
-        legend.setEnabled(true);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ExpensesTrackerActivity.this, "Error checking budget status.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void updateBudgetFragment() {
+        Fragment fragment = isBudgetSetupComplete ? new BudgetProgressFragment() : new SetBudgetFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.budgetFragmentContainer, fragment)
+                .commit();
     }
 
-    private void updatePieChart() {
-        Map<String, Float> categoryTotals = calculateExpensesByCategory();
 
-        List<PieEntry> pieEntries = new ArrayList<>();
-        for (Map.Entry<String, Float> entry : categoryTotals.entrySet()) {
-            pieEntries.add(new PieEntry(entry.getValue(), entry.getKey()));
+
+    private void initializeDots(int count) {
+        dots = new ArrayList<>();
+        dotsLayout.removeAllViews();
+        for (int i = 0; i < count; i++) {
+            ImageView dot = new ImageView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(8, 0, 8, 0);
+            dot.setLayoutParams(params);
+            dot.setImageResource(R.drawable.dot_inactive); // Replace with your dot drawable
+            dotsLayout.addView(dot);
+            dots.add(dot);
         }
-
-        PieDataSet dataSet = new PieDataSet(pieEntries, "");
-        dataSet.setSliceSpace(3f);
-        dataSet.setSelectionShift(5f);
-        dataSet.setColors(new int[]{R.color.pastelGreen, R.color.pastelPurple, R.color.pastelPink, R.color.beige, R.color.blue, R.color.turqiose}, this);
-
-        PieData data = new PieData(dataSet);
-        data.setValueTextSize(10f);
-        data.setValueTextColor(getResources().getColor(R.color.black));
-
-        pieChart.setData(data);
-        pieChart.invalidate();
+        if (dots.size() > 0) {
+            dots.get(0).setImageResource(R.drawable.dot_active); // Replace with your active dot drawable
+        }
     }
+
+    private void updateDots(int position) {
+        for (int i = 0; i < dots.size(); i++) {
+            if (i == position) {
+                dots.get(i).setImageResource(R.drawable.dot_active); // Replace with your active dot drawable
+            } else {
+                dots.get(i).setImageResource(R.drawable.dot_inactive); // Replace with your dot drawable
+            }
+        }
+    }
+
+//    private void updateBudgetProgress() {
+//        budgetProgressBar.setProgress((int) totalSpent);
+//        spentTextView.setText("Spent: $" + totalSpent);
+////        float progressPercentage = (totalSpent / budget) * 100;
+//    }
 
     private Map<String, Float> calculateExpensesByCategory() {
         Map<String, Float> categoryTotals = new HashMap<>();
@@ -186,19 +290,166 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
                 int categoryIcon = getCategoryIcon(category);
                 // Add the new expense to the list
 
-                float amount = Float.parseFloat(price);
+//                float amount = Float.parseFloat(price);
                 expensesList.add(new ExpensesModel(category, dateTime, "$" + price, categoryIcon)); // Update the icon as needed
-                totalSpent += amount;
-                updateBudgetProgress();
-
+//                updateBudgetProgress();
+                saveExpenseToFirebase(new ExpensesModel(category, dateTime, "$" + price, categoryIcon));
                 adapter.notifyDataSetChanged();
-                updatePieChart();
+                updateGraphFragment();
+                refreshBalance();
+                saveTotalSpendings();
                 dialog.dismiss();
             }
 
         });
 
         dialog.show();
+    }
+    private void saveExpenseToFirebase(ExpensesModel expense) {
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
+
+        // Calculate new balance
+        userRef.child("balance").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    float currentBalance = snapshot.getValue(Float.class);
+                    float expenseAmount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
+                    float newBalance = currentBalance - expenseAmount;
+
+                    // Update balance in Firebase
+                    userRef.child("balance").setValue(newBalance).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(ExpensesTrackerActivity.this, "Expense saved and balance updated!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("ExpensesTrackerActivity", "Failed to update balance", task.getException());
+                            Toast.makeText(ExpensesTrackerActivity.this, "Failed to update balance!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Log.d("ExpensesTrackerActivity", "No balance found for user.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ExpensesTrackerActivity", "Failed to get balance: " + error.getMessage(), error.toException());
+            }
+        });
+
+        // Save the expense
+        DatabaseReference expensesRef = userRef.child("expenses");
+        expensesRef.push().setValue(expense).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(ExpensesTrackerActivity.this, "Expense saved!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("ExpensesTrackerActivity", "Failed to save expense", task.getException());
+                Toast.makeText(ExpensesTrackerActivity.this, "Failed to save expense!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void refreshBalance() {
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
+
+        userRef.child("balance").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    float balance = snapshot.getValue(Float.class);
+                    // Update UI with new balance
+                    TextView balanceTextView = findViewById(R.id.accountBalanceTextView);
+                    balanceTextView.setText("$" + balance);
+                } else {
+                    Log.d("ExpensesTrackerActivity", "No balance found for user.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ExpensesTrackerActivity", "Failed to get balance: " + error.getMessage(), error.toException());
+            }
+        });
+    }
+    private void saveTotalSpendings() {
+        float totalSpendings = calculateTotalSpendings();
+
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
+
+        userRef.child("spendings").setValue(totalSpendings).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(ExpensesTrackerActivity.this, "Total spendings updated!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("ExpensesTrackerActivity", "Failed to update spendings", task.getException());
+                Toast.makeText(ExpensesTrackerActivity.this, "Failed to update spendings!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+
+    private float calculateTotalSpendings() {
+        float total = 0;
+        for (ExpensesModel expense : expensesList) {
+            float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
+            total += amount;
+        }
+        return total;
+    }
+
+
+    private void loadExpensesFromFirebase() {
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                expensesList.clear();  // Clear the existing list to avoid duplication
+
+                if (snapshot.exists()) {
+                    for (DataSnapshot expenseSnapshot : snapshot.getChildren()) {
+                        ExpensesModel expense = expenseSnapshot.getValue(ExpensesModel.class);
+                        if (expense != null) {
+                            // Optional: Validate or convert data as needed
+                            expensesList.add(expense);
+                        } else {
+                            Log.d("ExpensesTrackerActivity", "Expense data is null for snapshot: " + expenseSnapshot.getKey());
+                        }
+                    }
+                    // Notify adapter about data change
+                    adapter.notifyDataSetChanged();
+                    // Update the graph or budget progress as needed
+                    updateGraphFragment();
+                } else {
+                    // Handle the case where there are no expenses
+                    Log.d("ExpensesTrackerActivity", "No expenses found.");
+                    Toast.makeText(ExpensesTrackerActivity.this, "No expenses recorded.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle possible errors
+                Log.e("ExpensesTrackerActivity", "Failed to load expenses: " + error.getMessage(), error.toException());
+                Toast.makeText(ExpensesTrackerActivity.this, "Failed to load expenses. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void updateGraphFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        GraphFragment graphFragment = (GraphFragment) fragmentManager.findFragmentByTag("f1");
+
+        if (graphFragment != null && graphFragment.isAdded()) {
+            Map<String, Float> categoryTotals = calculateExpensesByCategory();
+            graphFragment.updatePieChart(categoryTotals);
+        } else {
+            Log.d("ExpensesTrackerActivity", "GraphFragment is not yet added or is null");
+        }
     }
 
     private int getCategoryIcon(String category) {
