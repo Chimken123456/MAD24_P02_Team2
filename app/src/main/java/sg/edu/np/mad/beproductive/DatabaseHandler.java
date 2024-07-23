@@ -17,9 +17,10 @@ import java.util.List;
 import sg.edu.np.mad.beproductive.Timetable.Schedule;
 import sg.edu.np.mad.beproductive.Timetable.Timeslot;
 import sg.edu.np.mad.beproductive.ToDoListPage.ToDoModel;
+import sg.edu.np.mad.beproductive.Reminders.Reminder;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
     private static final String NAME = "toDoListDatabase";
     private static final String TODO_TABLE = "todo";
     private static final String ID = "id";
@@ -45,6 +46,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String SCHEDULE_TABLE = "schedule";
     private static final String CREATE_SCHEDULE_TABLE = "CREATE TABLE " + SCHEDULE_TABLE + "(" + TIMESLOT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + TIMESLOT + " TEXT, " + DESC + " TEXT, " + ID_USER + " INTEGER," + " FOREIGN KEY ("+USER_ID+") REFERENCES " + USER_TABLE + "("+USER_ID+")" + ")";
 
+    // Reminders data
+    private static final String TABLE_REMINDERS = "reminders";
+    private static final String KEY_ID = "reminder_id";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_DATETIME = "datetime";
+    private static final String KEY_TYPE = "type";
+
+    private static final String CREATE_REMINDERS_TABLE = "CREATE TABLE " + TABLE_REMINDERS + "("
+            + KEY_ID + " INTEGER PRIMARY KEY," + KEY_TITLE + " TEXT,"
+            + KEY_DATETIME + " TEXT," + KEY_TYPE + " TEXT" + ")";
+
     private SQLiteDatabase db;
 
     public DatabaseHandler(Context context){
@@ -56,6 +68,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_TODO_TABLE);
         db.execSQL(CREATE_SCHEDULE_TABLE);
+        db.execSQL(CREATE_REMINDERS_TABLE); // Added this line to create the reminders table
+        Log.d("DatabaseHandler", "Database created with tables: " + CREATE_USER_TABLE + ", " + CREATE_TODO_TABLE + ", " + CREATE_SCHEDULE_TABLE + ", " + CREATE_REMINDERS_TABLE);
         // Log.d("DatabaseHandler", "Database created with table: " + CREATE_TODO_TABLE);
 
     }
@@ -70,6 +84,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SCHEDULE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_REMINDERS); // Added this line to drop the reminders table
         onCreate(db);
     }
 
@@ -230,7 +245,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(SIGNED_IN,signedIn);
         db.update(USER_TABLE,values,USER_ID + "= ?", new String[]{String.valueOf(userId)});
     }
-    
+
     public void insertActivity(Timeslot slot, int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
         //Set values to be inserted in database entry
@@ -238,7 +253,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(TIMESLOT, slot.getTime());
         values.put(DESC, slot.getDescription());
         values.put(ID_USER, userId);
-        //values.put(USER_ID, currentUser.getId()); 
+        //values.put(USER_ID, currentUser.getId());
         //Perform query and output error to log if it arises
         long result = db.insert(SCHEDULE_TABLE, null, values);
         if (result == -1) {
@@ -270,21 +285,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     time = cursor.getString(1);
                     description = cursor.getString(2);
                     userid = cursor.getInt(3);
-                        if (userid == userId) {
-                            Timeslot timeslot = new Timeslot(time, description);
-                            output.addTimeslot(timeslot);
-                        }
-                    }
-                }
-                while (cursor.moveToNext()) {
-                    time = cursor.getString(1);
-                    description = cursor.getString(2);
-                    userid = cursor.getInt(3);
                     if (userid == userId) {
                         Timeslot timeslot = new Timeslot(time, description);
                         output.addTimeslot(timeslot);
                     }
                 }
+            }
+            while (cursor.moveToNext()) {
+                time = cursor.getString(1);
+                description = cursor.getString(2);
+                userid = cursor.getInt(3);
+                if (userid == userId) {
+                    Timeslot timeslot = new Timeslot(time, description);
+                    output.addTimeslot(timeslot);
+                }
+            }
             db.setTransactionSuccessful();
 
         } catch(Exception e) {
@@ -333,7 +348,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         tempdb.close();
     }
-    
+
     public Boolean checkTableNull() {
         SQLiteDatabase db = this.getWritableDatabase();
         //Count number of values in schedule table
@@ -358,6 +373,106 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.close();
             return true;
         }
+    }
+
+    // Reminder data section
+    // Reminders
+    public void addReminder(Reminder reminder) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_TITLE, reminder.getTitle());
+        values.put(KEY_DATETIME, reminder.getDatetime());
+        values.put(KEY_TYPE, reminder.getType());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.insert(TABLE_REMINDERS, null, values);
+        if (result == -1) {
+            Log.e("DatabaseHandler", "Failed to add reminder");
+        } else {
+            Log.d("DatabaseHandler", "Reminder added successfully with id: " + result);
+        }
+    }
+
+    public List<Reminder> getAllReminders() {
+        List<Reminder> reminders = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.rawQuery("SELECT * FROM " + TABLE_REMINDERS, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    Reminder reminder = new Reminder(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3));
+                    reminders.add(reminder);
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHandler", "Error while retrieving reminders: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return reminders;
+    }
+
+    public Reminder getReminder(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        Reminder reminder = null;
+
+        try {
+            cursor = db.query(TABLE_REMINDERS, new String[]{KEY_ID, KEY_TITLE, KEY_DATETIME, KEY_TYPE},
+                    KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                reminder = new Reminder(cursor.getInt(0), cursor.getString(1),
+                        cursor.getString(2), cursor.getString(3));
+            }
+        } catch (Exception e) {
+            Log.e("DatabaseHandler", "Error while getting reminder: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+
+        return reminder;
+    }
+
+    public int updateReminder(Reminder reminder) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_TITLE, reminder.getTitle());
+        values.put(KEY_DATETIME, reminder.getDatetime());
+        values.put(KEY_TYPE, reminder.getType());
+
+        return db.update(TABLE_REMINDERS, values, KEY_ID + " = ?", new String[]{String.valueOf(reminder.getId())});
+    }
+
+    public void deleteReminder(Reminder reminder) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.delete(TABLE_REMINDERS, KEY_ID + " = ?", new String[]{String.valueOf(reminder.getId())});
+        } catch (Exception e) {
+            Log.e("DatabaseHandler", "Error while deleting reminder: " + e.getMessage());
+        } finally {
+            db.close();
+        }
+    }
+
+    // Optional: Method to check if table exists
+    private boolean doesTableExist(SQLiteDatabase db, String tableName) {
+        Cursor cursor = db.rawQuery("SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name = ?", new String[]{tableName});
+        if (cursor != null) {
+            if (cursor.getCount() > 0) {
+                cursor.close();
+                return true;
+            }
+            cursor.close();
+        }
+        return false;
     }
 }
 

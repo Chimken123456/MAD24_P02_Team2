@@ -251,6 +251,7 @@ public class HomeMenu extends AppCompatActivity {
         remindersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("HomeMenu", "Reminder button clicked");
                 Bundle extras = new Bundle();
                 extras.putInt("ID",user0.getId());
                 extras.putString("Username",user0.getName());
@@ -260,6 +261,7 @@ public class HomeMenu extends AppCompatActivity {
                 Intent intent = new Intent(HomeMenu.this, ReminderMain.class);
                 intent.putExtras(extras);
                 startActivity(intent);
+                Log.d("HomeMenu", "Started ReminderMain activity");
             }
         });
 

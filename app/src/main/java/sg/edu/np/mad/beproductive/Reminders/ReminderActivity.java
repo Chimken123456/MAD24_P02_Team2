@@ -106,6 +106,8 @@ public class ReminderActivity extends AppCompatActivity {
         resultIntent.putExtra("reminder_datetime", selectedDateTime);
         resultIntent.putExtra("reminder_type", type);
         setResult(RESULT_OK, resultIntent);
+
+        finish();
     }
 
     @SuppressLint("MissingPermission")
