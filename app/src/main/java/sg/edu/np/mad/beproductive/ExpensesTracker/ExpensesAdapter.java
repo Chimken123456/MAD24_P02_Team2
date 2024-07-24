@@ -41,7 +41,10 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.ViewHo
         return new ViewHolder(view);
 
     }
-
+    public void updateData(List<ExpensesModel> newExpenses) {
+        this.expensesList = newExpenses;
+        notifyDataSetChanged();
+    }
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ExpensesModel currentItem = expensesList.get(position);
@@ -50,6 +53,8 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.ViewHo
         int iconResId = currentItem.getCategoryIcon();
         try {
             holder.categoryIcon.setImageResource(iconResId);
+            Log.d("ExpensesAdapter", "Setting icon with resource ID: " + iconResId);
+
         } catch (Exception e) {
             holder.categoryIcon.setImageResource(R.drawable.dining_icon);
             Log.e("ExpensesAdapter", "Error setting category icon: ", e);

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.app.DatePickerDialog;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,10 +38,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -63,6 +67,10 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
     private List<ImageView> dots;
 
     private DatabaseReference userRef;
+    private Calendar currentStartDate, currentEndDate;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private TextView dateRangeTextView;
+    private ImageView prevWeekButton, nextWeekButton;
 
     private boolean isBalanceSetupComplete = false;
     private boolean isBudgetSetupComplete = false;
@@ -77,27 +85,42 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
 
         // Initialize the database reference
         userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("expenses");
-
         loadExpensesFromFirebase();
-        // Check if the setup is complete
+
+        // Initialize UI components
         checkBalanceSetupComplete();
         checkBudgetSetup();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        dateRangeTextView = findViewById(R.id.dateRangeTextView);
+        prevWeekButton = findViewById(R.id.prevWeekButton);
+        nextWeekButton = findViewById(R.id.nextWeekButton);
         expensesList = new ArrayList<>();
-        // expensesList.add(new ExpensesModel("Food", "11/06/2024 11:30", "$10.00", R.drawable.food_icon));
-
         adapter = new ExpensesAdapter(expensesList);
         recyclerView.setAdapter(adapter);
+        setWeekDates(Calendar.getInstance());
+        updateDateRangeText();
+
+        prevWeekButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToPreviousWeek();
+            }
+        });
+
+        nextWeekButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToNextWeek();
+            }
+        });
 
         viewPager = findViewById(R.id.viewPager);
         dotsLayout = findViewById(R.id.dotsLayout);
 
-        // Initialize dots
-        initializeDots(2); // Update this number according to the number of pages in ViewPager2
+        initializeDots(2); // Adjust the number of dots as needed
 
-        // Add page change listener to update dots
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
@@ -106,7 +129,6 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         });
 
-        checkBalanceSetupComplete();
         FloatingActionButton addTranscFab = findViewById(R.id.addTransactionFAB);
         addTranscFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,13 +136,29 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
                 showAddExpenseDialog();
             }
         });
-        // Load the SetBudgetFragment initially
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.budgetFragmentContainer, new SetBudgetFragment())
-                    .commit();
-        }
 
+        // Fragment transactions
+        if (savedInstanceState == null) {
+            // Start a new transaction for adding fragments
+            FragmentManager fragmentManager = getSupportFragmentManager();
+
+            // Transaction for adding GraphFragment and AccountDetailsFragment
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+            // Add GraphFragment
+            GraphFragment graphFragment = new GraphFragment();
+            transaction.add(R.id.graphfragment_container, graphFragment, "GRAPH_FRAGMENT_TAG");
+
+            // Add AccountDetailsFragment
+            AccountDetailsFragment accountDetailsFragment = new AccountDetailsFragment();
+            transaction.add(R.id.accDetailsFragmentContainer, accountDetailsFragment, "ACCOUNT_DETAILS_TAG");
+
+            // Start another transaction for replacing with SetBudgetFragment
+            FragmentTransaction replaceTransaction = fragmentManager.beginTransaction();
+            SetBudgetFragment setBudgetFragment = new SetBudgetFragment();
+            replaceTransaction.replace(R.id.budgetFragmentContainer, setBudgetFragment, "SET_BUDGET_TAG");
+            replaceTransaction.commit();
+        }
 
         ImageView backBtn = findViewById(R.id.expensesBackbtn);
         backBtn.setOnClickListener(new View.OnClickListener() {
@@ -145,16 +183,127 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
                 finish(); // Call this if you don't want to keep the current activity in the back stack
             }
         });
-
-
-//        budgetTextView = findViewById(R.id.budgetTextView);
-//        spentTextView = findViewById(R.id.spentTextView);
-//        budgetProgressBar = findViewById(R.id.budgetProgressBar);
-
-//        budgetTextView.setText("Budget: $" + budget);
-//        budgetProgressBar.setMax((int) budget);
-//        updateBudgetProgress();
     }
+
+
+    private void setWeekDates(Calendar calendar) {
+        // Set the calendar to the start of the current week (Monday)
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        currentStartDate = (Calendar) calendar.clone();
+
+        // Set the calendar to the end of the current week (Sunday)
+        calendar.add(Calendar.WEEK_OF_YEAR, 1); // Move to the next week
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        currentEndDate = (Calendar) calendar.clone();
+
+        // Update the TextView with the date range
+        updateDateRangeText();
+    }
+
+    private float calculateTotalSpentForWeek(Date startDate, Date endDate) {
+        float totalSpent = 0;
+        List<ExpensesModel> weeklyExpenses = filterExpensesByDateRange(startDate, endDate);
+
+        for (ExpensesModel expense : weeklyExpenses) {
+            try {
+                float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
+                totalSpent += amount;
+            } catch (NumberFormatException e) {
+                Log.e("ExpensesTrackerActivity", "Error parsing price: " + expense.getPrice(), e);
+            }
+        }
+        return totalSpent;
+    }
+    private void updateBudgetFragmentWithTotalSpent() {
+        float totalSpent = calculateTotalSpentForWeek(currentStartDate.getTime(), currentEndDate.getTime());
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        BudgetProgressFragment budgetProgressFragment = (BudgetProgressFragment) fragmentManager.findFragmentById(R.id.budgetFragmentContainer);
+
+        if (budgetProgressFragment != null) {
+            budgetProgressFragment.updateSpentTextView(totalSpent);
+            budgetProgressFragment.updateProgressBarWithTotalSpent(totalSpent);
+        } else {
+            Log.e("ExpensesTrackerActivity", "BudgetProgressFragment not found.");
+        }
+    }
+
+
+
+
+    private void updateDateRangeText() {
+        String startDate = dateFormat.format(currentStartDate.getTime());
+        String endDate = dateFormat.format(currentEndDate.getTime());
+        dateRangeTextView.setText(startDate + " - " + endDate);
+        updateRecyclerViewWithFilteredData(currentStartDate.getTime(), currentEndDate.getTime());
+        updateGraphFragmentWithDateRange(currentStartDate, currentEndDate);
+        updateBudgetFragmentWithTotalSpent();
+        // TODO: Load and display expenses based on the current week
+    }
+    private List<ExpensesModel> filterExpensesByDateRange(Date startDate, Date endDate) {
+        List<ExpensesModel> filteredList = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
+        if (expensesList == null) {
+            Log.w("ExpensesTrackerActivity", "expensesList is null");
+            return filteredList; // return empty list
+        }
+
+        Log.d("ExpensesTrackerActivity", "Filtering expenses between " + startDate + " and " + endDate);
+        for (ExpensesModel expense : expensesList) {
+            try {
+                Date expenseDate = dateFormat.parse(expense.getDateTime());
+                if (expenseDate != null && !expenseDate.before(startDate) && !expenseDate.after(endDate)) {
+                    filteredList.add(expense);
+                }
+            } catch (ParseException e) {
+                Log.e("ExpensesTrackerActivity", "Error parsing date for expense: " + expense.getDateTime(), e);
+            }
+        }
+
+        return filteredList; // Return the filtered list
+    }
+    private void updateGraphFragmentWithDateRange(Calendar startCalendar, Calendar endCalendar) {
+        // Convert Calendar to Date
+        Date startDate = startCalendar.getTime();
+        Date endDate = endCalendar.getTime();
+
+        // Filter expenses based on date range
+        List<ExpensesModel> filteredExpenses = filterExpensesByDateRange(startDate, endDate);
+
+        // Access the FragmentManager
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        GraphFragment graphFragment = (GraphFragment) fragmentManager.findFragmentById(R.id.graphfragment_container);
+
+        if (graphFragment != null) {
+            graphFragment.updatePieChart(filteredExpenses);
+        } else {
+            Log.e("ActivityName", "GraphFragment not found.");
+        }
+    }
+
+
+
+    private void updateRecyclerViewWithFilteredData(Date startDate, Date endDate) {
+        List<ExpensesModel> filteredExpenses = filterExpensesByDateRange(startDate, endDate);
+        adapter.updateData(filteredExpenses);
+        adapter.notifyDataSetChanged();
+    }
+
+
+
+    private void moveToPreviousWeek() {
+        currentStartDate.add(Calendar.WEEK_OF_YEAR, -1);
+        currentEndDate.add(Calendar.WEEK_OF_YEAR, -1);
+        updateDateRangeText();
+    }
+
+    private void moveToNextWeek() {
+        currentStartDate.add(Calendar.WEEK_OF_YEAR, +1);
+        currentEndDate.add(Calendar.WEEK_OF_YEAR, +1);
+        updateDateRangeText();
+    }
+
     private void checkBalanceSetupComplete() {
         int user_Id = Global.getUser_Id();
         String userPath = "user" + (user_Id + 1);
@@ -246,30 +395,6 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         }
     }
-
-//    private void updateBudgetProgress() {
-//        budgetProgressBar.setProgress((int) totalSpent);
-//        spentTextView.setText("Spent: $" + totalSpent);
-////        float progressPercentage = (totalSpent / budget) * 100;
-//    }
-
-    private Map<String, Float> calculateExpensesByCategory() {
-        Map<String, Float> categoryTotals = new HashMap<>();
-
-        for (ExpensesModel expense : expensesList) {
-            String category = expense.getCategory();
-            float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
-
-            if (categoryTotals.containsKey(category)) {
-                categoryTotals.put(category, categoryTotals.get(category) + amount);
-            } else {
-                categoryTotals.put(category, amount);
-            }
-        }
-
-        return categoryTotals;
-    }
-
     private void showAddExpenseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -350,6 +475,7 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         });
     }
+
     private void refreshBalance() {
         int user_Id = Global.getUser_Id();
         String userPath = "user" + (user_Id + 1);
@@ -360,9 +486,16 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     float balance = snapshot.getValue(Float.class);
-                    // Update UI with new balance
-                    TextView balanceTextView = findViewById(R.id.accountBalanceTextView);
-                    balanceTextView.setText("$" + balance);
+
+                    // Update the fragment with the new balance
+                    AccountDetailsFragment fragment = (AccountDetailsFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.accDetailsFragmentContainer); // Replace with your actual fragment container ID
+
+                    if (fragment != null) {
+                        fragment.updateBalance(balance);
+                    } else {
+                        Log.e("ExpensesTrackerActivity", "AccountDetailsFragment is not found");
+                    }
                 } else {
                     Log.d("ExpensesTrackerActivity", "No balance found for user.");
                 }
@@ -374,6 +507,7 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         });
     }
+
     private void saveTotalSpendings() {
         float totalSpendings = calculateTotalSpendings();
 
@@ -404,27 +538,27 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
 
 
     private void loadExpensesFromFirebase() {
+        Log.d("ExpensesTrackerActivity", "Loading expenses from Firebase...");
         userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d("ExpensesTrackerActivity", "Data snapshot received.");
                 expensesList.clear();  // Clear the existing list to avoid duplication
 
                 if (snapshot.exists()) {
                     for (DataSnapshot expenseSnapshot : snapshot.getChildren()) {
                         ExpensesModel expense = expenseSnapshot.getValue(ExpensesModel.class);
                         if (expense != null) {
-                            // Optional: Validate or convert data as needed
                             expensesList.add(expense);
                         } else {
                             Log.d("ExpensesTrackerActivity", "Expense data is null for snapshot: " + expenseSnapshot.getKey());
                         }
                     }
+                    Log.d("ExpensesTrackerActivity", "Expenses loaded: " + expensesList.size());
                     // Notify adapter about data change
                     adapter.notifyDataSetChanged();
-                    // Update the graph or budget progress as needed
-                    updateGraphFragment();
+                    updateGraphFragment(); // Update graph with new data
                 } else {
-                    // Handle the case where there are no expenses
                     Log.d("ExpensesTrackerActivity", "No expenses found.");
                     Toast.makeText(ExpensesTrackerActivity.this, "No expenses recorded.", Toast.LENGTH_SHORT).show();
                 }
@@ -432,7 +566,6 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle possible errors
                 Log.e("ExpensesTrackerActivity", "Failed to load expenses: " + error.getMessage(), error.toException());
                 Toast.makeText(ExpensesTrackerActivity.this, "Failed to load expenses. Please try again.", Toast.LENGTH_SHORT).show();
             }
@@ -440,17 +573,19 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
     }
 
 
-    private void updateGraphFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        GraphFragment graphFragment = (GraphFragment) fragmentManager.findFragmentByTag("f1");
 
-        if (graphFragment != null && graphFragment.isAdded()) {
-            Map<String, Float> categoryTotals = calculateExpensesByCategory();
-            graphFragment.updatePieChart(categoryTotals);
+    private void updateGraphFragment() {
+        Log.d("ExpensesTrackerActivity", "Updating GraphFragment...");
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment graphFragment = fragmentManager.findFragmentById(R.id.graphfragment_container);
+
+        if (graphFragment != null && graphFragment instanceof GraphFragment) {
+            ((GraphFragment) graphFragment).setExpensesList(expensesList);
         } else {
-            Log.d("ExpensesTrackerActivity", "GraphFragment is not yet added or is null");
+            Log.d("ExpensesTrackerActivity", "GraphFragment is not found or is not of type GraphFragment");
         }
     }
+
 
     private int getCategoryIcon(String category) {
         switch (category) {

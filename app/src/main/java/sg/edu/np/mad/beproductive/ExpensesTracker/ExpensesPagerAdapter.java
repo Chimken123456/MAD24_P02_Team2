@@ -49,4 +49,5 @@ public class ExpensesPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return isBalanceSetupComplete ? 2 : 1;
     }
+
 }

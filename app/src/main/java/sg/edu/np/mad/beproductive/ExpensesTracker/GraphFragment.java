@@ -1,9 +1,14 @@
 package sg.edu.np.mad.beproductive.ExpensesTracker;
+
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -16,25 +21,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import sg.edu.np.mad.beproductive.ExpensesTracker.ExpensesModel;
 import sg.edu.np.mad.beproductive.R;
 
 public class GraphFragment extends Fragment {
 
     private PieChart pieChart;
-    private List<ExpensesModel> expensesList;
+    private List<ExpensesModel> expensesList = new ArrayList<>(); // Initialize with an empty list
 
     public GraphFragment() {
         // Required empty public constructor
     }
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph, container, false);
         pieChart = view.findViewById(R.id.pieChart);
         setupPieChart();
-        if (expensesList != null) {
-            updatePieChart(calculateExpensesByCategory());
+        // Ensure the pie chart is updated if expensesList is not empty
+        if (!expensesList.isEmpty()) {
+            updatePieChart(expensesList);
         }
         return view;
     }
@@ -45,40 +51,28 @@ public class GraphFragment extends Fragment {
         pieChart.setExtraOffsets(5, 10, 5, 5);
         pieChart.setDragDecelerationFrictionCoef(0.95f);
         pieChart.setDrawHoleEnabled(false);
-        pieChart.setHoleColor(android.R.color.transparent);
+        pieChart.setHoleColor(Color.TRANSPARENT);
     }
 
-    private Map<String, Float> calculateExpensesByCategory() {
-        Map<String, Float> categoryTotals = new HashMap<>();
-
-        for (ExpensesModel expense : expensesList) {
-            String category = expense.getCategory();
-            float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
-
-            if (categoryTotals.containsKey(category)) {
-                categoryTotals.put(category, categoryTotals.get(category) + amount);
-            } else {
-                categoryTotals.put(category, amount);
-            }
-        }
-
-        return categoryTotals;
-    }
-
+    // Setter for the expenses list
     public void setExpensesList(List<ExpensesModel> expensesList) {
         this.expensesList = expensesList;
+        // Update the pie chart if the PieChart view is already initialized
         if (pieChart != null) {
-            updatePieChart(calculateExpensesByCategory());
+            updatePieChart(expensesList);
         }
     }
 
-    void updatePieChart(Map<String, Float> categoryTotals) {
+    // Update pie chart with the expenses data
+    public void updatePieChart(List<ExpensesModel> expensesList) {
+        Map<String, Float> categoryTotals = calculateExpensesByCategory(expensesList);
+
         List<PieEntry> pieEntries = new ArrayList<>();
         for (Map.Entry<String, Float> entry : categoryTotals.entrySet()) {
             pieEntries.add(new PieEntry(entry.getValue(), entry.getKey()));
         }
 
-        PieDataSet dataSet = new PieDataSet(pieEntries, "");
+        PieDataSet dataSet = new PieDataSet(pieEntries, "Categories");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         int[] colors = {
@@ -95,9 +89,36 @@ public class GraphFragment extends Fragment {
 
         PieData data = new PieData(dataSet);
         data.setValueTextSize(10f);
-        data.setValueTextColor(getResources().getColor(R.color.black));
+        data.setValueTextColor(Color.WHITE);
 
         pieChart.setData(data);
-        pieChart.invalidate(); // Refresh chart
+        pieChart.invalidate(); // refresh
+    }
+
+    private Map<String, Float> calculateExpensesByCategory(List<ExpensesModel> expensesList) {
+        Map<String, Float> categoryTotals = new HashMap<>();
+
+        for (ExpensesModel expense : expensesList) {
+            String category = expense.getCategory();
+            String priceStr = expense.getPrice().replace("$", "").replace(",", "");
+
+            // Validate the price string
+            if (priceStr != null && !priceStr.isEmpty()) {
+                try {
+                    float amount = Float.parseFloat(priceStr);
+
+                    // Update the category total
+                    categoryTotals.put(category, categoryTotals.getOrDefault(category, 0f) + amount);
+                } catch (NumberFormatException e) {
+                    // Handle the parsing error
+                    Log.e("GraphFragment", "Invalid number format for price: " + priceStr, e);
+                }
+            } else {
+                // Handle the case where price is null or empty
+                Log.w("GraphFragment", "Empty or null price for category: " + category);
+            }
+        }
+
+        return categoryTotals;
     }
 }

@@ -40,14 +40,27 @@ public class BudgetProgressFragment extends Fragment {
 
         return view;
     }
-    public void updateSpentAmount(float newSpentAmount) {
-        if (budgetTextView != null && spentTextView != null && budgetProgressBar != null) {
-            // Assuming you have budget already loaded
-            int budget = budgetProgressBar.getMax();
-            spentTextView.setText("Spent: $" + newSpentAmount);
-            budgetProgressBar.setProgress((int) newSpentAmount);
+
+    public void updateSpentTextView(float totalSpent) {
+        if (spentTextView != null) {
+            spentTextView.setText("Spent: $" + totalSpent);
         }
     }
+
+    public void updateProgressBarWithTotalSpent(float totalSpent) {
+        if (budgetProgressBar != null && budgetTextView != null) {
+            // Get the current budget
+            String budgetText = budgetTextView.getText().toString();
+            int budget = Integer.parseInt(budgetText.replace("Budget: $", "").trim());
+
+            // Update spent text view
+            spentTextView.setText("Spent: $" + totalSpent);
+
+            // Update progress bar
+            budgetProgressBar.setProgress((int) totalSpent);
+        }
+    }
+
 
     private void loadBudgetData() {
         // Logic to load budget and spent data from the database

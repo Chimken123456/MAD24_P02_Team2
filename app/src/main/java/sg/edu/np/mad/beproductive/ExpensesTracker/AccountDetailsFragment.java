@@ -46,21 +46,28 @@ public class AccountDetailsFragment extends Fragment {
         return view;
     }
 
+    public void updateBalance(float newBalance) {
+        if (balanceTextView != null) {
+            balanceTextView.setText("$" + newBalance);
+        }
+    }
+
     private void loadBalanceFromFirebase() {
         balanceRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     try {
-                        Long balanceLong = snapshot.getValue(Long.class);
-                        if (balanceLong != null) {
-                            float balance = balanceLong.floatValue();
+                        Float balance = snapshot.getValue(Float.class);
+                        if (balance != null) {
                             balanceTextView.setText("$" + balance);
                         }
                     } catch (Exception e) {
                         // Handle exceptions
-                        balanceTextView.setText("Error loading balance");
+                        balanceTextView.setText("Error loading total spendings");
                     }
+                } else {
+                    balanceTextView.setText("Expenses:\n$0");
                 }
             }
 
@@ -114,7 +121,7 @@ public class AccountDetailsFragment extends Fragment {
                         spendingTextView.setText("Error loading total spendings");
                     }
                 } else {
-                    spendingTextView.setText("No spendings recorded");
+                    spendingTextView.setText("Expenses:\n$0");
                 }
             }
 
