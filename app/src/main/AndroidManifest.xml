@@ -74,7 +74,7 @@
         <activity android:name=".Reminders.ReminderActivity" android:exported="true"/>
         <activity android:name=".Reminders.ReminderMain" android:exported="true"/>
         <activity android:name=".Reminders.AlarmReceiver" android:exported="false"/>
-        <activity android:name=".Reminders.EditReminderActivity"/>
+        <activity android:name=".Reminders.EditReminderActivity" android:exported="false"/>
     </application>
 
 </manifest>
