@@ -46,7 +46,7 @@ public class AlarmEditor extends AppCompatActivity {
         Button editAlarm = findViewById(R.id.alarm_editor_edit_btn);
         Button deleteAlarm = findViewById(R.id.alarm_editor_delete_btn);
 
-
+        //Setting the number pickers value and default value
         numberPickerHour.setMaxValue(23);
         numberPickerHour.setMinValue(0);
 
@@ -58,6 +58,7 @@ public class AlarmEditor extends AppCompatActivity {
         String AlarmTime = recievingEnd.getStringExtra("Alarm_Time");
         Boolean Checked = recievingEnd.getBooleanExtra("Alarm_Checked" , false);
 
+        //Setting the alarm time to the number picker as a default number
         String[] time_time_array = AlarmTime.split(":");
 
         numberPickerHour.setValue(Integer.valueOf(time_time_array[0]));
@@ -68,6 +69,7 @@ public class AlarmEditor extends AppCompatActivity {
         DatabaseReference userRef = myRef.child("user"+String.valueOf(Global.getUser_Id() +1 ));
         DatabaseReference alarmRef = userRef.child("alarm");
 
+        //Checking and setting the user
         myRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -94,6 +96,7 @@ public class AlarmEditor extends AppCompatActivity {
             }
         });
 
+        //When the user presses into the edit alarm button
         editAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +105,7 @@ public class AlarmEditor extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if(task.isSuccessful())
                         {
+                            //Formatting the string if its a single digit
                             String hour = String.valueOf(numberPickerHour.getValue());
                             if(numberPickerHour.getValue() < 10)
                             {
@@ -110,6 +114,7 @@ public class AlarmEditor extends AppCompatActivity {
 
                             String minute = String.valueOf(numberPickerMinute.getValue());
 
+                            //Formatting the string if its a single digit
                             if(numberPickerMinute.getValue() < 10)
                             {
                                 minute = "0" + minute;
@@ -119,6 +124,7 @@ public class AlarmEditor extends AppCompatActivity {
                             {
                                 if(snapshot.child("alarm").getValue().toString().equals(AlarmTime))
                                 {
+                                    //Saving the new alarm to overwrite the old alarm
                                     snapshot.getRef().child("alarm").setValue(hour+":"+minute);
                                     Toast.makeText(AlarmEditor.this, "Alarm Editted",Toast.LENGTH_SHORT).show();
                                     break;
@@ -131,6 +137,7 @@ public class AlarmEditor extends AppCompatActivity {
             }
         });
 
+        //Deleting the alarm if the user presses into delete alarm
         deleteAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,6 +151,7 @@ public class AlarmEditor extends AppCompatActivity {
                             {
                                 if(snapshot.child("alarm").getValue().toString().equals(AlarmTime))
                                 {
+                                    //Removing the alarm from database
                                     snapshot.getRef().removeValue();
                                     Toast.makeText(AlarmEditor.this, "Alarm Deleted",Toast.LENGTH_SHORT).show();
                                     Intent activity = new Intent(AlarmEditor.this, AlarmList.class);

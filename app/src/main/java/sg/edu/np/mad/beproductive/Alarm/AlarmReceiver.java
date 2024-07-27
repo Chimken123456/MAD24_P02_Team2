@@ -36,6 +36,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        //When the alarm calls and rings
         String time = intent.getStringExtra("Alarm_Setter_Time");
         int user_id = intent.getIntExtra("User_id",-1);
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://madassignment-36a4c-default-rtdb.asia-southeast1.firebasedatabase.app/");
@@ -45,6 +46,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
 
+        //Set the alarm checked value to be false which sets the switch to be off
         alarmRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -63,6 +65,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 }
             }
         });
+
         //Notification
         Intent nextActivity = new Intent(context, AlarmNotification.class);
         Bundle extras = new Bundle();
@@ -73,6 +76,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         nextActivity.setAction("alarm_stop_music");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context,0,nextActivity, PendingIntent.FLAG_CANCEL_CURRENT |PendingIntent.FLAG_IMMUTABLE);
+        //Building of notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "alarm123")
                 .setSmallIcon(R.drawable.alarm_icon)
                 .setContentTitle("Alarm")
@@ -87,6 +91,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         notificationManager.notify(123,builder.build());
 
 
+        //Playing of the music and set loop to be true
         CommonMethod.SoundPlayer(context, R.raw.alarm_music_proper);
         CommonMethod.player.setLooping(true);
     }

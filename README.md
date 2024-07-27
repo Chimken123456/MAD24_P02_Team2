@@ -69,6 +69,18 @@ Created layout for app usage stats page.
 
 App Features (Stage 2):
 
+Alarm (Zeyu)
+Role:
+Allow users to create alarm
+Allow user to delete alarm
+Allow user to edit alarm
+Allow user to snooze alarm
+Alarm is saved and tied to users
+Alarm plays music and sends a notification
+Allow user to set alarm to ring
+Allow user to cancel alarm
+The alarm checks if the time setted is before the current time, if it is, it will set to the next day.
+
 Notes (Clive)
 Role:
 Allow users to create notes using the "+" button

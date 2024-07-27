@@ -73,11 +73,14 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
                 context.startActivity(activity);
             }
         });
+
+        //Switching on the switch on the adapter
         holder.alarm_switch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.alarm_switch.isChecked())
                 {
+                    //Getting the time from the alarm
                     String[] time = alarm.getTime().split(":");
                     Calendar calendar;
                     calendar = Calendar.getInstance();
@@ -86,24 +89,28 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
                     String[] timeCurrentFormatted = timeCurrent.split(" ");
                     String timeHourMinCurrent = timeCurrentFormatted[3];
                     String[] time_time_array = timeHourMinCurrent.split(":");
+                    //Getting the alarm in a 1300 format
                     String timeCompare = time_time_array[0] + time_time_array[1];
 
 
+                    //Setting of calendar for the alarm
                     calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(time[0]));
                     calendar.set(Calendar.MINUTE,Integer.valueOf(time[1]));
                     calendar.set(Calendar.SECOND,0);
                     calendar.set(Calendar.MILLISECOND,0);
 
 
-
+                    //Finding the time in 1300 format
                     String time0 = String.valueOf(calendar.getTime());
                     String[] test = time0.split(" ");
                     String[] time_time_array1 = test[3].split(":");
                     String timeCompareTo = time_time_array1[0] + time_time_array1[1];
+                    //Comparing the time and if current time is larger than alarm, alarm setted will be setted on the next day
                     if(Integer.valueOf(timeCompare) > Integer.valueOf(timeCompareTo))
                     {
                         calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(timeCurrentFormatted[2])+ 1);
                     }
+                    //Setting of alarm
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                     Intent intent = new Intent(context,AlarmReceiver.class);
                     intent.putExtra("Alarm_Setter_Time",alarm.getTime());
@@ -111,7 +118,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
                     pendingIntent = PendingIntent.getBroadcast(context,alarm.getAlarm_id(),intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),pendingIntent);
                     Toast.makeText(context,"Alarm Set", Toast.LENGTH_SHORT).show();
-                    Log.i("MAOMAOO" , String.valueOf(alarm.getAlarm_id()));
+//                    Log.i("MAOMAOO" , String.valueOf(alarm.getAlarm_id()));
+                    //Saving to the database
                     alarmRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -122,6 +130,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
                                 {
                                     if(snapshot.child("alarm").getValue().toString().equals(alarm.getTime()))
                                     {
+                                        //Saving into database, checked refers to the value of the switch, setting the switch to on
                                         snapshot.getRef().child("checked").setValue(true);
                                     }
                                 }
@@ -132,14 +141,16 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
                 }
                 else //Not checked
                 {
+                    //Cancelling of the alarm
                     alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                     Intent intent = new Intent(context,AlarmReceiver.class);
                     intent.putExtra("Alarm_Setter_Time",alarm.getTime());
                     intent.putExtra("User_id", Global.getUser_Id());
-                    pendingIntent = PendingIntent.getBroadcast(context,0,intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    pendingIntent = PendingIntent.getBroadcast(context,alarm.getAlarm_id(),intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     alarmManager.cancel(pendingIntent);
                     Toast.makeText(context, "Alarm cancelled", Toast.LENGTH_SHORT).show();
 
+                    //Saving to database
                     alarmRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -150,6 +161,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
                                 {
                                     if(snapshot.child("alarm").getValue().toString().equals(alarm.getTime()))
                                     {
+                                        //Saving database, checked refers to the value of the switch, setting the switch to off
                                         snapshot.getRef().child("checked").setValue(false);
                                     }
                                 }
