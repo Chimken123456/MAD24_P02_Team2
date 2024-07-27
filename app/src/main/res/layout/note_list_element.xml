@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#F3FBFD"
+    tools:context=".NotesPage.NotesListActivity">
+
+    <TextView
+        android:id="@+id/notes_header"
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:background="#99D1F6"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:text="Notes"
+        android:textColor="@color/black"
+        android:textSize="26sp"
+        android:textStyle="bold" />
+
+
+    <ImageView
+        android:id="@+id/edit_note"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/notes_header"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginBottom="23dp"
+        app:srcCompat="@drawable/edit_logo"
+        app:tint="@color/black" />
+
+    <ImageView
+        android:id="@+id/delete_note"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="380dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginBottom="0dp"
+        app:tint="@color/black"
+        app:srcCompat="@drawable/delete_logo" />
+
+
+</RelativeLayout>

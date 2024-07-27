@@ -151,6 +151,7 @@ import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.ExpensesTracker.ExpensesTrackerActivity;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.Log_In;
+import sg.edu.np.mad.beproductive.NotesPage.NotesListActivity;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.Reminders.ReminderActivity;
 import sg.edu.np.mad.beproductive.Reminders.ReminderMain;
@@ -274,6 +275,22 @@ public class HomeMenu extends AppCompatActivity {
                 extras.putString("Email",user0.getEmail());
                 extras.putBoolean("SignUp",true);
                 Intent intent = new Intent(HomeMenu.this, ExpensesTrackerActivity.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
+
+        CardView notesBtn = findViewById(R.id.notes_navbtn);
+        notesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, NotesListActivity.class);
                 intent.putExtras(extras);
                 startActivity(intent);
             }

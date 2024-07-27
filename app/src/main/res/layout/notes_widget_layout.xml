@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ABC9DD"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/widget_toolbar"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="#99D1F6">
+
+
+        <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center_vertical"
+            android:paddingLeft="25dp"
+            android:text="Notes"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title" />
+
+        <ImageView
+            android:id="@+id/widget_add_note"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/add_logo"
+            android:contentDescription="Notes Widget"
+            app:tint="@color/black" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/widget_note_listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ABC9DD">
+    </ListView>
+
+    <TextView
+        android:id="@+id/widget_EmptyView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No notes found."
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+</LinearLayout>
