@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.R;
 
+//fragment for when user has not set budget
 public class SetBudgetFragment extends Fragment {
 
     private Button saveBudgetButton;

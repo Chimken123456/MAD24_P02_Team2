@@ -23,6 +23,7 @@ import java.util.Map;
 
 import sg.edu.np.mad.beproductive.R;
 
+// viewpager2 2nd slide
 public class GraphFragment extends Fragment {
 
     private PieChart pieChart;

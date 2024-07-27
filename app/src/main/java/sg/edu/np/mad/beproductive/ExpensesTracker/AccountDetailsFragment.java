@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.R;
 
+// to display basic details that an expenses tracker would have
 public class AccountDetailsFragment extends Fragment {
 
     private TextView balanceTextView;
