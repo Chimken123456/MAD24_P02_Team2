@@ -136,6 +136,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -146,11 +147,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import sg.edu.np.mad.beproductive.Alarm.AlarmList;
 import sg.edu.np.mad.beproductive.Analysis.AnalysisActivity;
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.ExpensesTracker.ExpensesTrackerActivity;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.Log_In;
+import sg.edu.np.mad.beproductive.NotesPage.NotesListActivity;
 import sg.edu.np.mad.beproductive.R;
 import sg.edu.np.mad.beproductive.Reminders.ReminderActivity;
 import sg.edu.np.mad.beproductive.Reminders.ReminderMain;
@@ -182,7 +185,8 @@ public class HomeMenu extends AppCompatActivity {
         Global.setUser_Id(user0.getId());
 
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
-        CardView logOutButton = findViewById(R.id.logout_btn);
+        ImageView logOutButton = findViewById(R.id.logout_btn);
+        CardView alarmButton = findViewById(R.id.alarm_btn);
         TextView loggedInUsername = findViewById(R.id.logged_in_username);
         loggedInUsername.setText(String.format("Logged in as %s", username));
         logOutButton.setOnClickListener(new View.OnClickListener() {
@@ -264,6 +268,20 @@ public class HomeMenu extends AppCompatActivity {
                 Log.d("HomeMenu", "Started ReminderMain activity");
             }
         });
+        alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, AlarmList.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
 
         CardView expensesBtn = findViewById(R.id.expenses_navbtn);
         expensesBtn.setOnClickListener(new View.OnClickListener() {
@@ -276,6 +294,22 @@ public class HomeMenu extends AppCompatActivity {
                 extras.putString("Email",user0.getEmail());
                 extras.putBoolean("SignUp",true);
                 Intent intent = new Intent(HomeMenu.this, ExpensesTrackerActivity.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
+
+        CardView notesBtn = findViewById(R.id.notes_navbtn);
+        notesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, NotesListActivity.class);
                 intent.putExtras(extras);
                 startActivity(intent);
             }

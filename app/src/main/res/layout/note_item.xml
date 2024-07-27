@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3FBFD"
+    tools:context=".NotesPage.NotesListActivity">
+
+    <TextView
+        android:id="@+id/notes_header"
+        android:layout_width="match_parent"
+        android:layout_height="107dp"
+        android:background="#99D1F6"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="60dp"
+        android:paddingTop="23dp"
+        android:text=""
+        android:textColor="@color/black"
+        android:textSize="29sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/backbtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="0dp"
+        app:srcCompat="@drawable/backbtn" />
+
+    <EditText
+        android:id="@+id/edit_notes_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notes_header"
+        android:background="#ABC9DD"
+        android:fontFamily="sans-serif"
+        android:inputType="textMultiLine"
+        android:maxLength="20"
+        android:paddingStart="25dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="25dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/notes_field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/edit_notes_header"
+        android:fontFamily="sans-serif"
+        android:inputType="textMultiLine"
+        android:paddingStart="25dp"
+        android:paddingTop="0dp"
+        android:paddingEnd="25dp"
+        android:scrollHorizontally="false"
+        android:text="test"
+        android:textColor="@color/black"
+        android:textSize="29sp"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>
