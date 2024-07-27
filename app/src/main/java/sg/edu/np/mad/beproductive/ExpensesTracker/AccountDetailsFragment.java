@@ -21,6 +21,7 @@ public class AccountDetailsFragment extends Fragment {
     private TextView balanceTextView;
     private TextView accountTextView;
     private TextView spendingTextView;
+    private TextView incomeTextView;
     private DatabaseReference balanceRef;
     private DatabaseReference userRef;
 
@@ -31,6 +32,7 @@ public class AccountDetailsFragment extends Fragment {
         balanceTextView = view.findViewById(R.id.accountBalanceTextView);
         accountTextView = view.findViewById(R.id.accountNameTextView);
         spendingTextView = view.findViewById(R.id.totalSpendingTextView);
+        incomeTextView = view.findViewById(R.id.totalIncomeTextView);
 
         int user_Id = Global.getUser_Id();
         String userPath = "user" + (user_Id + 1);
@@ -42,6 +44,7 @@ public class AccountDetailsFragment extends Fragment {
         loadBalanceFromFirebase();
         loadAccNameFromFirebase();
         loadTotalSpendingsFromFirebase();
+        loadTotalIncomeFromFirebase();
 
         return view;
     }
@@ -64,7 +67,7 @@ public class AccountDetailsFragment extends Fragment {
                         }
                     } catch (Exception e) {
                         // Handle exceptions
-                        balanceTextView.setText("Error loading total spendings");
+                        balanceTextView.setText("Error loading total balance");
                     }
                 } else {
                     balanceTextView.setText("Expenses:\n$0");
@@ -129,6 +132,37 @@ public class AccountDetailsFragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
                 // Handle errors
                 spendingTextView.setText("Error loading total spendings");
+            }
+        });
+    }
+
+    private void loadTotalIncomeFromFirebase() {
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("allowance");
+
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    try {
+                        Float income = snapshot.getValue(Float.class);
+                        if (income != null) {
+                            incomeTextView.setText("Income:\n$" + income);
+                        }
+                    } catch (Exception e) {
+                        // Handle exceptions
+                        incomeTextView.setText("Error loading total Income");
+                    }
+                } else {
+                    incomeTextView.setText("Income:\n$0");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle errors
+                spendingTextView.setText("Error loading total income");
             }
         });
     }
