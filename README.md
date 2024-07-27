@@ -15,6 +15,9 @@ Be Productive is a app that monitors your productivity through various features 
 Be Productive allows the user to create a to do list or a checklist, it also can be used as a time table to keep yourself on track.
 The app also can keep track of our behaviors and habits when doing task over the long run which the user can then see for himself his habits and time spent on apps.
 The app also has reminders to remind the users to keep themselves on track.
+The app have a alarm feature that alerts the user.
+The app also have a notes feature for the user to type important notes to take note of.
+The app also have a finance tracker to track the users finance to ensure they make financially responsible decisions and keep track of savings
 With these, the app aims to increase productivity of the users and help them in a meaningful way.
 
 App Features (Stage 1):
