@@ -76,6 +76,17 @@ Time Tracking and Pomodoro (Aqeil)
 
 App Features (Stage 2):
 
+Alarm (Zeyu)
+Role:
+Allow users to create alarm
+Allow user to delete alarm
+Allow user to edit alarm
+Allow user to snooze alarm
+Alarm is saved and tied to users
+Alarm plays music and sends a notification
+Allow user to set alarm to ring
+Allow user to cancel alarm
+
 Notes (Clive)
 Role:
 Allow users to create notes using the "+" button
