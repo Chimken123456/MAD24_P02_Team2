@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Alarm.AlarmEditor">
+
+    <TextView
+        android:id="@+id/alarm_editor_header"
+        android:layout_width="match_parent"
+        android:layout_height="97dp"
+        android:background="#99D1F6"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="60dp"
+        android:paddingTop="23dp"
+        android:text="Alarm Editor"
+        android:textColor="@color/black"
+        android:textSize="29sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/alarm_editor_backbtn"
+        android:layout_width="33dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/backbtn" />
+
+    <NumberPicker
+        android:id="@+id/alarm_numberpicker_edit_hour0"
+        android:layout_width="150dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="156dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <NumberPicker
+        android:id="@+id/alarm_numberpicker_edit_minute0"
+        android:layout_width="150dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="156dp"
+        android:layout_marginEnd="68dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/alarm_editor_delete_btn"
+        android:layout_width="196dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="44dp"
+        android:backgroundTint="#7AB4C2"
+        android:text="Delete Alarm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_editor_edit_btn" />
+
+    <Button
+        android:id="@+id/alarm_editor_edit_btn"
+        android:layout_width="193dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="104dp"
+        android:layout_marginTop="72dp"
+        android:backgroundTint="#7AB4C2"
+        android:text="Edit Alarm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarm_numberpicker_edit_minute0" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="28dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="23dp"
+        android:text="HR"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toStartOf="@+id/alarm_numberpicker_edit_minute0"
+        app:layout_constraintTop_toTopOf="@+id/alarm_numberpicker_edit_hour0" />
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="23dp"
+        android:text="MIN"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="@+id/alarm_numberpicker_edit_minute0"
+        app:layout_constraintTop_toTopOf="@+id/alarm_numberpicker_edit_minute0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

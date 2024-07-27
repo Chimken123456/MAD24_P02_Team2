@@ -146,6 +146,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import sg.edu.np.mad.beproductive.Alarm.AlarmList;
 import sg.edu.np.mad.beproductive.Analysis.AnalysisActivity;
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.Global;
@@ -182,6 +183,7 @@ public class HomeMenu extends AppCompatActivity {
 
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
         CardView logOutButton = findViewById(R.id.logout_btn);
+        CardView alarmButton = findViewById(R.id.alarm_btn);
         TextView loggedInUsername = findViewById(R.id.logged_in_username);
         loggedInUsername.setText(String.format("Logged in as %s", username));
         logOutButton.setOnClickListener(new View.OnClickListener() {
@@ -257,6 +259,20 @@ public class HomeMenu extends AppCompatActivity {
                 extras.putString("Email",user0.getEmail());
                 extras.putBoolean("SignUp",true);
                 Intent intent = new Intent(HomeMenu.this, ReminderMain.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
+        alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, AlarmList.class);
                 intent.putExtras(extras);
                 startActivity(intent);
             }
