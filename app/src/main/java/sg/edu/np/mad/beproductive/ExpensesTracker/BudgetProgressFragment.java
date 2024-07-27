@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.R;
 
+// to replace the setbudgetfragment to display the budget set by user and a progress bar
 public class BudgetProgressFragment extends Fragment {
 
     private TextView budgetTextView;
