@@ -136,6 +136,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -184,7 +185,7 @@ public class HomeMenu extends AppCompatActivity {
         Global.setUser_Id(user0.getId());
 
         CardView toDoListButton = findViewById(R.id.todolist_navbutton);
-        CardView logOutButton = findViewById(R.id.logout_btn);
+        ImageView logOutButton = findViewById(R.id.logout_btn);
         CardView alarmButton = findViewById(R.id.alarm_btn);
         TextView loggedInUsername = findViewById(R.id.logged_in_username);
         loggedInUsername.setText(String.format("Logged in as %s", username));
