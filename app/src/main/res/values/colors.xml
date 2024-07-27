@@ -4,4 +4,13 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#787878</color>
     <color name="purple">#784BB1</color>
+    <color name="offwhite">#F3EFEB</color>
+    <color name="blue">#ABD2EC</color>
+    <color name="beige">#CFBEA0</color>
+    <color name="pastelPurple">#CAA6CF</color>
+    <color name="turqiose">#9AC8C1</color>
+    <color name="pastelPink">#DA9F9F</color>
+    <color name="pastelGreen">#B9E1B0</color>
+    <color name="lightgray">#CFCECE</color>
+    <color name="yellow">#DADDAC</color>
 </resources>

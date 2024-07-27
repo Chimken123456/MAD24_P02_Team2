@@ -8,4 +8,26 @@
         <item>Task</item>
         <item>Others</item>
     </string-array>
+
+    <string-array name="category_array">
+        <item>Stationery</item>
+        <item>Dining</item>
+        <item>Shopping</item>
+        <item>Beverages</item>
+        <item>Books</item>
+        <item>Allowance</item>
+        <item>Transport</item>
+        <item>Entertainment</item>
+        <item>Gifts</item>
+    </string-array>
+
+    <string-array name="filter_options">
+        <item>Date Range</item>
+        <item>Week</item>
+        <item>Month</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

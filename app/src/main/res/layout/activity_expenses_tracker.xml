@@ -1,0 +1,182 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6F1F8"
+    tools:context=".ExpensesTracker.ExpensesTrackerActivity">
+
+    <!-- Expenses title -->
+    <TextView
+        android:id="@+id/Expenses"
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+        android:background="#99D1F6"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="60dp"
+        android:paddingTop="23dp"
+        android:text="Expenses"
+        android:textColor="@color/black"
+        android:textSize="29sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/dateRange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/Expenses">
+
+        <ImageView
+            android:id="@+id/prevWeekButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:background="@android:color/transparent"
+            android:src="@drawable/left_arrow" />
+
+        <TextView
+            android:id="@+id/dateRangeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:text="Date Range" />
+
+        <ImageView
+            android:id="@+id/nextWeekButton"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:src="@drawable/right_arrow" />
+    </LinearLayout>
+    <!-- CardView for PieChart -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/roundedRectangle"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="#90ACCD"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dateRange"
+        app:layout_constraintWidth_percent="0.88">
+
+        <!-- Use ConstraintLayout to manage layout positioning -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/dotsLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="1.0"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+    <!-- CardView for Budget Info -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/expensesInfoCardView"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="#617DC1"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/roundedRectangle"
+        app:layout_constraintWidth_percent="0.88">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/budgetFragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Transactions title -->
+    <TextView
+        android:id="@+id/transaction_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Transactions"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/expensesInfoCardView" />
+
+    <!-- RecyclerView for Transactions -->
+
+    <!-- Floating Action Button for Adding Transactions -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="0dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingBottom="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/transaction_title"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addTransactionFAB"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/add_logo"
+        app:backgroundTint="#88B1DD"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recyclerView"
+        app:layout_constraintVertical_bias="1" />
+
+    <ImageView
+        android:id="@+id/expensesBackbtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/Expenses"
+        app:layout_constraintEnd_toEndOf="@+id/Expenses"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toStartOf="@+id/Expenses"
+        app:layout_constraintTop_toTopOf="@+id/Expenses"
+        app:layout_constraintVertical_bias="0.54"
+        app:srcCompat="@drawable/backbtn" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
