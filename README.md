@@ -86,6 +86,7 @@ Alarm is saved and tied to users
 Alarm plays music and sends a notification
 Allow user to set alarm to ring
 Allow user to cancel alarm
+The alarm checks if the time setted is before the current time, if it is, it will set to the next day.
 
 Notes (Clive)
 Role:
