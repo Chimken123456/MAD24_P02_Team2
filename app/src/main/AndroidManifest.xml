@@ -6,6 +6,10 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+<!--    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>-->
 
     <application
         android:allowBackup="true"
@@ -18,6 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BeProductive"
         tools:targetApi="33">
+
         <service
             android:name=".NoteWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
@@ -34,6 +39,36 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/notes_app_widget_info" />
         </receiver>
+
+
+        <activity
+            android:name=".Alarm.AlarmEditor"
+            android:exported="false" />
+        <activity
+            android:name=".Alarm.AlarmList"
+            android:exported="true">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
+            android:name=".Alarm.AlarmNotification"
+            android:exported="false" />
+        <activity
+            android:name=".Alarm.AlarmSetter"
+            android:exported="true">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
 
         <activity
             android:name=".SplashArt"
@@ -70,11 +105,13 @@
         <activity
             android:name=".Log_In"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ToDoListPage.TodoList"
@@ -82,6 +119,7 @@
         <activity
             android:name=".Timetable.TimetableActivity"
             android:exported="false" />
+
         <activity
             android:name=".NotesPage.NotesListActivity"
             android:exported="false" />
@@ -89,11 +127,14 @@
             android:name=".NotesPage.NoteItemActivity"
             android:exported="false" />
 
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity
+
+<!--         <activity
+
             android:name=".Reminders.ReminderActivity"
             android:exported="true" />
         <activity
@@ -102,7 +143,19 @@
         <activity
             android:name=".Reminders.AlarmReceiver"
             android:exported="false" />
+
         <activity android:name=".Reminders.EditReminderActivity" />
+
+        <activity android:name=".Reminders.EditReminderActivity" /> -->
+
+        
+
+        <activity android:name=".Reminders.ReminderActivity" android:exported="true"/>
+        <activity android:name=".Reminders.ReminderMain" android:exported="true"/>
+        <activity android:name=".Reminders.AlarmReceiver" android:exported="false"/>
+        <activity android:name=".Reminders.EditReminderActivity" android:exported="false"/>
+      
+        <receiver android:name=".Alarm.AlarmReceiver" />
     </application>
 
 </manifest>

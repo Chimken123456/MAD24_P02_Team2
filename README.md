@@ -74,6 +74,15 @@ Analytic and insights (Anson)
 Focus metrics (Clive)
 Time Tracking and Pomodoro (Aqeil)
 
+App Features (Stage 2):
+
+Notes (Clive)
+Role:
+Allow users to create notes using the "+" button
+Notes are saved in the cloud per user
+Users can edit and delete notes which will be reflected in the database
+Users can use a widget to quickly access existing notes on the home screen
+
 
 Credits:
 Log in and Sign up Images : 
@@ -85,3 +94,5 @@ https://iconscout.com/free-icon/to-do-list-3524114 ,
 https://iconscout.com/icon/monthly-report-3058167
 BeProductive logo:
 https://www.brandcrowd.com/maker/logos/page1?Text=beproductive&TextChanged=&IsFromRootPage=&SearchText=productivity&KeywordChanged=true&LogoStyle=0&FontStyles=&Colors=&FilterByTags=
+Alarm image:
+https://www.pinterest.com/pin/720787115376680554/
