@@ -60,24 +60,8 @@ public class AlarmSetter extends AppCompatActivity {
             return insets;
         });
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_CODE_POST_NOTIFICATIONS);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // Permission granted, you can now send notifications
-//            } else {
-//                // Permission denied, handle accordingly
-//            }
-//        }
 
+        //Getting the user info
         Intent receive = getIntent();
         int id = receive.getIntExtra("ID",0);
         String username = receive.getStringExtra("Username");
@@ -97,6 +81,7 @@ public class AlarmSetter extends AppCompatActivity {
         setContentView(binding.getRoot());
         createNotificationChannel();
 
+        //Setting the values and default values of the number picker
         NumberPicker numberPickerHour0 = findViewById(R.id.alarm_numberpicker_hour0);
         numberPickerHour0.setMaxValue(23);
         numberPickerHour0.setMinValue(0);
@@ -109,6 +94,7 @@ public class AlarmSetter extends AppCompatActivity {
 
 
 
+        //If the user presses back
         binding.alarmBackbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,11 +162,13 @@ public class AlarmSetter extends AppCompatActivity {
 //                });
 //            }
 //        });
+
+        //If the presses set alarm button
         binding.setAlarm.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ScheduleExactAlarm")
             @Override
             public void onClick(View v) {
-                //Setting of time
+                //Setting of current time and formatting it to be in a format of 1300
                 calendar = Calendar.getInstance();
                 String timeCurrent = String.valueOf(calendar.getTime());
                 String[] timeCurrentFormatted = timeCurrent.split(" ");
@@ -188,6 +176,7 @@ public class AlarmSetter extends AppCompatActivity {
                 String[] time_time_array = timeHourMinCurrent.split(":");
                 String timeCompare = time_time_array[0] + time_time_array[1];
 
+                //Setting the time taken from the number pickers
                 calendar.set(Calendar.HOUR_OF_DAY, Integer.valueOf(numberPickerHour0.getValue()));
                 calendar.set(Calendar.MINUTE, Integer.valueOf(numberPickerMinute0.getValue()));
                 calendar.set(Calendar.SECOND,0);
@@ -196,6 +185,7 @@ public class AlarmSetter extends AppCompatActivity {
                 String[] test = time.split(" ");
                 String[] time_time_array1 = test[3].split(":");
                 String timeCompareTo = time_time_array1[0] + time_time_array1[1];
+                //Comparing current time and the time setted and if time setted is smaller than the current time, it will set the alarm to the next day
                 if(Integer.valueOf(timeCompare) > Integer.valueOf(timeCompareTo))
                 {
                     calendar.set(Calendar.DAY_OF_MONTH, Integer.valueOf(timeCurrentFormatted[2])+ 1);
@@ -214,6 +204,7 @@ public class AlarmSetter extends AppCompatActivity {
                 String[] time_time_array0 = time_time.split(":");
                 String time_time_formatted = time_time_array0[0]+":"+time_time_array0[1];
 
+                //Saving into the database
                 alarmRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -222,7 +213,7 @@ public class AlarmSetter extends AppCompatActivity {
                         {
                             if(snapshot.child("alarm").getValue().toString().equals(time_time_formatted))
                             {
-
+                                //Setting the checked value to true and sets the swtich to be on on recyclerView
                                 snapshot.getRef().child("checked").setValue(true);
                                 return;
                             }
@@ -231,6 +222,7 @@ public class AlarmSetter extends AppCompatActivity {
                         int count = Integer.valueOf(String.valueOf(task.getResult().getChildrenCount()));
                         String newAlarmId = alarmRef.push().getKey();
 
+                        //Adding of alarm in the database
                         DatabaseReference timeRef = alarmRef.child(newAlarmId);
                         HashMap hashMap = new HashMap();
                         hashMap.put("alarm",String.valueOf(time_time_formatted));
@@ -238,6 +230,7 @@ public class AlarmSetter extends AppCompatActivity {
                         timeRef.setValue(hashMap);
 
 
+                        //Setting the alarm
                         Integer count1 = Integer.valueOf(String.valueOf(dataSnapshot.getChildrenCount()));
                         alarm = new Alarm(time_time_formatted,true);
                         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
