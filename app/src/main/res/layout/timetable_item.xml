@@ -24,8 +24,9 @@
 
                 <TextView
                     android:id="@+id/timeslotView"
-                    android:layout_width="242dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="3"
                     android:background="#99D1F6"
                     android:paddingStart="20dp"
                     android:paddingTop="5dp"
@@ -35,12 +36,13 @@
 
                 <TextView
                     android:id="@+id/editButton"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="#CEBEF4"
-                    android:paddingStart="20dp"
                     android:paddingTop="6dp"
-                    android:text="Set Activity"
+                    android:text="Edit"
+                    android:textAlignment="center"
                     android:textColor="#000000"
                     android:textSize="25sp"
                     app:iconPadding="0dp" />

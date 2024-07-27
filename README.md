@@ -74,6 +74,15 @@ Analytic and insights (Anson)
 Focus metrics (Clive)
 Time Tracking and Pomodoro (Aqeil)
 
+App Features (Stage 2):
+
+Notes (Clive)
+Role:
+Allow users to create notes using the "+" button
+Notes are saved in the cloud per user
+Users can edit and delete notes which will be reflected in the database
+Users can use a widget to quickly access existing notes on the home screen
+
 
 Credits:
 Log in and Sign up Images : 

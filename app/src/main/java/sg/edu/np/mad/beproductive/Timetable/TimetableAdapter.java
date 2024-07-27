@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +26,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 import sg.edu.np.mad.beproductive.DatabaseHandler;
@@ -93,12 +98,23 @@ public class TimetableAdapter extends RecyclerView.Adapter<TimetableViewHolder> 
         //Initialise an instance of the alert dialog
         AlertDialog editInterface = builder.create();
         //Show the alert dialog on click
-        holder.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editInterface.show();
-            }
-        });
+
+        String currentTime = new SimpleDateFormat("HHmm", Locale.getDefault()).format(new Date());
+
+        Log.d("time", currentTime);
+        if (Integer.parseInt(currentTime) > Integer.parseInt(tempName)) {
+            holder.edit.setOnClickListener(null);
+            holder.edit.setBackgroundColor(Color.parseColor("#B3B2B6"));
+        }
+        else {
+            holder.edit.setBackgroundColor(Color.parseColor("#CEBEF4"));
+            holder.edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editInterface.show();
+                }
+            });
+        }
     }
 
     @Override

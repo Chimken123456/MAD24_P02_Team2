@@ -138,6 +138,14 @@ public class Sign_Up extends AppCompatActivity {
                                 timeslot.setValue(tempMap);
                             }
 
+                            DatabaseReference notesRef = userRef.child("notes");
+                            DatabaseReference note = notesRef.child(String.valueOf(0));
+                            HashMap noteMap = new HashMap();
+
+                            noteMap.put("header", "First note");
+                            noteMap.put("content", "Empty");
+                            note.setValue(noteMap);
+
                             DatabaseReference todoRef = userRef.child("todo"); // create to do path upon submission
                             //Making intent and the relevant data to send over to home menu page
                             Intent activity = new Intent(Sign_Up.this, HomeMenu.class);
