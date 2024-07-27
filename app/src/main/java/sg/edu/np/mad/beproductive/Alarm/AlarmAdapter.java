@@ -136,7 +136,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
                     Intent intent = new Intent(context,AlarmReceiver.class);
                     intent.putExtra("Alarm_Setter_Time",alarm.getTime());
                     intent.putExtra("User_id", Global.getUser_Id());
-                    pendingIntent = PendingIntent.getBroadcast(context,0,intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    pendingIntent = PendingIntent.getBroadcast(context,alarm.getAlarm_id(),intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                     alarmManager.cancel(pendingIntent);
                     Toast.makeText(context, "Alarm cancelled", Toast.LENGTH_SHORT).show();
 
