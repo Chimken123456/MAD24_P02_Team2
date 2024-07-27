@@ -67,13 +67,6 @@ It should display the service only in its name and does not show apps running in
 Contributions:
 Created layout for app usage stats page.
 
-Planned App Features (Stage 2):
-Gamification (Zeyu)
-Task Management (Nicole)
-Analytic and insights (Anson)
-Focus metrics (Clive)
-Time Tracking and Pomodoro (Aqeil)
-
 App Features (Stage 2):
 
 Notes (Clive)
@@ -82,6 +75,20 @@ Allow users to create notes using the "+" button
 Notes are saved in the cloud per user
 Users can edit and delete notes which will be reflected in the database
 Users can use a widget to quickly access existing notes on the home screen
+
+Expenses Tracker (Nicole)
+As a student, I want to be able to have an expenses tracker to keep track of my savings.
+Role:
+Allow user to set their initial balance and their weekly budget(allowance).
+Allow user to add in their expenses that comes with various categories for them to choose from.
+User needs to key in the price of their expense.
+User can select the income category to add money into their balance.
+There is a budget progress bar which allows user to have a visual representation of how much money they are spending.
+When it is within budget, it will be green, when it has exceeded, it will become red.
+User can view a graph to show how their overall expenses is like, allows user to be more mindful of how they spend their money.
+Database will store each expense item, allowance, balance, budget and spendings under each user node.
+
+
 
 
 Credits:

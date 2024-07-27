@@ -58,6 +58,14 @@ public class BudgetProgressFragment extends Fragment {
 
             // Update progress bar
             budgetProgressBar.setProgress((int) totalSpent);
+
+            if (totalSpent > budget) {
+                // Change to exceeded drawable
+                budgetProgressBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_budget_bar_exceeded, null));
+            } else {
+                // Change to normal drawable
+                budgetProgressBar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_budget_bar, null));
+            }
         }
     }
 
