@@ -22,6 +22,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BeProductive"
         tools:targetApi="33">
+
+        <service
+            android:name=".NoteWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
+        <receiver
+            android:name=".NotesAppWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/notes_app_widget_info" />
+        </receiver>
+
+
         <activity
             android:name=".Alarm.AlarmEditor"
             android:exported="false" />
@@ -50,6 +69,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
+
         <activity
             android:name=".SplashArt"
             android:exported="true">
@@ -65,7 +85,6 @@
         <activity
             android:name=".HomePage.HomeMenu"
             android:exported="false" />
-
         <activity
             android:name=".ExpensesTracker.ExpensesTrackerActivity"
             android:exported="false" />
@@ -101,12 +120,21 @@
             android:name=".Timetable.TimetableActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".NotesPage.NotesListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotesPage.NoteItemActivity"
+            android:exported="false" />
+
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
 
 <!--         <activity
+
             android:name=".Reminders.ReminderActivity"
             android:exported="true" />
         <activity
@@ -115,6 +143,9 @@
         <activity
             android:name=".Reminders.AlarmReceiver"
             android:exported="false" />
+
+        <activity android:name=".Reminders.EditReminderActivity" />
+
         <activity android:name=".Reminders.EditReminderActivity" /> -->
 
         
@@ -125,7 +156,6 @@
         <activity android:name=".Reminders.EditReminderActivity" android:exported="false"/>
       
         <receiver android:name=".Alarm.AlarmReceiver" />
-
     </application>
 
 </manifest>
