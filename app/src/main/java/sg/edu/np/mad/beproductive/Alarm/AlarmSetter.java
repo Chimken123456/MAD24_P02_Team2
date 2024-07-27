@@ -114,8 +114,8 @@ public class AlarmSetter extends AppCompatActivity {
             public void onClick(View v) {
                 Intent activity = new Intent(AlarmSetter.this, AlarmList.class);
 //                Bundle extras = new Bundle();
-                extras.putString("Alarm_time", alarm.getTime());
-                extras.putBoolean("Alarm_checked", alarm.getChecked());
+//                extras.putString("Alarm_time", alarm.getTime());
+//                extras.putBoolean("Alarm_checked", alarm.getChecked());
                 activity.putExtras(extras);
                 startActivity(activity);
             }
