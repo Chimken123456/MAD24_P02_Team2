@@ -66,12 +66,12 @@
         app:layout_constraintTop_toBottomOf="@id/welcome_text" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="474dp"
+        android:layout_width="385dp"
+        android:layout_height="638dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logged_in_username"
@@ -150,9 +150,11 @@
             android:layout_width="150dp"
             android:layout_height="140dp"
             android:layout_margin="15dp"
+            android:layout_marginEnd="10dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/todolist_navbutton"
+            app:layout_constraintStart_toStartOf="@+id/todolist_navbutton"
             app:layout_constraintTop_toBottomOf="@id/todolist_navbutton">
 
             <LinearLayout
@@ -185,8 +187,9 @@
             android:layout_margin="15dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
-            app:layout_constraintLeft_toRightOf="@id/monthlyreport_navbtn"
+            app:layout_constraintEnd_toEndOf="@+id/timetable_navbutton"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/timetable_navbutton"
             app:layout_constraintTop_toBottomOf="@id/timetable_navbutton">
 
             <LinearLayout
@@ -220,9 +223,9 @@
             android:layout_margin="15dp"
             app:cardCornerRadius="15dp"
             app:cardElevation="12dp"
-            app:layout_constraintEnd_toEndOf="@+id/reminders_navbtn"
-            app:layout_constraintStart_toStartOf="@+id/reminders_navbtn"
-            app:layout_constraintTop_toBottomOf="@+id/reminders_navbtn">
+            app:layout_constraintEnd_toEndOf="@+id/logout_btn"
+            app:layout_constraintStart_toStartOf="@+id/logout_btn"
+            app:layout_constraintTop_toBottomOf="@+id/logout_btn">
 
             <LinearLayout
                 android:layout_width="150dp"
@@ -236,6 +239,7 @@
                     android:layout_height="76dp"
                     android:layout_gravity="center_horizontal"
                     app:srcCompat="@drawable/alarm_icon" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -258,11 +262,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/expenses_navbtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/monthlyreport_navbtn">
+            app:layout_constraintTop_toBottomOf="@+id/monthlyreport_navbtn"
+            app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
                 android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_height="138dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -293,7 +298,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/logout_btn"
-            app:layout_constraintTop_toBottomOf="@id/reminders_navbtn">
+            app:layout_constraintTop_toBottomOf="@id/reminders_navbtn"
+            app:layout_constraintVertical_bias="0.0">
 
             <LinearLayout
                 android:layout_width="150dp"
@@ -305,7 +311,7 @@
                     android:layout_width="90dp"
                     android:layout_height="81dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/expenses_logo"/>
+                    android:src="@drawable/expenses_logo" />
 
                 <TextView
                     android:layout_width="wrap_content"
