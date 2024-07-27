@@ -15,7 +15,7 @@
         android:layout_marginTop="36dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/alarm_notification_bg" />
+        app:srcCompat="@drawable/alarm_background_test" />
 
     <TextView
         android:id="@+id/alarm_notification_alarm"
@@ -47,7 +47,7 @@
         android:layout_height="85dp"
         android:layout_marginTop="32dp"
         android:backgroundTint="#7AB4C2"
-        android:text="Wake Up"
+        android:text="Done"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/alarm_notification_bg"
         app:layout_constraintHorizontal_bias="0.16"

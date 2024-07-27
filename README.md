@@ -85,3 +85,5 @@ https://iconscout.com/free-icon/to-do-list-3524114 ,
 https://iconscout.com/icon/monthly-report-3058167
 BeProductive logo:
 https://www.brandcrowd.com/maker/logos/page1?Text=beproductive&TextChanged=&IsFromRootPage=&SearchText=productivity&KeywordChanged=true&LogoStyle=0&FontStyles=&Colors=&FilterByTags=
+Alarm image:
+https://www.pinterest.com/pin/720787115376680554/

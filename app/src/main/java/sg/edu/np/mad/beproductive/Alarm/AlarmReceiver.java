@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -86,7 +87,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         notificationManager.notify(123,builder.build());
 
 
-        CommonMethod.SoundPlayer(context,R.raw.alarm_music);
+        CommonMethod.SoundPlayer(context, R.raw.alarm_music_proper);
         CommonMethod.player.setLooping(true);
     }
 }
