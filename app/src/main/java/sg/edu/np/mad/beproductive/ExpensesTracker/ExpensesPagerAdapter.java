@@ -6,8 +6,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
-import sg.edu.np.mad.beproductive.ExpensesTracker.AccountDetailsFragment;
-
 public class ExpensesPagerAdapter extends FragmentStateAdapter {
 
     private boolean isBalanceSetupComplete;
@@ -50,4 +48,9 @@ public class ExpensesPagerAdapter extends FragmentStateAdapter {
         return isBalanceSetupComplete ? 2 : 1;
     }
 
+    public void updateBalanceSetupStatus(boolean isSetupComplete, List<ExpensesModel> expensesList) {
+        this.isBalanceSetupComplete = isSetupComplete;
+        this.expensesList = expensesList;
+        notifyDataSetChanged(); // Refresh the adapter
+    }
 }

@@ -68,7 +68,7 @@ public class BudgetProgressFragment extends Fragment {
         int user_Id = Global.getUser_Id();
         String userPath = "user" + (user_Id + 1);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("User").child(userPath).child("budget");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer budget = snapshot.getValue(Integer.class);
