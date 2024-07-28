@@ -6,6 +6,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
+
+// to handle the viewpager2 scenarios, handle which fragment to show
 public class ExpensesPagerAdapter extends FragmentStateAdapter {
 
     private boolean isBalanceSetupComplete;

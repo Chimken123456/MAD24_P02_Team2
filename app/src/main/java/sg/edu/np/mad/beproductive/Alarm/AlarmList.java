@@ -246,7 +246,7 @@ public class AlarmList extends AppCompatActivity {
             return insets;
         });
 
-        // Check if notification permission is granted
+        // Check if notification permission is granted, if not ask them for permission
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -272,6 +272,7 @@ public class AlarmList extends AppCompatActivity {
 
         ArrayList<Alarm> alarmArrayList = new ArrayList<>();
 
+        //Getting all alarms from the user and setting it into adapter
         alarmRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DataSnapshot dataSnapshot = task.getResult();
@@ -290,14 +291,16 @@ public class AlarmList extends AppCompatActivity {
                     alarm.setAlarm_id(count);
                     count++;
                 }
+                //Making a new list to sort
                 ArrayList<Integer> alarmListNum = new ArrayList<>();
                 for (Alarm a : alarmArrayList) {
                     String[] time_formatted = a.getTime().split(":");
                     alarmListNum.add(Integer.valueOf(time_formatted[0] + time_formatted[1]));
                 }
-                Collections.sort(alarmListNum);
+                Collections.sort(alarmListNum); //Sort the alarm
 
                 ArrayList<Alarm> alarmArrayListFinal = new ArrayList<>();
+                //Checking for duplicates
                 for (Integer i : alarmListNum) {
                     for (Alarm a : alarmArrayList) {
                         String[] time_formatted = a.getTime().split(":");
@@ -309,6 +312,7 @@ public class AlarmList extends AppCompatActivity {
                     }
                 }
 
+                //Adding the array into the recyclerView
                 AlarmAdapter alarmAdapter = new AlarmAdapter(alarmArrayListFinal, AlarmList.this);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AlarmList.this);
                 recyclerView.setLayoutManager(linearLayoutManager);
@@ -317,6 +321,7 @@ public class AlarmList extends AppCompatActivity {
             }
         });
 
+        //Button to go to the activity to add new alarm
         FloatingActionButton addNewAlarmButton = findViewById(R.id.alarm_recycler_floatingbutton);
         addNewAlarmButton.setOnClickListener(v -> {
             Intent activity = new Intent(AlarmList.this, AlarmSetter.class);
@@ -330,6 +335,7 @@ public class AlarmList extends AppCompatActivity {
             startActivity(activity);
         });
 
+        //Button to go back to home menu
         ImageView alarmBackBtn = findViewById(R.id.alarm_list_backbtn);
         alarmBackBtn.setOnClickListener(v -> {
             Intent activity = new Intent(AlarmList.this, HomeMenu.class);
@@ -344,6 +350,7 @@ public class AlarmList extends AppCompatActivity {
         });
     }
 
+    //Actions to be taken when the notification propmt is granted or denied
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

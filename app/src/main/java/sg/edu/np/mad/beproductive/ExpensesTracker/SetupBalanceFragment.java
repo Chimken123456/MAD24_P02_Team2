@@ -21,6 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.R;
 
+
+//fragment for when user has not set initial balance
 public class SetupBalanceFragment extends Fragment {
 
     private DatabaseReference balanceRef;

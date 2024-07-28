@@ -143,8 +143,6 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Start a new transaction for adding fragments
             FragmentManager fragmentManager = getSupportFragmentManager();
-
-            // Transaction for adding GraphFragment and AccountDetailsFragment
             FragmentTransaction transaction = fragmentManager.beginTransaction();
 
             // Add GraphFragment
@@ -186,15 +184,10 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         });
     }
-//    public void onBalanceSetup() {
-//        // Update the state and reload the adapter
-//        isBalanceSetupComplete = true;
-//        expPagerAdapter = new ExpensesPagerAdapter(this, isBalanceSetupComplete, expensesList);
-//        viewPager.setAdapter(expPagerAdapter);
-//    }
 
 
-    private void setWeekDates(Calendar calendar) {
+
+    private void setWeekDates(Calendar calendar) { // set start and end date for my week range date function
         // Set the calendar to the start of the current week (Monday)
         calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         currentStartDate = (Calendar) calendar.clone();
@@ -208,6 +201,25 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
         updateDateRangeText();
     }
 
+    // set date range functions
+    private void updateDateRangeText() { // setting the date range when loading the data
+        String startDate = dateFormat.format(currentStartDate.getTime());
+        String endDate = dateFormat.format(currentEndDate.getTime());
+        dateRangeTextView.setText(startDate + " - " + endDate);
+        updateRecyclerViewWithFilteredData(currentStartDate.getTime(), currentEndDate.getTime());
+        updateBudgetFragmentWithTotalSpent(); // count total spent for that particular week
+    }
+    private void moveToPreviousWeek() {
+        currentStartDate.add(Calendar.WEEK_OF_YEAR, -1);
+        currentEndDate.add(Calendar.WEEK_OF_YEAR, -1);
+        updateDateRangeText();
+    }
+
+    private void moveToNextWeek() {
+        currentStartDate.add(Calendar.WEEK_OF_YEAR, +1);
+        currentEndDate.add(Calendar.WEEK_OF_YEAR, +1);
+        updateDateRangeText();
+    }
     private float calculateTotalSpentForWeek(Date startDate, Date endDate) {
         float totalSpent = 0;
         List<ExpensesModel> weeklyExpenses = filterExpensesByDateRange(startDate, endDate);
@@ -224,36 +236,7 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
         }
         return totalSpent;
     }
-
-
-
-    private void updateBudgetFragmentWithTotalSpent() {
-        float totalSpent = calculateTotalSpentForWeek(currentStartDate.getTime(), currentEndDate.getTime());
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.budgetFragmentContainer);
-
-        if (fragment instanceof BudgetProgressFragment) {
-            BudgetProgressFragment budgetProgressFragment = (BudgetProgressFragment) fragment;
-            budgetProgressFragment.updateSpentTextView(totalSpent);
-            budgetProgressFragment.updateProgressBarWithTotalSpent(totalSpent);
-        } else {
-            Log.e("ExpensesTrackerActivity", "Expected BudgetProgressFragment but found " + (fragment != null ? fragment.getClass().getSimpleName() : "null"));
-        }
-    }
-
-
-
-    private void updateDateRangeText() {
-        String startDate = dateFormat.format(currentStartDate.getTime());
-        String endDate = dateFormat.format(currentEndDate.getTime());
-        dateRangeTextView.setText(startDate + " - " + endDate);
-        updateRecyclerViewWithFilteredData(currentStartDate.getTime(), currentEndDate.getTime());
-        updateGraphFragmentWithDateRange(currentStartDate, currentEndDate);
-        updateBudgetFragmentWithTotalSpent();
-        // TODO: Load and display expenses based on the current week
-    }
-    private List<ExpensesModel> filterExpensesByDateRange(Date startDate, Date endDate) {
+    private List<ExpensesModel> filterExpensesByDateRange(Date startDate, Date endDate) { //filter for only items in that week
         List<ExpensesModel> filteredList = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
@@ -276,22 +259,18 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
 
         return filteredList; // Return the filtered list
     }
-    private void updateGraphFragmentWithDateRange(Calendar startCalendar, Calendar endCalendar) {
-        // Convert Calendar to Date
-        Date startDate = startCalendar.getTime();
-        Date endDate = endCalendar.getTime();
+    private void updateBudgetFragmentWithTotalSpent() { // updates total expenses for a particular week for the budget fragment
+        float totalSpent = calculateTotalSpentForWeek(currentStartDate.getTime(), currentEndDate.getTime());
 
-        // Filter expenses based on date range
-        List<ExpensesModel> filteredExpenses = filterExpensesByDateRange(startDate, endDate);
-
-        // Access the FragmentManager
         FragmentManager fragmentManager = getSupportFragmentManager();
-        GraphFragment graphFragment = (GraphFragment) fragmentManager.findFragmentById(R.id.graphfragment_container);
+        Fragment fragment = fragmentManager.findFragmentById(R.id.budgetFragmentContainer);
 
-        if (graphFragment != null) {
-            graphFragment.updatePieChart(filteredExpenses);
+        if (fragment instanceof BudgetProgressFragment) {
+            BudgetProgressFragment budgetProgressFragment = (BudgetProgressFragment) fragment;
+            budgetProgressFragment.updateSpentTextView(totalSpent);
+            budgetProgressFragment.updateProgressBarWithTotalSpent(totalSpent);
         } else {
-            Log.e("ActivityName", "GraphFragment not found.");
+            Log.e("ExpensesTrackerActivity", "Expected BudgetProgressFragment but found " + (fragment != null ? fragment.getClass().getSimpleName() : "null"));
         }
     }
 
@@ -300,25 +279,11 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
     private void updateRecyclerViewWithFilteredData(Date startDate, Date endDate) {
         List<ExpensesModel> filteredExpenses = filterExpensesByDateRange(startDate, endDate);
         adapter.updateData(filteredExpenses);
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged(); //filtering expenses list to each week
     }
 
-
-
-    private void moveToPreviousWeek() {
-        currentStartDate.add(Calendar.WEEK_OF_YEAR, -1);
-        currentEndDate.add(Calendar.WEEK_OF_YEAR, -1);
-        updateDateRangeText();
-    }
-
-    private void moveToNextWeek() {
-        currentStartDate.add(Calendar.WEEK_OF_YEAR, +1);
-        currentEndDate.add(Calendar.WEEK_OF_YEAR, +1);
-        updateDateRangeText();
-    }
-
-
-    private void checkBalanceSetupComplete() {
+    // check if user set up balance yet
+    private void checkBalanceSetupComplete() { // to
         int user_Id = Global.getUser_Id();
         String userPath = "user" + (user_Id + 1);
         userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
@@ -356,7 +321,7 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
         });
     }
 
-
+// check if user has set up budget
     private void checkBudgetSetup() {
         userRef.child("budget").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -378,6 +343,7 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
                 .commit();
     }
 
+    // viewpager2, let user see which page they are on and also a form of showing them that there are 2 pages
     private void initializeDots(int count) {
         dots = new ArrayList<>();
         dotsLayout.removeAllViews();
@@ -407,6 +373,12 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         }
     }
+    private void refreshViewPager() {
+        expPagerAdapter = new ExpensesPagerAdapter(this, isBalanceSetupComplete, expensesList);
+        viewPager.setAdapter(expPagerAdapter);
+        initializeDots(isBalanceSetupComplete ? 2 : 1);
+    }
+    // adding expense item
     private void showAddExpenseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -423,31 +395,55 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String category = spinnerCategory.getSelectedItem().toString();
                 String price = etPrice.getText().toString();
-                String dateTime = getCurrentDateTime(); // Use current date-time in a real app
-                int categoryIcon = getCategoryIcon(category);
-                // Add the new expense to the list
+                // Check if the price field is empty
+                if (price.isEmpty()) {
+                    // Show an error message if the price is empty
+                    etPrice.setError("Price is required");
+                    etPrice.requestFocus();
+                    return; // Exit the method early to prevent saving
+                }
+                try {
+                    // Try to parse the price as a float
+                    float amount = Float.parseFloat(price);
 
-//                float amount = Float.parseFloat(price);
-                expensesList.add(new ExpensesModel(category, dateTime, "$" + price, categoryIcon)); // Update the icon as needed
-//                updateBudgetProgress();
-                saveExpenseToFirebase(new ExpensesModel(category, dateTime, "$" + price, categoryIcon), category);
-                adapter.notifyDataSetChanged();
-                updateGraphFragment();
-                refreshBalance();
-                saveTotalSpendings();
-                dialog.dismiss();
+                    // Check if the amount is valid (greater than zero)
+                    if (amount <= 0) {
+                        etPrice.setError("Price must be greater than zero");
+                        etPrice.requestFocus();
+                        return; // Exit the method early to prevent saving
+                    }
+
+                    // If validation passes, proceed to save the expense
+                    String dateTime = getCurrentDateTime(); // Use current date-time
+                    int categoryIcon = getCategoryIcon(category);
+
+                    // Add the new expense to the list
+                    expensesList.add(new ExpensesModel(category, dateTime, "$" + price, categoryIcon)); // Update the icon as needed
+
+                    // Save the new expense to Firebase
+                    saveExpenseToFirebase(new ExpensesModel(category, dateTime, "$" + price, categoryIcon), category);
+
+                    // Notify the adapter that the data has changed
+                    adapter.notifyDataSetChanged();
+
+                    // Update the UI components as needed
+                    updateGraphFragment();
+                    refreshBalance();
+                    saveTotalSpendings();
+
+                    // Dismiss the dialog
+                    dialog.dismiss();
+                } catch (NumberFormatException e) {
+                    // Show an error message if the price is not a valid number
+                    etPrice.setError("Please enter a valid number");
+                    etPrice.requestFocus();
+                }
             }
-
         });
 
+        // Show the dialog
         dialog.show();
     }
-    private void refreshViewPager() {
-        expPagerAdapter = new ExpensesPagerAdapter(this, isBalanceSetupComplete, expensesList);
-        viewPager.setAdapter(expPagerAdapter);
-        initializeDots(isBalanceSetupComplete ? 2 : 1);
-    }
-
     private void saveExpenseToFirebase(ExpensesModel expense, String category) {
         int user_Id = Global.getUser_Id();
         String userPath = "user" + (user_Id + 1);
@@ -504,116 +500,6 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void refreshRecyclerView() {
-        adapter.updateData(expensesList);
-        adapter.notifyDataSetChanged();
-    }
-
-    private void refreshBalance() {
-        int user_Id = Global.getUser_Id();
-        String userPath = "user" + (user_Id + 1);
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
-
-        userRef.child("balance").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    float balance = snapshot.getValue(Float.class);
-
-                    // Update the fragment with the new balance
-                    AccountDetailsFragment fragment = (AccountDetailsFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.accDetailsFragmentContainer); // Replace with your actual fragment container ID
-
-                    if (fragment != null) {
-                        fragment.updateBalance(balance);
-                    } else {
-                        Log.e("ExpensesTrackerActivity", "AccountDetailsFragment is not found");
-                    }
-                } else {
-                    Log.d("ExpensesTrackerActivity", "No balance found for user.");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("ExpensesTrackerActivity", "Failed to get balance: " + error.getMessage(), error.toException());
-            }
-        });
-    }
-
-//    private void saveTotalSpendings() {
-//        float totalSpendings = calculateTotalSpendings();
-//
-//        int user_Id = Global.getUser_Id();
-//        String userPath = "user" + (user_Id + 1);
-//        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
-//
-//        userRef.child("spendings").setValue(totalSpendings).addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                Toast.makeText(ExpensesTrackerActivity.this, "Total spendings updated!", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Log.e("ExpensesTrackerActivity", "Failed to update spendings", task.getException());
-//                Toast.makeText(ExpensesTrackerActivity.this, "Failed to update spendings!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
-    private void saveTotalSpendings() {
-        // Calculate total spendings and total allowance
-        float totalSpendings = calculateTotalSpendings();
-        float totalAllowance = calculateTotalAllowance();
-
-        // Retrieve user ID and reference path
-        int user_Id = Global.getUser_Id();
-        String userPath = "user" + (user_Id + 1);
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
-
-        // Save total spendings
-        userRef.child("spendings").setValue(totalSpendings).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(ExpensesTrackerActivity.this, "Total spendings updated!", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e("ExpensesTrackerActivity", "Failed to update spendings", task.getException());
-                Toast.makeText(ExpensesTrackerActivity.this, "Failed to update spendings!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Save total allowance
-        userRef.child("allowance").setValue(totalAllowance).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(ExpensesTrackerActivity.this, "Total allowance updated!", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e("ExpensesTrackerActivity", "Failed to update allowance", task.getException());
-                Toast.makeText(ExpensesTrackerActivity.this, "Failed to update allowance!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-    private float calculateTotalAllowance() {
-        float total = 0;
-        for (ExpensesModel expense : expensesList) {
-            if ("Allowance".equals(expense.getCategory())) {
-                float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
-                total += amount;
-            }
-        }
-        return total;
-    }
-
-    private float calculateTotalSpendings() {
-        float total = 0;
-        for (ExpensesModel expense : expensesList) {
-            if (!"Allowance".equals(expense.getCategory())) {
-                float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
-                total += amount;
-            }
-        }
-        return total;
-    }
-
-
-
     private void loadExpensesFromFirebase() {
         Log.d("ExpensesTrackerActivity", "Loading expenses from Firebase...");
         userRef.addValueEventListener(new ValueEventListener() {
@@ -652,8 +538,127 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
     }
 
 
+// problem: Need to update the state and reload the adapter (solved)
+//    public void onBalanceSetup() {
+//        isBalanceSetupComplete = true;
+//        expPagerAdapter = new ExpensesPagerAdapter(this, isBalanceSetupComplete, expensesList);
+//        viewPager.setAdapter(expPagerAdapter);
+//    }
 
-    private void updateGraphFragment() {
+    // reloading the page to show recycler view data and also balance, call function in load expenses
+    private void refreshRecyclerView() {
+        adapter.updateData(expensesList);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void refreshBalance() {
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
+
+        userRef.child("balance").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    float balance = snapshot.getValue(Float.class);
+
+                    // Update the fragment with the new balance
+                    AccountDetailsFragment fragment = (AccountDetailsFragment) getSupportFragmentManager()
+                            .findFragmentById(R.id.accDetailsFragmentContainer); // Replace with your actual fragment container ID
+
+                    if (fragment != null) {
+                        fragment.updateBalance(balance);
+                    } else {
+                        Log.e("ExpensesTrackerActivity", "AccountDetailsFragment is not found");
+                    }
+                } else {
+                    Log.d("ExpensesTrackerActivity", "No balance found for user.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ExpensesTrackerActivity", "Failed to get balance: " + error.getMessage(), error.toException());
+            }
+        });
+    }
+
+//    Before: when category allowance was not specified to add money instead of subtract
+//    private void saveTotalSpendings() {
+//        float totalSpendings = calculateTotalSpendings();
+//
+//        int user_Id = Global.getUser_Id();
+//        String userPath = "user" + (user_Id + 1);
+//        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
+//
+//        userRef.child("spendings").setValue(totalSpendings).addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                Toast.makeText(ExpensesTrackerActivity.this, "Total spendings updated!", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Log.e("ExpensesTrackerActivity", "Failed to update spendings", task.getException());
+//                Toast.makeText(ExpensesTrackerActivity.this, "Failed to update spendings!", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
+
+//    After: when category allowance was specified to add money instead of subtract
+//    save both spending snd income to firebase
+    private void saveTotalSpendings() {
+        // Calculate total spendings and total allowance
+        float totalSpendings = calculateTotalSpendings();
+        float totalAllowance = calculateTotalAllowance();
+
+        // Retrieve user ID and reference path
+        int user_Id = Global.getUser_Id();
+        String userPath = "user" + (user_Id + 1);
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("User").child(userPath);
+
+        // Save total spendings
+        userRef.child("spendings").setValue(totalSpendings).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(ExpensesTrackerActivity.this, "Total spendings updated!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("ExpensesTrackerActivity", "Failed to update spendings", task.getException());
+                Toast.makeText(ExpensesTrackerActivity.this, "Failed to update spendings!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Save total allowance
+        userRef.child("allowance").setValue(totalAllowance).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(ExpensesTrackerActivity.this, "Total allowance updated!", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e("ExpensesTrackerActivity", "Failed to update allowance", task.getException());
+                Toast.makeText(ExpensesTrackerActivity.this, "Failed to update allowance!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+// logic to calculate the account details, allowance = add money, spending = minus money
+    private float calculateTotalAllowance() {
+        float total = 0;
+        for (ExpensesModel expense : expensesList) {
+            if ("Allowance".equals(expense.getCategory())) {
+                float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
+                total += amount;
+            }
+        }
+        return total;
+    }
+
+    private float calculateTotalSpendings() {
+        float total = 0;
+        for (ExpensesModel expense : expensesList) {
+            if (!"Allowance".equals(expense.getCategory())) {
+                float amount = Float.parseFloat(expense.getPrice().replace("$", "").replace(",", ""));
+                total += amount;
+            }
+        }
+        return total;
+    }
+
+
+    private void updateGraphFragment() { // update to show data on graph
         Log.d("ExpensesTrackerActivity", "Updating GraphFragment...");
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment graphFragment = fragmentManager.findFragmentById(R.id.graphfragment_container);
@@ -666,7 +671,7 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
     }
 
 
-    private int getCategoryIcon(String category) {
+    private int getCategoryIcon(String category) { // set each category to an icon
         switch (category) {
             case "Dining":
                 return R.drawable.dining_icon;
@@ -690,7 +695,7 @@ public class ExpensesTrackerActivity extends AppCompatActivity {
         return 0;
     }
 
-    private String getCurrentDateTime() {
+    private String getCurrentDateTime() { // to store in firebase
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         return dateFormat.format(calendar.getTime());
