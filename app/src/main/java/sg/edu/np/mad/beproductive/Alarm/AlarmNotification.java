@@ -54,6 +54,7 @@ public class AlarmNotification extends AppCompatActivity {
         Intent recievingEnd = getIntent();
         Integer user_id  = recievingEnd.getIntExtra("User_Id" , -1);
 
+        //Getting the current time, formatting it to 12:30 format, and setting the time to the textView
         Calendar calendar0 = Calendar.getInstance();
         String timeCurrent = String.valueOf(calendar0.getTime());
         String[] timeCurrentFormatted = timeCurrent.split(" ");
@@ -70,6 +71,7 @@ public class AlarmNotification extends AppCompatActivity {
 
 
 
+        //When the user pressess done
         wakeUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +80,7 @@ public class AlarmNotification extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if(task.isSuccessful())
                         {
+                            //Stops the music and finding the user to send information to HomeMenu
                             DataSnapshot dataSnapshot = task.getResult();
                             String name = dataSnapshot.child("name").getValue().toString();
                             String email = dataSnapshot.child("email").getValue().toString();
@@ -98,11 +101,13 @@ public class AlarmNotification extends AppCompatActivity {
             }
         });
 
+        //What happens if the user presses snooze
         snoozeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
 
+                //Getting the current time and setting the calendar to be current time with another 5minutes added into it
                 String timeCurrent = String.valueOf(calendar.getTime());
                 String[] timeCurrentFormatted = timeCurrent.split(" ");
                 String timeHourMinCurrent = timeCurrentFormatted[3];
@@ -113,6 +118,7 @@ public class AlarmNotification extends AppCompatActivity {
                 calendar.set(Calendar.SECOND,0);
                 calendar.set(Calendar.MILLISECOND,0);
 
+                //Setting of the alarm
                 Intent intent = new Intent(v.getContext(),AlarmReceiver.class);
                 AlarmManager alarmManager = (AlarmManager) v.getContext().getSystemService(Context.ALARM_SERVICE);
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(v.getContext(),0,intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -127,6 +133,7 @@ public class AlarmNotification extends AppCompatActivity {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if(task.isSuccessful())
                         {
+                            //Getting the user info and sending information to Home Menu
                             DataSnapshot dataSnapshot = task.getResult();
                             String name = dataSnapshot.child("name").getValue().toString();
                             String email = dataSnapshot.child("email").getValue().toString();
