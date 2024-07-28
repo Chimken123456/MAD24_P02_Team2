@@ -1,7 +1,9 @@
 package sg.edu.np.mad.beproductive.ChatRooms;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +23,8 @@ public class AddChatRoomActivity extends AppCompatActivity {
     private EditText etChatRoomName, etChatRoomDescription;
     private Button btnSaveChatRoom;
     private FirebaseFirestore db;
+    private String userId; // Add this
+    private String username; // Add this
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +37,9 @@ public class AddChatRoomActivity extends AppCompatActivity {
         etChatRoomDescription = findViewById(R.id.etChatRoomDescription);
         btnSaveChatRoom = findViewById(R.id.btnSaveChatRoom);
 
+        // Retrieve user ID and username from intent
+        userId = getIntent().getStringExtra("userId");
+        username = getIntent().getStringExtra("username");
         btnSaveChatRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,9 +64,18 @@ public class AddChatRoomActivity extends AppCompatActivity {
         db.collection("chatrooms")
                 .add(chatRoom)
                 .addOnSuccessListener(documentReference -> {
+                    String newChatRoomId = documentReference.getId();
+                    Log.d("AddChatRoomActivity", "New chat room ID: " + newChatRoomId);
                     Toast.makeText(AddChatRoomActivity.this, "Chat Room added", Toast.LENGTH_SHORT).show();
+                    // Pass the newly created chatRoomId to ChatMain activity
+                    Intent intent = new Intent(AddChatRoomActivity.this, ChatMain.class);
+                    intent.putExtra("chatRoomId", newChatRoomId); // Pass the new chatRoomId
+                    intent.putExtra("userId", userId); // Pass other required information
+                    intent.putExtra("username", username);
+                    startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> Toast.makeText(AddChatRoomActivity.this, "Error adding chat room", Toast.LENGTH_SHORT).show());
     }
 }
+

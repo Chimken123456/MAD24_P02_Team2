@@ -3,6 +3,7 @@ package sg.edu.np.mad.beproductive.ChatRooms;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -42,6 +43,15 @@ public class ChatMain extends AppCompatActivity {
         userId = getIntent().getStringExtra("userId");
         username = getIntent().getStringExtra("username");
         chatRoomId = getIntent().getStringExtra("chatRoomId");
+        Log.d("ChatMain", "Retrieved chat room ID: " + chatRoomId);
+
+        if (chatRoomId == null) {
+            // Handle the error, e.g., show a message and finish the activity
+            Toast.makeText(this, "Chat room ID is missing", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         db = FirebaseFirestore.getInstance();
 
         messagesRecyclerView = findViewById(R.id.messagesRecyclerView);
@@ -83,6 +93,11 @@ public class ChatMain extends AppCompatActivity {
     }
 
     private void loadMessages() {
+        if (chatRoomId == null) {
+            Toast.makeText(this, "Chat room ID is missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         db.collection("chatrooms")
                 .document(chatRoomId)
                 .collection("messages")
