@@ -25,8 +25,6 @@ public class ChatRoomsActivity extends AppCompatActivity {
     private ChatRoomAdapter chatRoomAdapter;
     private List<ChatRoom> chatRoomList;
     private FirebaseFirestore db;
-    private String userId; // Add this
-    private String username; // Add this
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +33,10 @@ public class ChatRoomsActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        userId = getIntent().getStringExtra("userId"); // Retrieve userId from intent
-        username = getIntent().getStringExtra("username"); // Retrieve username from intent
-
         chatRoomsRecyclerView = findViewById(R.id.chatRoomsRecyclerView);
         chatRoomsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRoomList = new ArrayList<>();
-        chatRoomAdapter = new ChatRoomAdapter(chatRoomList, userId, username); // Pass userId and username to adapter
+        chatRoomAdapter = new ChatRoomAdapter(chatRoomList);
         chatRoomsRecyclerView.setAdapter(chatRoomAdapter);
 
         FloatingActionButton fabAddChatRoom = findViewById(R.id.fabAddChatRoom);
@@ -50,8 +45,6 @@ public class ChatRoomsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Intent to add chat room activity
                 Intent intent = new Intent(ChatRoomsActivity.this, AddChatRoomActivity.class);
-                intent.putExtra("userId", userId); // Pass userId
-                intent.putExtra("username", username); // Pass username
                 startActivity(intent);
             }
         });
@@ -67,7 +60,6 @@ public class ChatRoomsActivity extends AppCompatActivity {
                         chatRoomList.clear();
                         for (DocumentSnapshot document : task.getResult()) {
                             ChatRoom chatRoom = document.toObject(ChatRoom.class);
-                            chatRoom.setId(document.getId()); // Set the ID
                             chatRoomList.add(chatRoom);
                         }
                         chatRoomAdapter.notifyDataSetChanged();
