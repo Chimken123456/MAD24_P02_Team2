@@ -109,6 +109,15 @@ Allow users to join these chats
 Allow users to type in these chats and communicate in the chats 
 This chat rooms allows user to see all the available chats on the app, these chats will be used as community chats where users can join any specific chats and ask any questions which allows other users to see and respond as well. These chat rooms provide users with help from other users if they have any issues. This is to help productivity by encouraging users to seek help when needed therefore increasing productivity. 
 
+Pomodoro Tracker (Anson)
+As a student, I want to be able to use productivity techniques like Pomodoro to keep up with study sessions.
+Role:
+Allows user to start 30 minutes cycles of pomodoro
+User can start the session and the timer will count down from 25 minutes
+User can pause and continue the timer by clicking "Start" or "Pause"
+When 25 minutes have passed, notifies the User, and prompts them to start a 5 minutes break
+After the 5 minutes break, another prompt will show up to alert the User and prompts to continue.
+This feature allows for more productive sessions for work they might want to accomplish.
 
 Credits:
 Log in and Sign up Images : 
