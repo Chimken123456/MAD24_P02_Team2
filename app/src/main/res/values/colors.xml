@@ -19,4 +19,6 @@
     <color name="pastelGreen">#B9E1B0</color>
     <color name="lightgray">#CFCECE</color>
     <color name="yellow">#DADDAC</color>
+
+    <color name="colorPrimary">#FF0000</color>
 </resources>

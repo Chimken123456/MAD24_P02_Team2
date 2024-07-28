@@ -149,6 +149,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import sg.edu.np.mad.beproductive.Alarm.AlarmList;
 import sg.edu.np.mad.beproductive.Analysis.AnalysisActivity;
+import sg.edu.np.mad.beproductive.ChatRooms.ChatRoomsActivity;
 import sg.edu.np.mad.beproductive.DatabaseHandler;
 import sg.edu.np.mad.beproductive.ExpensesTracker.ExpensesTrackerActivity;
 import sg.edu.np.mad.beproductive.Global;
@@ -315,6 +316,20 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
 
-
+        CardView chatRoomBtn = findViewById(R.id.chat_Room_navbtn);
+        chatRoomBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, ChatRoomsActivity.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
     }
 }

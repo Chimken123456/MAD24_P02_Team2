@@ -69,6 +69,8 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("androidx.fragment:fragment-ktx:1.5.6")
+    //implementation ("com.google.firebase:firebase-auth:23.1.0") // use the latest version available
+    implementation ("com.google.firebase:firebase-firestore:24.7.1") // use the latest version available
 }
 
 

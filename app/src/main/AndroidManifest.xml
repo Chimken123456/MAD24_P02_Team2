@@ -154,6 +154,10 @@
         <activity android:name=".Reminders.ReminderMain" android:exported="true"/>
         <activity android:name=".Reminders.AlarmReceiver" android:exported="false"/>
         <activity android:name=".Reminders.EditReminderActivity" android:exported="false"/>
+
+        <activity android:name=".ChatRooms.ChatRoomsActivity" />
+        <activity android:name=".ChatRooms.AddChatRoomActivity" />
+        <activity android:name=".ChatRooms.ChatMain" />
       
         <receiver android:name=".Alarm.AlarmReceiver" />
     </application>
