@@ -103,7 +103,11 @@ When it is within budget, it will be green, when it has exceeded, it will become
 User can view a graph to show how their overall expenses is like, allows user to be more mindful of how they spend their money.
 Database will store each expense item, allowance, balance, budget and spendings under each user node.
 
-
+Chat Rooms (Aqeil Danish)
+Allow users to find community chats that are shared by others
+Allow users to join these chats
+Allow users to type in these chats and communicate in the chats 
+This chat rooms allows user to see all the available chats on the app, these chats will be used as community chats where users can join any specific chats and ask any questions which allows other users to see and respond as well. These chat rooms provide users with help from other users if they have any issues. This is to help productivity by encouraging users to seek help when needed therefore increasing productivity. 
 
 
 Credits:
