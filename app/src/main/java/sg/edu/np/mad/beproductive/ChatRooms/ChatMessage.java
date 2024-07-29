@@ -17,7 +17,7 @@ public class ChatMessage {
         this.timestamp = Timestamp.now();
     }
 
-    // Getters and setters
+    // Getters and Setters
     public String getSenderId() { return senderId; }
     public void setSenderId(String senderId) { this.senderId = senderId; }
     public String getMessage() { return message; }

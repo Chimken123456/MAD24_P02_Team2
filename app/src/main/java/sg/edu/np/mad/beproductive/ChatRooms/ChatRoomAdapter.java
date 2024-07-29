@@ -17,9 +17,13 @@ import sg.edu.np.mad.beproductive.R;
 public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRoomViewHolder> {
     private List<ChatRoom> chatRoomList;
     private Context context;
+    private String userId; // Add this
+    private String username; // Add this
 
-    public ChatRoomAdapter(List<ChatRoom> chatRoomList) {
+    public ChatRoomAdapter(List<ChatRoom> chatRoomList, String userId, String username) {
         this.chatRoomList = chatRoomList;
+        this.userId = userId; // Initialize userId
+        this.username = username; // Initialize username
     }
 
     @NonNull
@@ -39,6 +43,8 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<ChatRoomAdapter.ChatRo
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatMain.class);
             intent.putExtra("chatRoomId", chatRoom.getId());
+            intent.putExtra("userId", userId); // Pass userId
+            intent.putExtra("username", username); // Pass username
             context.startActivity(intent);
         });
     }
