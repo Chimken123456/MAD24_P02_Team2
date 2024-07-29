@@ -130,12 +130,10 @@
 
 package sg.edu.np.mad.beproductive.HomePage;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -155,12 +153,13 @@ import sg.edu.np.mad.beproductive.ExpensesTracker.ExpensesTrackerActivity;
 import sg.edu.np.mad.beproductive.Global;
 import sg.edu.np.mad.beproductive.Log_In;
 import sg.edu.np.mad.beproductive.NotesPage.NotesListActivity;
+import sg.edu.np.mad.beproductive.Pomodoro.PomodoroActivity;
 import sg.edu.np.mad.beproductive.R;
-import sg.edu.np.mad.beproductive.Reminders.ReminderActivity;
 import sg.edu.np.mad.beproductive.Reminders.ReminderMain;
 import sg.edu.np.mad.beproductive.Timetable.TimetableActivity;
 import sg.edu.np.mad.beproductive.ToDoListPage.TodoList;
 import sg.edu.np.mad.beproductive.User;
+import sg.edu.np.mad.beproductive.databinding.PomodoroMainBinding;
 
 public class HomeMenu extends AppCompatActivity {
 
@@ -234,7 +233,7 @@ public class HomeMenu extends AppCompatActivity {
             }
         });
 
-        CardView monthlyButton = findViewById(R.id.monthlyreport_navbtn);
+        CardView monthlyButton = findViewById(R.id.monthly_reports_navbtn);
         monthlyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -327,6 +326,23 @@ public class HomeMenu extends AppCompatActivity {
                 extras.putString("Email",user0.getEmail());
                 extras.putBoolean("SignUp",true);
                 Intent intent = new Intent(HomeMenu.this, ChatRoomsActivity.class);
+                intent.putExtras(extras);
+                startActivity(intent);
+            }
+        });
+
+        CardView pomodoroButton = findViewById(R.id.pomodoro_navbtn);
+        pomodoroButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle extras = new Bundle();
+                extras.putInt("ID",user0.getId());
+                Global.setUser_Id(user0.getId());
+                extras.putString("Username",user0.getName());
+                extras.putString("Password",user0.getPassword());
+                extras.putString("Email",user0.getEmail());
+                extras.putBoolean("SignUp",true);
+                Intent intent = new Intent(HomeMenu.this, PomodoroActivity.class);
                 intent.putExtras(extras);
                 startActivity(intent);
             }
